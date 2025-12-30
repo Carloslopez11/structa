@@ -53,12 +53,6 @@
       font-size:28px;
     }
 
-    .grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-      gap:20px;
-    }
-
     .card {
       background:var(--card);
       padding:24px;
@@ -115,8 +109,7 @@
   </h1>
 
   <p>
-    Structa helps contractors and service professionals calculate project areas,
-    generate quotes and create simple invoices in minutes.
+    Calculate project area, generate quotes and create simple invoices in minutes.
   </p>
 
   <h2>Create your quote</h2>
@@ -124,7 +117,7 @@
   <div class="card">
     <input id="company" placeholder="Company name"/>
     <input id="client" placeholder="Client name"/>
-    <input id="work" placeholder="Type of work (construction, renovation, etc.)"/>
+    <input id="work" placeholder="Type of work"/>
     <input id="length" type="number" placeholder="Length (meters)"/>
     <input id="width" type="number" placeholder="Width (meters)"/>
     <input id="price" type="number" placeholder="Price per m² (USD)"/>
@@ -142,15 +135,16 @@
 
 <script>
 function generate() {
-  const company = company.value;
-  const client = client.value;
-  const work = work.value;
+  const company = document.getElementById("company").value;
+  const client = document.getElementById("client").value;
+  const work = document.getElementById("work").value;
   const length = parseFloat(document.getElementById("length").value);
   const width = parseFloat(document.getElementById("width").value);
   const price = parseFloat(document.getElementById("price").value);
+  const output = document.getElementById("output");
 
   if (!length || !width || !price) {
-    output.textContent = "Please enter valid dimensions and price.";
+    output.textContent = "Please enter length, width and price per m².";
     return;
   }
 
