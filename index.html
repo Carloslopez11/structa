@@ -1,188 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Structa — Smart Quotes & Invoices</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Structa — Smart Quotes & Invoices</title>
 
-  <style>
-    :root {
-      --bg:#0b0b0f;
-      --card:#14141c;
-      --text:#ffffff;
-      --muted:#9ca3af;
-      --accent:#7c3aed;
-    }
+<style>
+:root {
+  --bg:#0b0b0f;
+  --card:#14141c;
+  --text:#ffffff;
+  --muted:#9ca3af;
+  --accent:#7c3aed;
+}
 
-    * {
-      box-sizing:border-box;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;
-    }
+* {
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;
+}
 
-    body {
-      margin:0;
-      background:radial-gradient(circle at top,#1a1a2e,var(--bg));
-      color:var(--text);
-      padding:20px;
-    }
+body {
+  margin:0;
+  background:radial-gradient(circle at top,#1a1a2e,var(--bg));
+  color:var(--text);
+  padding:20px;
+}
 
-    .container {
-      max-width:960px;
-      margin:auto;
-      background:#0f0f16;
-      border-radius:24px;
-      padding:50px 40px;
-    }
+.container {
+  max-width:900px;
+  margin:auto;
+  background:#0f0f16;
+  border-radius:24px;
+  padding:40px;
+}
 
-    h1 {
-      font-size:42px;
-      margin-bottom:10px;
-    }
+h1 {
+  font-size:36px;
+  margin-bottom:10px;
+}
 
-    h1 span { color:var(--accent); }
+h1 span { color:var(--accent); }
 
-    p {
-      color:var(--muted);
-      font-size:18px;
-      max-width:720px;
-      margin-bottom:40px;
-    }
+p {
+  color:var(--muted);
+  font-size:16px;
+  margin-bottom:30px;
+}
 
-    h2 {
-      margin:60px 0 20px;
-      font-size:28px;
-    }
+.card {
+  background:var(--card);
+  padding:24px;
+  border-radius:18px;
+}
 
-    .card {
-      background:var(--card);
-      padding:24px;
-      border-radius:18px;
-    }
+input {
+  width:100%;
+  margin-bottom:12px;
+  padding:12px;
+  background:#0b0b12;
+  border:1px solid #222;
+  color:white;
+  border-radius:8px;
+}
 
-    input {
-      width:100%;
-      margin-bottom:14px;
-      padding:12px;
-      background:#0b0b12;
-      border:1px solid #222;
-      color:white;
-      border-radius:8px;
-    }
+button {
+  width:100%;
+  padding:14px;
+  background:linear-gradient(135deg,#7c3aed,#5b21b6);
+  border:none;
+  color:white;
+  font-weight:600;
+  border-radius:10px;
+  cursor:pointer;
+  margin-top:10px;
+}
 
-    button {
-      width:100%;
-      padding:14px;
-      background:linear-gradient(135deg,#7c3aed,#5b21b6);
-      border:none;
-      color:white;
-      font-weight:600;
-      border-radius:10px;
-      cursor:pointer;
-      margin-top:10px;
-    }
+#document {
+  margin-top:30px;
+  background:white;
+  color:#000;
+  padding:40px;
+  border-radius:8px;
+}
 
-    pre {
-      background:#0b0b12;
-      padding:20px;
-      border-radius:14px;
-      margin-top:20px;
-      white-space:pre-wrap;
-      font-size:14px;
-    }
+#document h2 {
+  margin-top:0;
+  color:#000;
+}
 
-    footer {
-      margin-top:60px;
-      text-align:center;
-      color:var(--muted);
-      font-size:14px;
-    }
-  </style>
+.doc-row {
+  margin-bottom:10px;
+}
+
+.total {
+  font-size:22px;
+  font-weight:bold;
+  margin-top:20px;
+}
+
+footer {
+  margin-top:40px;
+  text-align:center;
+  color:var(--muted);
+  font-size:14px;
+}
+
+@media print {
+  body {
+    background:white;
+    color:black;
+  }
+  .container {
+    background:white;
+    box-shadow:none;
+  }
+  button, input, p, h1, footer {
+    display:none;
+  }
+}
+</style>
 </head>
 
 <body>
 
-<div class="container" id="doc">
+<div class="container">
 
-  <h1>
-    Structa<br>
-    <span>Smart quotes & invoices</span><br>
-    for service businesses
-  </h1>
+<h1>Structa <span>AI Quotes</span></h1>
+<p>Generate professional quotes and invoices for service businesses.</p>
 
-  <p>
-    Calculate project area, generate quotes and create simple invoices in minutes.
+<div class="card">
+  <input id="company" placeholder="Company name"/>
+  <input id="client" placeholder="Client name"/>
+  <input id="work" placeholder="Type of work"/>
+  <input id="length" type="number" placeholder="Length (meters)"/>
+  <input id="width" type="number" placeholder="Width (meters)"/>
+  <input id="price" type="number" placeholder="Price per m² (USD)"/>
+
+  <button onclick="generate()">Generate document</button>
+  <button onclick="window.print()">Download PDF</button>
+</div>
+
+<div id="document" style="display:none;">
+  <h2>QUOTE & INVOICE</h2>
+
+  <div class="doc-row"><strong>Company:</strong> <span id="d-company"></span></div>
+  <div class="doc-row"><strong>Client:</strong> <span id="d-client"></span></div>
+  <div class="doc-row"><strong>Type of work:</strong> <span id="d-work"></span></div>
+
+  <hr>
+
+  <div class="doc-row"><strong>Area:</strong> <span id="d-area"></span> m²</div>
+  <div class="doc-row"><strong>Price per m²:</strong> USD <span id="d-price"></span></div>
+
+  <div class="total">Total: USD <span id="d-total"></span></div>
+
+  <p style="margin-top:30px;font-size:14px;">
+    This document is a preliminary quote and invoice. Final costs may vary depending on project conditions.
   </p>
+</div>
 
-  <h2>Create your quote</h2>
-
-  <div class="card">
-    <input id="company" placeholder="Company name"/>
-    <input id="client" placeholder="Client name"/>
-    <input id="work" placeholder="Type of work"/>
-    <input id="length" type="number" placeholder="Length (meters)"/>
-    <input id="width" type="number" placeholder="Width (meters)"/>
-    <input id="price" type="number" placeholder="Price per m² (USD)"/>
-
-    <button onclick="generate()">Generate quote</button>
-    <button onclick="downloadPDF()">Download PDF</button>
-
-    <pre id="output"></pre>
-  </div>
-
-  <footer>
-    © 2025 Structa. All rights reserved.
-  </footer>
+<footer>
+© 2025 Structa. All rights reserved.
+</footer>
 
 </div>
 
 <script>
-let lastContent = "";
-
 function generate() {
-  const company = document.getElementById("company").value;
-  const client = document.getElementById("client").value;
-  const work = document.getElementById("work").value;
-  const length = parseFloat(document.getElementById("length").value);
-  const width = parseFloat(document.getElementById("width").value);
-  const price = parseFloat(document.getElementById("price").value);
-  const output = document.getElementById("output");
+  const company = companyInput();
+  const client = clientInput();
+  const work = workInput();
+  const length = num("length");
+  const width = num("width");
+  const price = num("price");
 
   if (!length || !width || !price) {
-    output.textContent = "Please enter length, width and price per m².";
+    alert("Please complete all numeric fields.");
     return;
   }
 
   const area = length * width;
   const total = area * price;
 
-  lastContent = `
-STRUCTA — QUOTE & INVOICE
+  document.getElementById("d-company").textContent = company;
+  document.getElementById("d-client").textContent = client;
+  document.getElementById("d-work").textContent = work;
+  document.getElementById("d-area").textContent = area.toFixed(2);
+  document.getElementById("d-price").textContent = price.toFixed(2);
+  document.getElementById("d-total").textContent = total.toFixed(2);
 
-Company: ${company}
-Client: ${client}
-Type of work: ${work}
-
-PROJECT DETAILS
-Area: ${area.toFixed(2)} m²
-Price per m²: USD ${price.toFixed(2)}
-
-TOTAL AMOUNT
-USD ${total.toFixed(2)}
-
-This document serves as a preliminary quote and invoice.
-Final price may vary based on project conditions.
-`;
-
-  output.textContent = lastContent;
+  document.getElementById("document").style.display = "block";
 }
 
-function downloadPDF() {
-  if (!lastContent) {
-    alert("Generate the document first.");
-    return;
-  }
-  window.print();
-}
+function companyInput(){ return document.getElementById("company").value; }
+function clientInput(){ return document.getElementById("client").value; }
+function workInput(){ return document.getElementById("work").value; }
+function num(id){ return parseFloat(document.getElementById(id).value); }
 </script>
 
 </body>
