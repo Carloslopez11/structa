@@ -12,6 +12,7 @@
   --text:#ffffff;
   --muted:#9ca3af;
   --accent:#7c3aed;
+  --success:#16a34a;
 }
 
 * {
@@ -63,7 +64,7 @@ input {
   border-radius:8px;
 }
 
-button, .pay-btn {
+button {
   width:100%;
   padding:14px;
   background:linear-gradient(135deg,#7c3aed,#5b21b6);
@@ -73,14 +74,6 @@ button, .pay-btn {
   border-radius:10px;
   cursor:pointer;
   margin-top:10px;
-  text-align:center;
-  text-decoration:none;
-  display:block;
-}
-
-.locked {
-  background:#222;
-  cursor:not-allowed;
 }
 
 #document {
@@ -98,17 +91,29 @@ button, .pay-btn {
   margin-top:20px;
 }
 
+.locked {
+  margin-top:30px;
+  padding:24px;
+  background:#f9fafb;
+  border-radius:12px;
+  text-align:center;
+  color:#000;
+}
+
+.locked h3 {
+  margin-top:0;
+}
+
+.unlock-btn {
+  margin-top:16px;
+  background:var(--success);
+}
+
 footer {
   margin-top:40px;
   text-align:center;
   color:var(--muted);
   font-size:14px;
-}
-
-@media print {
-  body { background:white; }
-  .container { background:white; }
-  .card, footer { display:none; }
 }
 </style>
 </head>
@@ -145,17 +150,14 @@ footer {
 
   <div class="total">Total: USD <span id="d-total"></span></div>
 
-  <p style="margin-top:20px;color:#555;">
-    🔒 Download is locked. Unlock the PDF to remove watermark and download.
-  </p>
+  <div class="locked">
+    <h3>🔒 PDF Locked</h3>
+    <p>Download the professional PDF without watermark.</p>
 
-  <a
-    class="pay-btn"
-    href="https://buy.stripe.com/9B66oH9ux2fsaG40yW1ck00"
-    target="_blank"
-  >
-    Unlock PDF – $9
-  </a>
+    <a href="https://buy.stripe.com/9B66oH9ux2fsaG40yW1ck00" target="_blank">
+      <button class="unlock-btn">Unlock PDF – $9</button>
+    </a>
+  </div>
 </div>
 
 <footer>
