@@ -63,7 +63,7 @@ input {
   border-radius:8px;
 }
 
-button {
+button, .pay-btn {
   width:100%;
   padding:14px;
   background:linear-gradient(135deg,#7c3aed,#5b21b6);
@@ -73,6 +73,14 @@ button {
   border-radius:10px;
   cursor:pointer;
   margin-top:10px;
+  text-align:center;
+  text-decoration:none;
+  display:block;
+}
+
+.locked {
+  background:#222;
+  cursor:not-allowed;
 }
 
 #document {
@@ -81,15 +89,7 @@ button {
   color:#000;
   padding:40px;
   border-radius:8px;
-}
-
-#document h2 {
-  margin-top:0;
-  color:#000;
-}
-
-.doc-row {
-  margin-bottom:10px;
+  display:none;
 }
 
 .total {
@@ -106,17 +106,9 @@ footer {
 }
 
 @media print {
-  body {
-    background:white;
-    color:black;
-  }
-  .container {
-    background:white;
-    box-shadow:none;
-  }
-  button, input, p, h1, footer {
-    display:none;
-  }
+  body { background:white; }
+  .container { background:white; }
+  .card, footer { display:none; }
 }
 </style>
 </head>
@@ -137,26 +129,33 @@ footer {
   <input id="price" type="number" placeholder="Price per m² (USD)"/>
 
   <button onclick="generate()">Generate document</button>
-  <button onclick="window.print()">Download PDF</button>
 </div>
 
-<div id="document" style="display:none;">
+<div id="document">
   <h2>QUOTE & INVOICE</h2>
 
-  <div class="doc-row"><strong>Company:</strong> <span id="d-company"></span></div>
-  <div class="doc-row"><strong>Client:</strong> <span id="d-client"></span></div>
-  <div class="doc-row"><strong>Type of work:</strong> <span id="d-work"></span></div>
+  <p><strong>Company:</strong> <span id="d-company"></span></p>
+  <p><strong>Client:</strong> <span id="d-client"></span></p>
+  <p><strong>Type of work:</strong> <span id="d-work"></span></p>
 
   <hr>
 
-  <div class="doc-row"><strong>Area:</strong> <span id="d-area"></span> m²</div>
-  <div class="doc-row"><strong>Price per m²:</strong> USD <span id="d-price"></span></div>
+  <p><strong>Area:</strong> <span id="d-area"></span> m²</p>
+  <p><strong>Price per m²:</strong> USD <span id="d-price"></span></p>
 
   <div class="total">Total: USD <span id="d-total"></span></div>
 
-  <p style="margin-top:30px;font-size:14px;">
-    This document is a preliminary quote and invoice. Final costs may vary depending on project conditions.
+  <p style="margin-top:20px;color:#555;">
+    🔒 Download is locked. Unlock the PDF to remove watermark and download.
   </p>
+
+  <a
+    class="pay-btn"
+    href="https://buy.stripe.com/9B66oH9ux2fsaG40yW1ck00"
+    target="_blank"
+  >
+    Unlock PDF – $9
+  </a>
 </div>
 
 <footer>
@@ -167,12 +166,12 @@ footer {
 
 <script>
 function generate() {
-  const company = companyInput();
-  const client = clientInput();
-  const work = workInput();
-  const length = num("length");
-  const width = num("width");
-  const price = num("price");
+  const company = document.getElementById("company").value;
+  const client = document.getElementById("client").value;
+  const work = document.getElementById("work").value;
+  const length = parseFloat(document.getElementById("length").value);
+  const width = parseFloat(document.getElementById("width").value);
+  const price = parseFloat(document.getElementById("price").value);
 
   if (!length || !width || !price) {
     alert("Please complete all numeric fields.");
@@ -191,11 +190,6 @@ function generate() {
 
   document.getElementById("document").style.display = "block";
 }
-
-function companyInput(){ return document.getElementById("company").value; }
-function clientInput(){ return document.getElementById("client").value; }
-function workInput(){ return document.getElementById("work").value; }
-function num(id){ return parseFloat(document.getElementById(id).value); }
 </script>
 
 </body>
