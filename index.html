@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Structa — Client-ready quotes that close jobs</title>
+<title>Structa — Smart Quotes & Invoices</title>
 
 <style>
 :root {
@@ -31,30 +31,43 @@ body {
   margin:auto;
   background:#0f0f16;
   border-radius:24px;
-  padding:40px 30px;
+  padding:40px;
 }
 
-/* HERO */
 h1 {
-  font-size:36px;
+  font-size:38px;
   margin-bottom:10px;
 }
 
 h1 span { color:var(--accent); }
 
-.hero p {
+.subtitle {
   color:var(--muted);
-  font-size:16px;
+  font-size:18px;
+  margin-bottom:40px;
+}
+
+/* VALUE SECTION */
+.value {
+  margin-bottom:40px;
+}
+
+.value h2 {
+  font-size:26px;
+  margin-bottom:10px;
+}
+
+.value p {
+  color:var(--muted);
   margin-bottom:20px;
 }
 
-.value-points {
-  margin-bottom:30px;
+.value ul {
+  padding-left:20px;
 }
 
-.value-points li {
-  margin-bottom:8px;
-  color:#e5e7eb;
+.value li {
+  margin-bottom:10px;
 }
 
 /* FORM */
@@ -62,29 +75,29 @@ h1 span { color:var(--accent); }
   background:var(--card);
   padding:24px;
   border-radius:18px;
-  margin-top:30px;
 }
 
 input {
   width:100%;
   margin-bottom:12px;
-  padding:12px;
+  padding:14px;
   background:#0b0b12;
   border:1px solid #222;
   color:white;
-  border-radius:8px;
+  border-radius:10px;
 }
 
 button {
   width:100%;
-  padding:14px;
+  padding:16px;
   background:linear-gradient(135deg,#7c3aed,#5b21b6);
   border:none;
   color:white;
   font-weight:600;
-  border-radius:10px;
+  border-radius:12px;
   cursor:pointer;
   margin-top:10px;
+  font-size:16px;
 }
 
 /* DOCUMENT */
@@ -93,7 +106,7 @@ button {
   background:white;
   color:#000;
   padding:40px;
-  border-radius:10px;
+  border-radius:12px;
   display:none;
 }
 
@@ -106,38 +119,31 @@ button {
 }
 
 .total {
-  font-size:22px;
+  font-size:24px;
   font-weight:bold;
   margin-top:20px;
 }
 
-/* PAY CTA */
-.pay-card {
+/* PAY WALL */
+.paywall {
   margin-top:30px;
-  background:#f5f3ff;
-  border-radius:14px;
   padding:24px;
+  background:#f4f2ff;
+  border-radius:16px;
   text-align:center;
 }
 
-.pay-card h3 {
+.paywall h3 {
   margin-top:0;
 }
 
-.pay-card p {
-  color:#4b5563;
-  font-size:14px;
+.paywall p {
+  color:#444;
+  font-size:15px;
 }
 
-.pay-card a {
-  display:block;
-  margin-top:16px;
-  padding:14px;
-  background:linear-gradient(135deg,#7c3aed,#5b21b6);
-  color:white;
-  text-decoration:none;
-  border-radius:10px;
-  font-weight:600;
+.paywall button {
+  margin-top:15px;
 }
 
 /* FOOTER */
@@ -147,6 +153,12 @@ footer {
   color:var(--muted);
   font-size:14px;
 }
+
+@media print {
+  body { background:white; }
+  .container { background:white; }
+  button, input, .value, footer, .paywall { display:none; }
+}
 </style>
 </head>
 
@@ -155,15 +167,26 @@ footer {
 <div class="container">
 
 <!-- HERO -->
-<div class="hero">
-  <h1>Turn estimates into <span>money</span> in minutes.</h1>
-  <p>Client-ready quotes that close jobs — not drafts you still have to fix.</p>
+<h1>Turn estimates into <span>money</span> in minutes.</h1>
+<p class="subtitle">
+Client-ready quotes that help you close jobs — not drafts you still have to fix.
+</p>
 
-  <ul class="value-points">
-    <li>✔ No prompts. Just enter numbers.</li>
-    <li>✔ Consistent professional format every time.</li>
-    <li>✔ Built to close jobs — not brainstorm ideas.</li>
+<!-- VALUE SECTION -->
+<div class="value">
+  <h2>Stop guessing. Start sending quotes that close.</h2>
+  <p>
+    Built for contractors and service professionals who charge properly.
+  </p>
+
+  <ul>
+    <li>Enter measurements</li>
+    <li>Get a clean, professional quote instantly</li>
+    <li>Send it to your client with confidence</li>
   </ul>
+
+  <p><strong>No prompts. No formatting. No spreadsheets.</strong><br>
+  Just numbers → money.</p>
 </div>
 
 <!-- FORM -->
@@ -193,17 +216,16 @@ footer {
 
   <div class="total">Total: USD <span id="d-total"></span></div>
 
-  <!-- PAY CTA -->
-  <div class="pay-card">
+  <!-- PAYWALL -->
+  <div class="paywall">
     <h3>Ready to send this to your client?</h3>
-    <p>Finalize and download a clean, client-ready PDF.</p>
-
-    <a href="https://buy.stripe.com/9B66oH9ux2fsaG40yW1ck00" target="_blank">
-      Finalize & download — $7
-    </a>
-
-    <p style="margin-top:10px;">
-      Pay once. No subscription. One closed job pays for this many times over.
+    <p>
+      Finalize and download a clean, client-ready PDF.
+    </p>
+    <button onclick="goToStripe()">Finalize & download — $7</button>
+    <p style="font-size:13px;">
+      Pay once. No subscription.<br>
+      One closed job pays for this many times over.
     </p>
   </div>
 </div>
@@ -216,12 +238,9 @@ footer {
 
 <script>
 function generate() {
-  const company = document.getElementById("company").value;
-  const client = document.getElementById("client").value;
-  const work = document.getElementById("work").value;
-  const length = parseFloat(document.getElementById("length").value);
-  const width = parseFloat(document.getElementById("width").value);
-  const price = parseFloat(document.getElementById("price").value);
+  const length = num("length");
+  const width = num("width");
+  const price = num("price");
 
   if (!length || !width || !price) {
     alert("Please complete all numeric fields.");
@@ -231,14 +250,21 @@ function generate() {
   const area = length * width;
   const total = area * price;
 
-  document.getElementById("d-company").textContent = company;
-  document.getElementById("d-client").textContent = client;
-  document.getElementById("d-work").textContent = work;
+  document.getElementById("d-company").textContent = val("company");
+  document.getElementById("d-client").textContent = val("client");
+  document.getElementById("d-work").textContent = val("work");
   document.getElementById("d-area").textContent = area.toFixed(2);
   document.getElementById("d-price").textContent = price.toFixed(2);
   document.getElementById("d-total").textContent = total.toFixed(2);
 
   document.getElementById("document").style.display = "block";
+}
+
+function val(id){ return document.getElementById(id).value; }
+function num(id){ return parseFloat(document.getElementById(id).value); }
+
+function goToStripe() {
+  window.location.href = "https://buy.stripe.com/9B66oH9ux2fsaG40yW1ck00";
 }
 </script>
 
