@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Structa — Quotes that close jobs</title>
+<title>Structa — Client-ready quotes that close jobs</title>
 
 <style>
 :root {
@@ -31,80 +31,70 @@ body {
   margin:auto;
   background:#0f0f16;
   border-radius:24px;
-  padding:40px;
+  padding:40px 30px;
 }
 
+/* HERO */
 h1 {
-  font-size:42px;
+  font-size:36px;
   margin-bottom:10px;
 }
 
 h1 span { color:var(--accent); }
 
-.subtitle {
+.hero p {
   color:var(--muted);
-  font-size:18px;
+  font-size:16px;
+  margin-bottom:20px;
+}
+
+.value-points {
   margin-bottom:30px;
 }
 
-.badges {
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-bottom:30px;
+.value-points li {
+  margin-bottom:8px;
+  color:#e5e7eb;
 }
 
-.badge {
-  background:#1a1a25;
-  padding:8px 14px;
-  border-radius:999px;
-  font-size:14px;
-  color:#c7c7ff;
-}
-
+/* FORM */
 .card {
   background:var(--card);
   padding:24px;
   border-radius:18px;
+  margin-top:30px;
 }
 
 input {
   width:100%;
   margin-bottom:12px;
-  padding:14px;
+  padding:12px;
   background:#0b0b12;
   border:1px solid #222;
   color:white;
-  border-radius:10px;
-  font-size:15px;
+  border-radius:8px;
 }
 
 button {
   width:100%;
-  padding:16px;
+  padding:14px;
   background:linear-gradient(135deg,#7c3aed,#5b21b6);
   border:none;
   color:white;
   font-weight:600;
-  border-radius:12px;
+  border-radius:10px;
   cursor:pointer;
-  margin-top:12px;
-  font-size:16px;
-}
-
-.helper {
   margin-top:10px;
-  font-size:14px;
-  color:var(--muted);
-  text-align:center;
 }
 
+/* DOCUMENT */
 #document {
   margin-top:40px;
   background:white;
   color:#000;
   padding:40px;
-  border-radius:12px;
+  border-radius:10px;
+  display:none;
 }
 
 #document h2 {
@@ -116,36 +106,43 @@ button {
 }
 
 .total {
-  font-size:24px;
+  font-size:22px;
   font-weight:bold;
   margin-top:20px;
 }
 
-.locked {
+/* PAY CTA */
+.pay-card {
   margin-top:30px;
-  padding:20px;
-  border-radius:12px;
-  background:#f5f5f5;
+  background:#f5f3ff;
+  border-radius:14px;
+  padding:24px;
   text-align:center;
 }
 
-.locked p {
-  color:#333;
-  margin-bottom:16px;
+.pay-card h3 {
+  margin-top:0;
 }
 
-.locked a {
-  display:inline-block;
-  padding:14px 22px;
+.pay-card p {
+  color:#4b5563;
+  font-size:14px;
+}
+
+.pay-card a {
+  display:block;
+  margin-top:16px;
+  padding:14px;
   background:linear-gradient(135deg,#7c3aed,#5b21b6);
   color:white;
+  text-decoration:none;
   border-radius:10px;
   font-weight:600;
-  text-decoration:none;
 }
 
+/* FOOTER */
 footer {
-  margin-top:40px;
+  margin-top:50px;
   text-align:center;
   color:var(--muted);
   font-size:14px;
@@ -157,18 +154,19 @@ footer {
 
 <div class="container">
 
-<h1>Turn estimates into <span>money</span></h1>
-<p class="subtitle">
-Client-ready quotes your customers say yes to — not drafts you still have to fix.
-</p>
+<!-- HERO -->
+<div class="hero">
+  <h1>Turn estimates into <span>money</span> in minutes.</h1>
+  <p>Client-ready quotes that close jobs — not drafts you still have to fix.</p>
 
-<div class="badges">
-  <div class="badge">Built for contractors</div>
-  <div class="badge">Client-ready PDFs</div>
-  <div class="badge">Charge properly</div>
-  <div class="badge">Close faster</div>
+  <ul class="value-points">
+    <li>✔ No prompts. Just enter numbers.</li>
+    <li>✔ Consistent professional format every time.</li>
+    <li>✔ Built to close jobs — not brainstorm ideas.</li>
+  </ul>
 </div>
 
+<!-- FORM -->
 <div class="card">
   <input id="company" placeholder="Company name"/>
   <input id="client" placeholder="Client name"/>
@@ -178,12 +176,10 @@ Client-ready quotes your customers say yes to — not drafts you still have to f
   <input id="price" type="number" placeholder="Price per m² (USD)"/>
 
   <button onclick="generate()">Generate free preview</button>
-  <div class="helper">
-    This is exactly what your client will see.
-  </div>
 </div>
 
-<div id="document" style="display:none;">
+<!-- DOCUMENT -->
+<div id="document">
   <h2>QUOTE & INVOICE</h2>
 
   <div class="doc-row"><strong>Company:</strong> <span id="d-company"></span></div>
@@ -197,22 +193,23 @@ Client-ready quotes your customers say yes to — not drafts you still have to f
 
   <div class="total">Total: USD <span id="d-total"></span></div>
 
-  <div class="locked">
-    <p>
-      This preview helps you calculate.  
-      <strong>Clients receive a clean, professional PDF.</strong>
-    </p>
-    <p>
-      One closed job pays for this many times over.
-    </p>
+  <!-- PAY CTA -->
+  <div class="pay-card">
+    <h3>Ready to send this to your client?</h3>
+    <p>Finalize and download a clean, client-ready PDF.</p>
+
     <a href="https://buy.stripe.com/9B66oH9ux2fsaG40yW1ck00" target="_blank">
-      Unlock professional PDF — $9
+      Finalize & download — $7
     </a>
+
+    <p style="margin-top:10px;">
+      Pay once. No subscription. One closed job pays for this many times over.
+    </p>
   </div>
 </div>
 
 <footer>
-Structa helps service professionals charge properly and close faster.
+© 2025 Structa — Tools for professionals who close.
 </footer>
 
 </div>
