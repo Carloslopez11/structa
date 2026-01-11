@@ -34,18 +34,10 @@ body {
   padding:40px;
 }
 
-h1 {
-  font-size:36px;
-  margin-bottom:10px;
-}
-
+h1 { font-size:36px; }
 h1 span { color:var(--accent); }
 
-p {
-  color:var(--muted);
-  font-size:16px;
-  margin-bottom:30px;
-}
+p { color:var(--muted); }
 
 .card {
   background:var(--card);
@@ -84,31 +76,12 @@ button {
   display:none;
 }
 
-#document h2 {
-  margin-top:0;
-  color:#000;
-}
-
-.doc-row {
-  margin-bottom:10px;
-}
-
-.total {
-  font-size:22px;
-  font-weight:bold;
-  margin-top:20px;
-}
-
 .paybox {
   margin-top:30px;
   background:#f5f3ff;
   padding:24px;
   border-radius:16px;
   text-align:center;
-}
-
-.paybox p {
-  color:#333;
 }
 
 .paybox a {
@@ -122,26 +95,20 @@ button {
   font-weight:600;
 }
 
+#downloadBtn {
+  display:none;
+  margin-top:20px;
+}
+
 footer {
   margin-top:40px;
   text-align:center;
   color:var(--muted);
-  font-size:14px;
 }
 
-/* PDF CLEAN */
 @media print {
-  body {
-    background:white;
-    color:black;
-  }
-  .container {
-    background:white;
-    box-shadow:none;
-  }
-  button, input, p, footer, .paybox {
-    display:none;
-  }
+  body { background:white; color:black; }
+  button, input, footer, .paybox { display:none; }
 }
 </style>
 </head>
@@ -167,32 +134,27 @@ footer {
 <div id="document">
   <h2>QUOTE & INVOICE</h2>
 
-  <div class="doc-row"><strong>Company:</strong> <span id="d-company"></span></div>
-  <div class="doc-row"><strong>Client:</strong> <span id="d-client"></span></div>
-  <div class="doc-row"><strong>Type of work:</strong> <span id="d-work"></span></div>
+  <p><strong>Company:</strong> <span id="d-company"></span></p>
+  <p><strong>Client:</strong> <span id="d-client"></span></p>
+  <p><strong>Type of work:</strong> <span id="d-work"></span></p>
 
   <hr>
 
-  <div class="doc-row"><strong>Area:</strong> <span id="d-area"></span> m²</div>
-  <div class="doc-row"><strong>Price per m²:</strong> USD <span id="d-price"></span></div>
+  <p><strong>Area:</strong> <span id="d-area"></span> m²</p>
+  <p><strong>Price per m²:</strong> USD <span id="d-price"></span></p>
 
-  <div class="total">Total: USD <span id="d-total"></span></div>
+  <h3>Total: USD <span id="d-total"></span></h3>
 
-  <div class="paybox">
+  <div class="paybox" id="payBox">
     <p><strong>Ready to send this to your client?</strong></p>
-    <p>Finalize and download a clean, professional PDF.</p>
+    <p>Finalize and download a professional PDF.</p>
 
-    <!-- STRIPE TEST LINK -->
     <a href="https://buy.stripe.com/test_9B66oH9ux2fsaG40yW1ck00">
       Finalize & download — $9
     </a>
-
-    <p style="font-size:13px;color:#666;margin-top:10px;">
-      Pay once. No subscription.
-    </p>
   </div>
 
-  <button onclick="window.print()">Download your PDF</button>
+  <button id="downloadBtn" onclick="window.print()">Download your PDF</button>
 </div>
 
 <footer>
@@ -203,29 +165,46 @@ footer {
 
 <script>
 function generate() {
-  const company = document.getElementById("company").value;
-  const client = document.getElementById("client").value;
-  const work = document.getElementById("work").value;
-  const length = parseFloat(document.getElementById("length").value);
-  const width = parseFloat(document.getElementById("width").value);
-  const price = parseFloat(document.getElementById("price").value);
+  const company = companyInput();
+  const client = clientInput();
+  const work = workInput();
+  const length = num("length");
+  const width = num("width");
+  const price = num("price");
 
   if (!length || !width || !price) {
-    alert("Please complete all numeric fields.");
+    alert("Complete all numeric fields.");
     return;
   }
 
   const area = length * width;
   const total = area * price;
 
-  document.getElementById("d-company").textContent = company;
-  document.getElementById("d-client").textContent = client;
-  document.getElementById("d-work").textContent = work;
-  document.getElementById("d-area").textContent = area.toFixed(2);
-  document.getElementById("d-price").textContent = price.toFixed(2);
-  document.getElementById("d-total").textContent = total.toFixed(2);
+  d("d-company", company);
+  d("d-client", client);
+  d("d-work", work);
+  d("d-area", area.toFixed(2));
+  d("d-price", price.toFixed(2));
+  d("d-total", total.toFixed(2));
 
   document.getElementById("document").style.display = "block";
+}
+
+function d(id,val){ document.getElementById(id).textContent = val; }
+function companyInput(){ return document.getElementById("company").value; }
+function clientInput(){ return document.getElementById("client").value; }
+function workInput(){ return document.getElementById("work").value; }
+function num(id){ return parseFloat(document.getElementById(id).value); }
+
+/* Detect payment success */
+const url = new URL(window.location.href);
+if (url.searchParams.get("paid") === "true") {
+  localStorage.setItem("paid","yes");
+}
+
+if (localStorage.getItem("paid") === "yes") {
+  document.getElementById("payBox").style.display = "none";
+  document.getElementById("downloadBtn").style.display = "block";
 }
 </script>
 
