@@ -1,35 +1,88 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Successful</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script>
-function downloadPDF() {
-  const data = JSON.parse(localStorage.getItem("quoteData"));
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #2b1055);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
 
-  if(!data) {
-    alert("No data found");
-    return;
-  }
+    .box {
+      background: #111;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      background: #22c55e;
+      color: black;
+    }
+  </style>
+</head>
+<body>
 
-  doc.setFontSize(18);
-  doc.text("STRUCTA QUOTE", 20, 20);
+  <div class="box">
+    <h2>Payment Successful</h2>
+    <p>Thank you for your purchase</p>
 
-  doc.setFontSize(12);
-  doc.text(`Company: ${data.company}`, 20, 40);
-  doc.text(`Client: ${data.client}`, 20, 50);
-  doc.text(`Work: ${data.work}`, 20, 60);
-  doc.text(`Area: ${data.area} m²`, 20, 70);
-  doc.text(`Price per m²: $${data.price}`, 20, 80);
+    <button onclick="downloadPDF()">Download your PDF</button>
+    <button onclick="newQuote()">Create another quote</button>
+  </div>
 
-  doc.setFontSize(14);
-  doc.text(`TOTAL: $${data.total}`, 20, 100);
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  doc.save("quote.pdf");
-}
+  <script>
+    function downloadPDF() {
+      const data = JSON.parse(localStorage.getItem("quoteData"));
 
-function newQuote() {
-  localStorage.removeItem("quoteData");
-  window.location.href = "index.html";
-}
-</script>
+      if (!data) {
+        alert("No quote data found");
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFontSize(18);
+      doc.text("STRUCTA QUOTE", 20, 20);
+
+      doc.setFontSize(12);
+      doc.text(`Company: ${data.company}`, 20, 40);
+      doc.text(`Client: ${data.client}`, 20, 50);
+      doc.text(`Work: ${data.work}`, 20, 60);
+      doc.text(`Area: ${data.area} m²`, 20, 70);
+      doc.text(`Price per m²: $${data.price}`, 20, 80);
+      doc.text(`TOTAL: $${data.total}`, 20, 100);
+
+      doc.save("quote.pdf");
+    }
+
+    function newQuote() {
+      localStorage.removeItem("quoteData");
+      window.location.href = "index.html";
+    }
+  </script>
+
+</body>
+</html>
