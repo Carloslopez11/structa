@@ -5,12 +5,14 @@
   <title>Structa Quotes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
     body {
       background: #0f0f1a;
       color: white;
       font-family: Arial, sans-serif;
-      margin: 0;
       padding: 20px;
     }
 
@@ -34,7 +36,6 @@
     button {
       background: #7c3aed;
       color: white;
-      cursor: pointer;
     }
 
     .preview {
@@ -45,20 +46,11 @@
       margin-top: 20px;
     }
 
-    #downloadBtn {
-      display: none;
-      background: #22c55e;
-    }
-
-    #payBox {
-      margin-top: 20px;
-      background: #1f1f3a;
-      padding: 15px;
-      border-radius: 12px;
-      text-align: center;
-    }
+    #downloadBtn { display: none; background: #22c55e; }
+    #payBox { background:#1f1f3a; padding:15px; border-radius:12px; text-align:center; margin-top:20px; }
   </style>
 </head>
+
 <body>
 
 <div class="box">
@@ -75,7 +67,7 @@
 
   <div id="result"></div>
 
-  <button id="downloadBtn" onclick="downloadAndReset()">Download your PDF</button>
+  <button id="downloadBtn" onclick="downloadPDF()">Download your PDF</button>
 
   <div id="payBox">
     <p><strong>Unlock your professional PDF</strong></p>
@@ -87,6 +79,8 @@
 </div>
 
 <script>
+let quoteData = null;
+
 function generate() {
   const company = document.getElementById("company").value;
   const client = document.getElementById("client").value;
@@ -97,6 +91,11 @@ function generate() {
 
   const area = length * width;
   const total = area * price;
+
+  quoteData = { company, client, work, area, price, total };
+
+  // Guardar datos antes del pago
+  localStorage.setItem("quoteData", JSON.stringify(quoteData));
 
   document.getElementById("result").innerHTML = `
     <div class="preview">
@@ -112,25 +111,55 @@ function generate() {
   `;
 }
 
-function downloadAndReset() {
-  window.print();
-  sessionStorage.removeItem("paid");
-  alert("To create another quote, please finalize a new payment.");
-  location.reload();
-}
-
-// 🔐 PAYMENT CONTROL
+// Stripe return
 const url = new URL(window.location.href);
-
 if (url.searchParams.get("paid") === "true") {
   sessionStorage.setItem("paid", "yes");
+
+  // Recuperar datos guardados
+  quoteData = JSON.parse(localStorage.getItem("quoteData"));
+
+  if (quoteData) {
+    document.getElementById("result").innerHTML = `
+      <div class="preview">
+        <h2>QUOTE & INVOICE</h2>
+        <p><strong>Company:</strong> ${quoteData.company}</p>
+        <p><strong>Client:</strong> ${quoteData.client}</p>
+        <p><strong>Type of work:</strong> ${quoteData.work}</p>
+        <hr>
+        <p><strong>Area:</strong> ${quoteData.area.toFixed(2)} m²</p>
+        <p><strong>Price per m²:</strong> USD ${quoteData.price.toFixed(2)}</p>
+        <h3>Total: USD ${quoteData.total.toFixed(2)}</h3>
+      </div>
+    `;
+  }
 }
 
 if (sessionStorage.getItem("paid") === "yes") {
   document.getElementById("payBox").style.display = "none";
   document.getElementById("downloadBtn").style.display = "block";
-} else {
-  document.getElementById("downloadBtn").style.display = "none";
+}
+
+// Generar PDF REAL
+function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.text("STRUCTA QUOTE", 20, 20);
+  doc.text(`Company: ${quoteData.company}`, 20, 40);
+  doc.text(`Client: ${quoteData.client}`, 20, 50);
+  doc.text(`Work: ${quoteData.work}`, 20, 60);
+  doc.text(`Area: ${quoteData.area.toFixed(2)} m²`, 20, 70);
+  doc.text(`Price per m²: USD ${quoteData.price.toFixed(2)}`, 20, 80);
+  doc.text(`Total: USD ${quoteData.total.toFixed(2)}`, 20, 100);
+
+  doc.save("quote.pdf");
+
+  sessionStorage.removeItem("paid");
+  localStorage.removeItem("quoteData");
+
+  alert("Payment used. Create a new quote to continue.");
+  location.reload();
 }
 </script>
 
