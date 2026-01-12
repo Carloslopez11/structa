@@ -1,47 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Payment Success</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body {
-  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-  color: white;
-  font-family: Arial;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-.card {
-  background: #111;
-  padding: 25px;
-  border-radius: 12px;
-  max-width: 420px;
-  text-align: center;
-}
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 10px;
-  border-radius: 6px;
-  border: none;
-  background: #22c55e;
-  color: white;
-  font-size: 16px;
-}
-</style>
-</head>
-<body>
-
-<div class="card">
-  <h2>Payment Successful</h2>
-  <p>Gracias por tu compra / Thank you for your purchase</p>
-
-  <button onclick="downloadPDF()">Download your PDF</button>
-  <button onclick="newQuote()">Create another quote</button>
-</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 function downloadPDF() {
@@ -52,25 +9,23 @@ function downloadPDF() {
     return;
   }
 
-  const content = `
-STRUCTA QUOTE
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
 
-Company: ${data.company}
-Client: ${data.client}
-Work: ${data.work}
-Area: ${data.area} m²
-Price/m²: $${data.price}
+  doc.setFontSize(18);
+  doc.text("STRUCTA QUOTE", 20, 20);
 
-TOTAL: $${data.total}
-  `;
+  doc.setFontSize(12);
+  doc.text(`Company: ${data.company}`, 20, 40);
+  doc.text(`Client: ${data.client}`, 20, 50);
+  doc.text(`Work: ${data.work}`, 20, 60);
+  doc.text(`Area: ${data.area} m²`, 20, 70);
+  doc.text(`Price per m²: $${data.price}`, 20, 80);
 
-  const blob = new Blob([content], { type: "application/pdf" });
-  const url = URL.createObjectURL(blob);
+  doc.setFontSize(14);
+  doc.text(`TOTAL: $${data.total}`, 20, 100);
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "quote.pdf";
-  a.click();
+  doc.save("quote.pdf");
 }
 
 function newQuote() {
@@ -78,6 +33,3 @@ function newQuote() {
   window.location.href = "index.html";
 }
 </script>
-
-</body>
-</html>
