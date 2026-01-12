@@ -1,210 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Structa — Smart Quotes</title>
+  <meta charset="UTF-8" />
+  <title>Structa Quotes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-:root {
-  --bg:#0b0b0f;
-  --card:#14141c;
-  --text:#ffffff;
-  --muted:#9ca3af;
-  --accent:#7c3aed;
-}
+  <style>
+    body {
+      background: #0f0f1a;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
 
-* {
-  box-sizing:border-box;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;
-}
+    .box {
+      max-width: 420px;
+      margin: auto;
+      background: #151525;
+      padding: 20px;
+      border-radius: 12px;
+    }
 
-body {
-  margin:0;
-  background:radial-gradient(circle at top,#1a1a2e,var(--bg));
-  color:var(--text);
-  padding:20px;
-}
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
 
-.container {
-  max-width:900px;
-  margin:auto;
-  background:#0f0f16;
-  border-radius:24px;
-  padding:40px;
-}
+    button {
+      background: #7c3aed;
+      color: white;
+      cursor: pointer;
+    }
 
-h1 { font-size:36px; }
-h1 span { color:var(--accent); }
+    .preview {
+      background: white;
+      color: black;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
 
-p { color:var(--muted); }
+    #downloadBtn {
+      display: none;
+      background: #22c55e;
+    }
 
-.card {
-  background:var(--card);
-  padding:24px;
-  border-radius:18px;
-}
-
-input {
-  width:100%;
-  margin-bottom:12px;
-  padding:12px;
-  background:#0b0b12;
-  border:1px solid #222;
-  color:white;
-  border-radius:8px;
-}
-
-button {
-  width:100%;
-  padding:14px;
-  background:linear-gradient(135deg,#7c3aed,#5b21b6);
-  border:none;
-  color:white;
-  font-weight:600;
-  border-radius:10px;
-  cursor:pointer;
-  margin-top:10px;
-}
-
-#document {
-  margin-top:30px;
-  background:white;
-  color:#000;
-  padding:40px;
-  border-radius:8px;
-  display:none;
-}
-
-.paybox {
-  margin-top:30px;
-  background:#f5f3ff;
-  padding:24px;
-  border-radius:16px;
-  text-align:center;
-}
-
-.paybox a {
-  display:block;
-  margin-top:15px;
-  padding:14px;
-  background:linear-gradient(135deg,#7c3aed,#5b21b6);
-  color:white;
-  text-decoration:none;
-  border-radius:10px;
-  font-weight:600;
-}
-
-#downloadBtn {
-  display:none;
-  margin-top:20px;
-}
-
-footer {
-  margin-top:40px;
-  text-align:center;
-  color:var(--muted);
-}
-
-@media print {
-  body { background:white; color:black; }
-  button, input, footer, .paybox { display:none; }
-}
-</style>
+    #payBox {
+      margin-top: 20px;
+      background: #1f1f3a;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="container">
+<div class="box">
+  <h2>Structa Quotes</h2>
 
-<h1>Structa <span>Quotes</span></h1>
-<p>Turn estimates into money in minutes.</p>
-
-<div class="card">
-  <input id="company" placeholder="Company name"/>
-  <input id="client" placeholder="Client name"/>
-  <input id="work" placeholder="Type of work"/>
-  <input id="length" type="number" placeholder="Length (meters)"/>
-  <input id="width" type="number" placeholder="Width (meters)"/>
-  <input id="price" type="number" placeholder="Price per m² (USD)"/>
+  <input id="company" placeholder="Company name" />
+  <input id="client" placeholder="Client name" />
+  <input id="work" placeholder="Type of work" />
+  <input id="length" type="number" placeholder="Length (m)" />
+  <input id="width" type="number" placeholder="Width (m)" />
+  <input id="price" type="number" placeholder="Price per m²" />
 
   <button onclick="generate()">Generate free preview</button>
-</div>
 
-<div id="document">
-  <h2>QUOTE & INVOICE</h2>
+  <div id="result"></div>
 
-  <p><strong>Company:</strong> <span id="d-company"></span></p>
-  <p><strong>Client:</strong> <span id="d-client"></span></p>
-  <p><strong>Type of work:</strong> <span id="d-work"></span></p>
+  <button id="downloadBtn" onclick="downloadAndReset()">Download your PDF</button>
 
-  <hr>
-
-  <p><strong>Area:</strong> <span id="d-area"></span> m²</p>
-  <p><strong>Price per m²:</strong> USD <span id="d-price"></span></p>
-
-  <h3>Total: USD <span id="d-total"></span></h3>
-
-  <div class="paybox" id="payBox">
-    <p><strong>Ready to send this to your client?</strong></p>
-    <p>Finalize and download a professional PDF.</p>
-
+  <div id="payBox">
+    <p><strong>Unlock your professional PDF</strong></p>
+    <p>One-time payment: $9</p>
     <a href="https://buy.stripe.com/test_9B66oH9ux2fsaG40yW1ck00">
-      Finalize & download — $9
+      <button>Finalize & Download – $9</button>
     </a>
   </div>
-
-  <button id="downloadBtn" onclick="window.print()">Download your PDF</button>
-</div>
-
-<footer>
-© 2025 Structa — Tools for professionals who close.
-</footer>
-
 </div>
 
 <script>
 function generate() {
-  const company = companyInput();
-  const client = clientInput();
-  const work = workInput();
-  const length = num("length");
-  const width = num("width");
-  const price = num("price");
-
-  if (!length || !width || !price) {
-    alert("Complete all numeric fields.");
-    return;
-  }
+  const company = document.getElementById("company").value;
+  const client = document.getElementById("client").value;
+  const work = document.getElementById("work").value;
+  const length = parseFloat(document.getElementById("length").value);
+  const width = parseFloat(document.getElementById("width").value);
+  const price = parseFloat(document.getElementById("price").value);
 
   const area = length * width;
   const total = area * price;
 
-  d("d-company", company);
-  d("d-client", client);
-  d("d-work", work);
-  d("d-area", area.toFixed(2));
-  d("d-price", price.toFixed(2));
-  d("d-total", total.toFixed(2));
-
-  document.getElementById("document").style.display = "block";
+  document.getElementById("result").innerHTML = `
+    <div class="preview">
+      <h2>QUOTE & INVOICE</h2>
+      <p><strong>Company:</strong> ${company}</p>
+      <p><strong>Client:</strong> ${client}</p>
+      <p><strong>Type of work:</strong> ${work}</p>
+      <hr>
+      <p><strong>Area:</strong> ${area.toFixed(2)} m²</p>
+      <p><strong>Price per m²:</strong> USD ${price.toFixed(2)}</p>
+      <h3>Total: USD ${total.toFixed(2)}</h3>
+    </div>
+  `;
 }
 
-function d(id,val){ document.getElementById(id).textContent = val; }
-function companyInput(){ return document.getElementById("company").value; }
-function clientInput(){ return document.getElementById("client").value; }
-function workInput(){ return document.getElementById("work").value; }
-function num(id){ return parseFloat(document.getElementById(id).value); }
+function downloadAndReset() {
+  window.print();
+  sessionStorage.removeItem("paid");
+  alert("To create another quote, please finalize a new payment.");
+  location.reload();
+}
 
-/* Detect payment success */
+// 🔐 PAYMENT CONTROL
 const url = new URL(window.location.href);
+
 if (url.searchParams.get("paid") === "true") {
-  localStorage.setItem("paid","yes");
+  sessionStorage.setItem("paid", "yes");
 }
 
-if (localStorage.getItem("paid") === "yes") {
+if (sessionStorage.getItem("paid") === "yes") {
   document.getElementById("payBox").style.display = "none";
   document.getElementById("downloadBtn").style.display = "block";
+} else {
+  document.getElementById("downloadBtn").style.display = "none";
 }
 </script>
 
