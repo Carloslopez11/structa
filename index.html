@@ -3,163 +3,110 @@
 <head>
   <meta charset="UTF-8" />
   <title>Structa Quotes</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- jsPDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
     body {
-      background: #0f0f1a;
-      color: white;
       font-family: Arial, sans-serif;
-      padding: 20px;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
-
-    .box {
-      max-width: 420px;
-      margin: auto;
-      background: #151525;
-      padding: 20px;
+    .card {
+      background: #111;
+      padding: 25px;
       border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
-
-    input, button {
+    h1 { text-align: center; }
+    input {
       width: 100%;
       padding: 12px;
       margin: 8px 0;
-      border-radius: 8px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 10px;
+      border-radius: 6px;
       border: none;
       font-size: 16px;
+      cursor: pointer;
     }
-
-    button {
-      background: #7c3aed;
-      color: white;
+    .preview { background: #7c3aed; color: white; }
+    .pay { background: #22c55e; color: white; display:none; }
+    .quote-box {
+      background: #fff;
+      color: #000;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 8px;
+      display:none;
     }
-
-    .preview {
-      background: white;
-      color: black;
-      padding: 20px;
-      border-radius: 12px;
-      margin-top: 20px;
-    }
-
-    #downloadBtn { display: none; background: #22c55e; }
-    #payBox { background:#1f1f3a; padding:15px; border-radius:12px; text-align:center; margin-top:20px; }
   </style>
 </head>
-
 <body>
 
-<div class="box">
-  <h2>Structa Quotes</h2>
+<div class="card">
+  <h1>Structa Quotes</h1>
 
-  <input id="company" placeholder="Company name" />
-  <input id="client" placeholder="Client name" />
-  <input id="work" placeholder="Type of work" />
+  <input id="company" placeholder="Company name / Empresa" />
+  <input id="client" placeholder="Client name / Cliente" />
+  <input id="work" placeholder="Type of work / Trabajo" />
   <input id="length" type="number" placeholder="Length (m)" />
   <input id="width" type="number" placeholder="Width (m)" />
-  <input id="price" type="number" placeholder="Price per m²" />
+  <input id="price" type="number" placeholder="Price per m² / Precio" />
 
-  <button onclick="generate()">Generate free preview</button>
+  <button class="preview" onclick="generatePreview()">Generate preview</button>
 
-  <div id="result"></div>
+  <div class="quote-box" id="quoteBox"></div>
 
-  <button id="downloadBtn" onclick="downloadPDF()">Download your PDF</button>
-
-  <div id="payBox">
-    <p><strong>Unlock your professional PDF</strong></p>
-    <p>One-time payment: $9</p>
-    <a href="https://buy.stripe.com/test_9B66oH9ux2fsaG40yW1ck00">
-      <button>Finalize & Download – $9</button>
-    </a>
-  </div>
+  <button class="pay" id="payBtn" onclick="goToPayment()">Unlock PDF – $9</button>
 </div>
 
 <script>
-let quoteData = null;
+function generatePreview() {
+  const data = {
+    company: company.value,
+    client: client.value,
+    work: work.value,
+    length: length.value,
+    width: width.value,
+    price: price.value
+  };
 
-function generate() {
-  const company = document.getElementById("company").value;
-  const client = document.getElementById("client").value;
-  const work = document.getElementById("work").value;
-  const length = parseFloat(document.getElementById("length").value);
-  const width = parseFloat(document.getElementById("width").value);
-  const price = parseFloat(document.getElementById("price").value);
+  if(!data.company || !data.client) {
+    alert("Fill all fields");
+    return;
+  }
 
-  const area = length * width;
-  const total = area * price;
+  const area = data.length * data.width;
+  const total = area * data.price;
 
-  quoteData = { company, client, work, area, price, total };
+  localStorage.setItem("quoteData", JSON.stringify({...data, area, total}));
 
-  // Guardar datos antes del pago
-  localStorage.setItem("quoteData", JSON.stringify(quoteData));
+  document.getElementById("quoteBox").style.display = "block";
+  document.getElementById("payBtn").style.display = "block";
 
-  document.getElementById("result").innerHTML = `
-    <div class="preview">
-      <h2>QUOTE & INVOICE</h2>
-      <p><strong>Company:</strong> ${company}</p>
-      <p><strong>Client:</strong> ${client}</p>
-      <p><strong>Type of work:</strong> ${work}</p>
-      <hr>
-      <p><strong>Area:</strong> ${area.toFixed(2)} m²</p>
-      <p><strong>Price per m²:</strong> USD ${price.toFixed(2)}</p>
-      <h3>Total: USD ${total.toFixed(2)}</h3>
-    </div>
+  document.getElementById("quoteBox").innerHTML = `
+    <strong>QUOTE & INVOICE</strong><br><br>
+    Company: ${data.company}<br>
+    Client: ${data.client}<br>
+    Work: ${data.work}<br>
+    Area: ${area} m²<br>
+    Price/m²: $${data.price}<br>
+    <strong>Total: $${total}</strong>
   `;
 }
 
-// Stripe return
-const url = new URL(window.location.href);
-if (url.searchParams.get("paid") === "true") {
-  sessionStorage.setItem("paid", "yes");
-
-  // Recuperar datos guardados
-  quoteData = JSON.parse(localStorage.getItem("quoteData"));
-
-  if (quoteData) {
-    document.getElementById("result").innerHTML = `
-      <div class="preview">
-        <h2>QUOTE & INVOICE</h2>
-        <p><strong>Company:</strong> ${quoteData.company}</p>
-        <p><strong>Client:</strong> ${quoteData.client}</p>
-        <p><strong>Type of work:</strong> ${quoteData.work}</p>
-        <hr>
-        <p><strong>Area:</strong> ${quoteData.area.toFixed(2)} m²</p>
-        <p><strong>Price per m²:</strong> USD ${quoteData.price.toFixed(2)}</p>
-        <h3>Total: USD ${quoteData.total.toFixed(2)}</h3>
-      </div>
-    `;
-  }
-}
-
-if (sessionStorage.getItem("paid") === "yes") {
-  document.getElementById("payBox").style.display = "none";
-  document.getElementById("downloadBtn").style.display = "block";
-}
-
-// Generar PDF REAL
-function downloadPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-
-  doc.text("STRUCTA QUOTE", 20, 20);
-  doc.text(`Company: ${quoteData.company}`, 20, 40);
-  doc.text(`Client: ${quoteData.client}`, 20, 50);
-  doc.text(`Work: ${quoteData.work}`, 20, 60);
-  doc.text(`Area: ${quoteData.area.toFixed(2)} m²`, 20, 70);
-  doc.text(`Price per m²: USD ${quoteData.price.toFixed(2)}`, 20, 80);
-  doc.text(`Total: USD ${quoteData.total.toFixed(2)}`, 20, 100);
-
-  doc.save("quote.pdf");
-
-  sessionStorage.removeItem("paid");
-  localStorage.removeItem("quoteData");
-
-  alert("Payment used. Create a new quote to continue.");
-  location.reload();
+function goToPayment() {
+  window.location.href = "https://buy.stripe.com/test_9B66oH9ux2fsaG40yW1ck00";
 }
 </script>
 
