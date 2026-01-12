@@ -17,12 +17,19 @@
       min-height: 100vh;
     }
 
+    .page {
+      width: 100%;
+      max-width: 900px;
+      padding: 20px;
+    }
+
     .card {
       background: #111;
       padding: 20px;
       border-radius: 12px;
       width: 100%;
       max-width: 400px;
+      margin: 0 auto;
       box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
 
@@ -70,10 +77,113 @@
       margin-top: 15px;
       display: none;
     }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo img {
+      max-width: 180px;
+      width: 100%;
+      filter: drop-shadow(0 0 10px rgba(124,58,237,0.6));
+    }
+
+    .presentation {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .presentation h2 {
+      font-size: 38px;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+
+    .presentation span {
+      color: #7c3aed;
+    }
+
+    .presentation p {
+      color: #bdbdbd;
+      font-size: 18px;
+      max-width: 700px;
+      margin: 0 auto 30px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .feature-box {
+      background: #111;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .feature-box h3 {
+      color: #7c3aed;
+      margin-bottom: 10px;
+    }
+
+    .price-text {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .price-sub {
+      color: #bdbdbd;
+      margin-top: 10px;
+    }
   </style>
 </head>
+
 <body>
 
+<div class="page">
+
+  <!-- LOGO -->
+  <div class="logo">
+    <img src="logo.png" alt="Structa Quotes Logo">
+  </div>
+
+  <!-- PRESENTATION -->
+  <section class="presentation">
+    <h2>Turn estimates into <span>money</span> in minutes.</h2>
+
+    <p>
+      Create professional quotes and invoices that help you close jobs faster.  
+      No complicated software. No learning curve. Just enter your numbers and send.
+    </p>
+
+    <div class="features">
+      <div class="feature-box">
+        <h3>Fast</h3>
+        <p>Create quotes in under 60 seconds.</p>
+      </div>
+
+      <div class="feature-box">
+        <h3>Professional</h3>
+        <p>Client-ready PDF every time.</p>
+      </div>
+
+      <div class="feature-box">
+        <h3>Simple</h3>
+        <p>No accounts. No setup. Just results.</p>
+      </div>
+    </div>
+
+    <p class="price-text">One-time payment. No subscription.</p>
+    <p class="price-sub">
+      Pay once, use it when you need it.  
+      One closed job pays for this tool many times over.
+    </p>
+  </section>
+
+  <!-- FORM -->
   <div class="card">
     <h1>Structa Quotes</h1>
 
@@ -91,61 +201,63 @@
     <button class="pay-btn" id="payBtn" onclick="goToPayment()">Unlock PDF ($9)</button>
   </div>
 
-  <script>
-    function generatePreview() {
-      const company = companyInput.value;
-      const client = clientInput.value;
-      const work = workInput.value;
-      const length = Number(lengthInput.value);
-      const width = Number(widthInput.value);
-      const price = Number(priceInput.value);
+</div>
 
-      if (!company || !client || !work || !length || !width || !price) {
-        alert("Please fill all fields");
-        return;
-      }
+<script>
+  function generatePreview() {
+    const company = companyInput.value;
+    const client = clientInput.value;
+    const work = workInput.value;
+    const length = Number(lengthInput.value);
+    const width = Number(widthInput.value);
+    const price = Number(priceInput.value);
 
-      const area = length * width;
-      const total = area * price;
-
-      const data = {
-        company,
-        client,
-        work,
-        area: area.toFixed(2),
-        price: price.toFixed(2),
-        total: total.toFixed(2)
-      };
-
-      localStorage.setItem("quoteData", JSON.stringify(data));
-
-      previewBox.innerHTML = `
-        <h3>QUOTE & INVOICE</h3>
-        <p><strong>Company:</strong> ${company}</p>
-        <p><strong>Client:</strong> ${client}</p>
-        <p><strong>Work:</strong> ${work}</p>
-        <p><strong>Area:</strong> ${data.area} m²</p>
-        <p><strong>Price:</strong> $${data.price}</p>
-        <h2>Total: $${data.total}</h2>
-      `;
-
-      previewBox.style.display = "block";
-      payBtn.style.display = "block";
+    if (!company || !client || !work || !length || !width || !price) {
+      alert("Please fill all fields");
+      return;
     }
 
-    function goToPayment() {
-      window.location.href = "https://buy.stripe.com/test_9B66oH9ux2fsaG40yW1ck00";
-    }
+    const area = length * width;
+    const total = area * price;
 
-    const companyInput = document.getElementById("company");
-    const clientInput = document.getElementById("client");
-    const workInput = document.getElementById("work");
-    const lengthInput = document.getElementById("length");
-    const widthInput = document.getElementById("width");
-    const priceInput = document.getElementById("price");
-    const previewBox = document.getElementById("previewBox");
-    const payBtn = document.getElementById("payBtn");
-  </script>
+    const data = {
+      company,
+      client,
+      work,
+      area: area.toFixed(2),
+      price: price.toFixed(2),
+      total: total.toFixed(2)
+    };
+
+    localStorage.setItem("quoteData", JSON.stringify(data));
+
+    previewBox.innerHTML = `
+      <h3>QUOTE & INVOICE</h3>
+      <p><strong>Company:</strong> ${company}</p>
+      <p><strong>Client:</strong> ${client}</p>
+      <p><strong>Work:</strong> ${work}</p>
+      <p><strong>Area:</strong> ${data.area} m²</p>
+      <p><strong>Price:</strong> $${data.price}</p>
+      <h2>Total: $${data.total}</h2>
+    `;
+
+    previewBox.style.display = "block";
+    payBtn.style.display = "block";
+  }
+
+  function goToPayment() {
+    window.location.href = "https://buy.stripe.com/test_9B66oH9ux2fsaG40yW1ck00";
+  }
+
+  const companyInput = document.getElementById("company");
+  const clientInput = document.getElementById("client");
+  const workInput = document.getElementById("work");
+  const lengthInput = document.getElementById("length");
+  const widthInput = document.getElementById("width");
+  const priceInput = document.getElementById("price");
+  const previewBox = document.getElementById("previewBox");
+  const payBtn = document.getElementById("payBtn");
+</script>
 
 </body>
 </html>
