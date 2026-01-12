@@ -8,72 +8,91 @@
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e, #2b1055);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
       color: white;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      text-align: center;
     }
 
     .container {
       max-width: 900px;
-      padding: 20px;
+      width: 100%;
+      padding: 30px 20px;
+      text-align: center;
     }
 
     .logo img {
-      max-width: 180px;
-      margin-bottom: 30px;
-      filter: drop-shadow(0 0 10px rgba(124,58,237,0.6));
+      width: 160px;
+      margin-bottom: 25px;
+      filter: drop-shadow(0 0 15px rgba(124,58,237,0.6));
     }
 
     h1 {
-      font-size: 40px;
+      font-size: 42px;
       font-weight: 800;
+      margin-bottom: 15px;
     }
 
     h1 span {
       color: #7c3aed;
     }
 
-    p {
-      color: #bdbdbd;
+    .subtitle {
+      color: #d1d1d1;
       font-size: 18px;
-      margin-bottom: 30px;
+      line-height: 1.5;
+      margin-bottom: 40px;
     }
 
     .features {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
-      margin-bottom: 40px;
+      margin-bottom: 50px;
     }
 
-    .box {
-      background: #111;
-      padding: 20px;
-      border-radius: 12px;
+    .feature-box {
+      background: rgba(0,0,0,0.5);
+      padding: 25px 20px;
+      border-radius: 14px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
     }
 
-    .box h3 {
+    .feature-box h3 {
       color: #7c3aed;
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    .feature-box p {
+      color: #cfcfcf;
+      font-size: 16px;
     }
 
     .cta {
       background: #22c55e;
-      color: black;
+      color: #000;
       border: none;
-      padding: 15px 25px;
+      padding: 16px 28px;
       font-size: 18px;
       font-weight: bold;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
+      box-shadow: 0 0 20px rgba(34,197,94,0.4);
     }
 
     .cta:hover {
-      opacity: 0.9;
+      transform: scale(1.05);
+      transition: 0.2s;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #9ca3af;
     }
   </style>
 </head>
@@ -87,29 +106,33 @@
 
     <h1>Turn estimates into <span>money</span> in minutes.</h1>
 
-    <p>
+    <p class="subtitle">
       Create professional quotes and invoices that help you close jobs faster.  
       No complicated software. No learning curve. Just enter your numbers and send.
     </p>
 
     <div class="features">
-      <div class="box">
+      <div class="feature-box">
         <h3>Fast</h3>
         <p>Create quotes in under 60 seconds.</p>
       </div>
 
-      <div class="box">
+      <div class="feature-box">
         <h3>Professional</h3>
         <p>Client-ready PDF every time.</p>
       </div>
 
-      <div class="box">
+      <div class="feature-box">
         <h3>Simple</h3>
         <p>No accounts. No setup. Just results.</p>
       </div>
     </div>
 
     <button class="cta" onclick="goToApp()">Start Creating Quotes</button>
+
+    <footer>
+      © 2025 Structa Quotes – Tools for professionals who close.
+    </footer>
 
   </div>
 
