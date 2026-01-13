@@ -1,1 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Structa Quotes - Create Quote</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #2b1055);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background: #111;
+      padding: 20px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .preview-btn {
+      background: #7b3fe4;
+      color: white;
+    }
+
+    .pay-btn {
+      background: #22c55e;
+      color: black;
+      display: none;
+    }
+
+    .preview {
+      background: #fff;
+      color: #000;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Structa Quotes</h1>
+
+    <input id="company" placeholder="Company name">
+    <input id="client" placeholder="Client name">
+    <input id="work" placeholder="Type of work">
+    <input id="length" placeholder="Length (m)" type="number">
+    <input id="width" placeholder="Width (m)" type="number">
+    <input id="price" placeholder="Price per m²" type="number">
+
+    <button class="preview-btn" onclick="generatePreview()">Generate free preview</button>
+
+    <div class="preview" id="previewBox"></div>
+
+    <button class="pay-btn" id="payBtn" onclick="goToPayment()">Unlock PDF ($9)</button>
+  </div>
+
+  <script>
+    const companyInput = document.getElementById("company");
+    const clientInput = document.getElementById("client");
+    const workInput = document.getElementById("work");
+    const lengthInput = document.getElementById("length");
+    const widthInput = document.getElementById("width");
+    const priceInput = document.getElementById("price");
+    const previewBox = document.getElementById("previewBox");
+    const payBtn = document.getElementById("payBtn");
+
+    function generatePreview() {
+      const company = companyInput.value;
+      const client = clientInput.value;
+      const work = workInput.value;
+      const length = Number(lengthInput.value);
+      const width = Number(widthInput.value);
+      const price = Number(priceInput.value);
+
+      if (!company || !client || !work || !length || !width || !price) {
+        alert("Please fill all fields");
+        return;
+      }
+
+      const area = length * width;
+      const total = area * price;
+
+      const data = {
+        company,
+        client,
+        work,
+        area: area.toFixed(2),
+        price: price.toFixed(2),
+        total: total.toFixed(2)
+      };
+
+      localStorage.setItem("quoteData", JSON.stringify(data));
+
+      previewBox.innerHTML = `
+        <h3>QUOTE & INVOICE</h3>
+        <p><strong>Company:</strong> ${company}</p>
+        <p><strong>Client:</strong> ${client}</p>
+        <p><strong>Work:</strong> ${work}</p>
+        <p><strong>Area:</strong> ${data.area} m²</p>
+        <p><strong>Price:</strong> $${data.price}</p>
+        <h2>Total: $${data.total}</h2>
+      `;
+
+      previewBox.style.display = "block";
+      payBtn.style.display = "block";
+    }
+
+    function goToPayment() {
+      window.location.href = "https://buy.stripe.com/test_9B66oH9ux2fsaG40yW1ck00";
+    }
+  </script>
+
+</body>
+</html>
