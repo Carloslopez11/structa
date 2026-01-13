@@ -36,7 +36,7 @@
 
     .hero-img {
       width: 90%;
-      max-width: 700px;
+      max-width: 800px;
       border-radius: 16px;
       margin: 30px auto;
       box-shadow: 0 0 30px rgba(0,0,0,0.6);
@@ -74,33 +74,40 @@
       font-size: 18px;
     }
 
-    footer {
-      color: #aaa;
-      font-size: 14px;
-      padding-bottom: 30px;
+    .testimonials {
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: auto;
     }
 
-    .testimonials {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-top: 20px;
     }
 
     .testimonial-box {
       background: #111;
       padding: 20px;
       border-radius: 12px;
-      margin-bottom: 20px;
       box-shadow: 0 0 15px rgba(0,0,0,0.4);
     }
 
-    .testimonial-box p {
-      font-style: italic;
-      color: #ddd;
+    .testimonial-box h3 {
+      color: #8b5cf6;
+      margin-bottom: 10px;
     }
 
-    .testimonial-box strong {
-      color: #8b5cf6;
+    .testimonial-box p {
+      color: #ddd;
+      font-style: italic;
+    }
+
+    footer {
+      color: #aaa;
+      font-size: 14px;
+      padding-bottom: 30px;
     }
   </style>
 </head>
@@ -118,27 +125,6 @@
     <a href="app.html" class="cta">Start Creating Quotes</a>
   </header>
 
-  <!-- TESTIMONIALS -->
-  <section class="testimonials">
-    <h2>What professionals say</h2>
-
-    <div class="testimonial-box">
-      <p>“This tool helped me close jobs faster and look more professional.”</p>
-      <strong>— Mark, Contractor</strong>
-    </div>
-
-    <div class="testimonial-box">
-      <p>“Simple, fast, and perfect for sending quotes to clients.”</p>
-      <strong>— David, Construction Manager</strong>
-    </div>
-
-    <div class="testimonial-box">
-      <p>“I stopped using spreadsheets. This is much better.”</p>
-      <strong>— Alex, Service Business Owner</strong>
-    </div>
-  </section>
-
-  <!-- FEATURES -->
   <section class="features">
     <div class="feature">
       <h3>Fast</h3>
@@ -153,6 +139,31 @@
     <div class="feature">
       <h3>Simple</h3>
       <p>No accounts. No setup. Just results.</p>
+    </div>
+  </section>
+
+  <section class="testimonials">
+    <h2 style="color:#8b5cf6;">Trusted by Professionals</h2>
+
+    <img src="testimonials.jpg" class="hero-img" alt="Customer testimonials">
+
+    <div class="testimonial-grid">
+
+      <div class="testimonial-box">
+        <h3>Mark – Contractor</h3>
+        <p>"Structa Quotes helps me create fast, professional estimates that my clients trust. It saves me hours every week."</p>
+      </div>
+
+      <div class="testimonial-box">
+        <h3>David – Construction Manager</h3>
+        <p>"The PDFs look clean and professional. My company now sends better proposals and closes more deals."</p>
+      </div>
+
+      <div class="testimonial-box">
+        <h3>Alex – Service Business Owner</h3>
+        <p>"I can generate quotes in minutes and send them instantly. Simple, fast and very effective."</p>
+      </div>
+
     </div>
   </section>
 
