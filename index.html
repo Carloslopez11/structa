@@ -84,9 +84,15 @@ p{
   border-radius:16px;
 }
 
-.testimonials p{
+.testimonial-text{
   font-style:italic;
   margin-top:20px;
+  min-height:80px;
+}
+
+.testimonial-name{
+  font-weight:bold;
+  margin-top:10px;
 }
 
 footer{
@@ -128,17 +134,41 @@ footer{
 
   <img src="testimonials.jpg">
 
-  <p>
-  "Structa Quotes helped me look more professional instantly.  
-  My clients take my estimates seriously and I close more jobs."
-  </p>
-
-  <strong>Mark — Contractor</strong>
+  <p class="testimonial-text" id="testimonialText"></p>
+  <div class="testimonial-name" id="testimonialName"></div>
 </section>
 
 <footer>
 © 2025 Structa — Tools for professionals who close.
 </footer>
+
+<script>
+const testimonials = [
+  {
+    text: "Structa Quotes helped me look more professional instantly. My clients take my estimates seriously and I close more jobs.",
+    name: "Mark — Contractor"
+  },
+  {
+    text: "I used to send messy quotes. Now everything looks clean and professional. My clients trust me more.",
+    name: "David — Construction Manager"
+  },
+  {
+    text: "This tool saves me time and helps me win more jobs. Worth every dollar.",
+    name: "Alex — Service Business Owner"
+  }
+];
+
+let index = 0;
+
+function showTestimonial(){
+  document.getElementById("testimonialText").textContent = testimonials[index].text;
+  document.getElementById("testimonialName").textContent = testimonials[index].name;
+  index = (index + 1) % testimonials.length;
+}
+
+showTestimonial();
+setInterval(showTestimonial, 4000);
+</script>
 
 </body>
 </html>
