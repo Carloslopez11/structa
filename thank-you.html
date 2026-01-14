@@ -1,88 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Payment Successful</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Payment Successful</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e, #2b1055);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
+<style>
+body{
+  font-family:Arial;
+  background:white;
+  color:black;
+  padding:40px;
+}
 
-    .box {
-      background: #111;
-      padding: 25px;
-      border-radius: 12px;
-      text-align: center;
-      width: 90%;
-      max-width: 400px;
-    }
+.invoice{
+  max-width:700px;
+  margin:auto;
+}
 
-    button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-      background: #22c55e;
-      color: black;
-    }
-  </style>
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.header img{
+  height:60px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+
+th,td{
+  border:1px solid #ddd;
+  padding:10px;
+  text-align:left;
+}
+
+.total{
+  font-size:20px;
+  font-weight:bold;
+  text-align:right;
+  margin-top:20px;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="box">
-    <h2>Payment Successful</h2>
-    <p>Thank you for your purchase</p>
+<div class="invoice">
 
-    <button onclick="downloadPDF()">Download your PDF</button>
-    <button onclick="newQuote()">Create another quote</button>
+<div class="header">
+  <img src="logo.png">
+  <div>
+    <h2>STRUCTA QUOTES</h2>
+    <p>Professional Estimate</p>
+    <p id="date"></p>
   </div>
+</div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<hr>
 
-  <script>
-    function downloadPDF() {
-      const data = JSON.parse(localStorage.getItem("quoteData"));
+<p><strong>Company:</strong> Carlos</p>
+<p><strong>Client:</strong> Rosa</p>
+<p><strong>Work:</strong> Construction</p>
 
-      if (!data) {
-        alert("No quote data found");
-        return;
-      }
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Area</th>
+    <th>Price</th>
+    <th>Total</th>
+  </tr>
+  <tr>
+    <td>Construction</td>
+    <td>50 m²</td>
+    <td>$30</td>
+    <td>$1500</td>
+  </tr>
+</table>
 
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+<div class="total">Final Total: USD $1500</div>
 
-      doc.setFontSize(18);
-      doc.text("STRUCTA QUOTE", 20, 20);
+<br>
+<p>Authorized Signature:</p>
+<hr style="width:200px;">
 
-      doc.setFontSize(12);
-      doc.text(`Company: ${data.company}`, 20, 40);
-      doc.text(`Client: ${data.client}`, 20, 50);
-      doc.text(`Work: ${data.work}`, 20, 60);
-      doc.text(`Area: ${data.area} m²`, 20, 70);
-      doc.text(`Price per m²: $${data.price}`, 20, 80);
-      doc.text(`TOTAL: $${data.total}`, 20, 100);
+</div>
 
-      doc.save("quote.pdf");
-    }
-
-    function newQuote() {
-      localStorage.removeItem("quoteData");
-      window.location.href = "index.html";
-    }
-  </script>
+<script>
+document.getElementById("date").textContent = new Date().toLocaleDateString();
+window.print();
+</script>
 
 </body>
 </html>
