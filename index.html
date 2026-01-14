@@ -106,6 +106,14 @@ body {
   margin-bottom:30px;
 }
 
+.testimonial-image {
+  max-width:800px;
+  width:100%;
+  border-radius:18px;
+  margin-bottom:40px;
+  box-shadow:0 0 30px rgba(0,0,0,0.5);
+}
+
 .testimonial-grid {
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -117,12 +125,6 @@ body {
   padding:26px;
   border-radius:18px;
   box-shadow:0 0 20px rgba(0,0,0,0.4);
-}
-
-.testimonial img {
-  width:100%;
-  border-radius:14px;
-  margin-bottom:15px;
 }
 
 .testimonial h4 {
@@ -189,10 +191,13 @@ footer {
   <section class="testimonials">
     <h2>Trusted by professionals</h2>
 
+    <!-- UNA SOLA IMAGEN -->
+    <img src="testimonials.jpg" alt="Happy clients" class="testimonial-image">
+
+    <!-- COMENTARIOS -->
     <div class="testimonial-grid">
 
       <div class="testimonial">
-        <img src="testimonials.jpg" alt="Mark - Contractor">
         <h4>Mark</h4>
         <span>Contractor</span>
         <p>
@@ -202,7 +207,6 @@ footer {
       </div>
 
       <div class="testimonial">
-        <img src="testimonials.jpg" alt="David - Construction Manager">
         <h4>David</h4>
         <span>Construction Manager</span>
         <p>
@@ -212,7 +216,6 @@ footer {
       </div>
 
       <div class="testimonial">
-        <img src="testimonials.jpg" alt="Alex - Business Owner">
         <h4>Alex</h4>
         <span>Service Business Owner</span>
         <p>
