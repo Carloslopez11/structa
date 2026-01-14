@@ -1,73 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Structa Quotes</title>
+<meta charset="UTF-8">
+<title>Structa Quotes - Create Quote</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root {
-  --bg:#0b0b0f;
-  --card:#14141c;
-  --text:#ffffff;
-  --muted:#9ca3af;
-  --accent:#7c3aed;
-}
-
-* {
-  box-sizing:border-box;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;
-}
-
-body {
+body{
   margin:0;
-  background:radial-gradient(circle at top,#1a1a2e,var(--bg));
-  color:var(--text);
+  font-family:Arial, sans-serif;
+  background:radial-gradient(circle at top,#1a1a2e,#0b0b0f);
+  color:white;
   padding:20px;
 }
 
-.container {
-  max-width:900px;
+.container{
+  max-width:700px;
   margin:auto;
   background:#0f0f16;
-  border-radius:24px;
-  padding:40px;
+  padding:30px;
+  border-radius:20px;
 }
 
-h1 {
-  font-size:36px;
-  margin-bottom:10px;
-}
-h1 span { color:var(--accent); }
+h1 span{ color:#7c3aed; }
 
-.subtitle {
-  color:var(--muted);
-  font-size:16px;
-  margin-bottom:30px;
-}
-
-.card {
-  background:var(--card);
-  padding:24px;
-  border-radius:18px;
-  margin-bottom:30px;
-}
-
-input {
+input{
   width:100%;
-  margin-bottom:10px;
   padding:12px;
+  margin-bottom:10px;
   background:#0b0b12;
   border:1px solid #222;
   color:white;
   border-radius:8px;
 }
 
-input[type="file"] {
-  background:#111;
-}
-
-button {
+button{
   width:100%;
   padding:14px;
   background:linear-gradient(135deg,#7c3aed,#5b21b6);
@@ -78,82 +45,13 @@ button {
   cursor:pointer;
 }
 
-/* PDF DESIGN */
-#document {
-  background:white;
-  color:#000;
-  padding:40px;
-  border-radius:10px;
+#preview{
   display:none;
-}
-
-.invoice-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:20px;
-}
-
-.invoice-header img {
-  max-height:70px;
-}
-
-.invoice-title {
-  text-align:right;
-}
-
-.table {
-  width:100%;
-  border-collapse:collapse;
-  margin-top:20px;
-}
-
-.table th, .table td {
-  border:1px solid #ddd;
-  padding:10px;
-  text-align:left;
-}
-
-.total-box {
-  margin-top:20px;
-  font-size:18px;
-  font-weight:bold;
-  text-align:right;
-}
-
-.signature {
-  margin-top:40px;
-  border-top:1px solid #ccc;
-  padding-top:10px;
-  font-size:14px;
-}
-
-.pay {
-  margin-top:25px;
-  text-align:center;
-}
-
-.pay a {
-  display:inline-block;
-  margin-top:10px;
-  padding:14px 26px;
-  background:linear-gradient(135deg,#7c3aed,#5b21b6);
-  color:white;
-  text-decoration:none;
-  border-radius:10px;
-  font-weight:600;
-}
-
-footer {
-  margin-top:40px;
-  text-align:center;
-  color:var(--muted);
-  font-size:14px;
-}
-
-@media print {
-  body, .container { background:white; }
-  .card, .pay, footer { display:none; }
+  background:white;
+  color:black;
+  padding:30px;
+  border-radius:12px;
+  margin-top:30px;
 }
 </style>
 </head>
@@ -162,117 +60,56 @@ footer {
 
 <div class="container">
 
-<h1>Turn estimates into <span>money</span> in minutes.</h1>
-<p class="subtitle">
-Client-ready quotes that help you close jobs — not drafts you still have to fix.
-</p>
+<h1>Turn estimates into <span>money</span></h1>
 
-<div class="card">
-  <input type="file" id="logoUpload" accept="image/*"/>
-  <input id="company" placeholder="Company name"/>
-  <input id="client" placeholder="Client name"/>
-  <input id="work" placeholder="Type of work"/>
-  <input id="length" type="number" placeholder="Length (meters)"/>
-  <input id="width" type="number" placeholder="Width (meters)"/>
-  <input id="price" type="number" placeholder="Price per m² (USD)"/>
+<input id="company" placeholder="Company name">
+<input id="client" placeholder="Client name">
+<input id="work" placeholder="Type of work">
+<input id="length" type="number" placeholder="Length (m)">
+<input id="width" type="number" placeholder="Width (m)">
+<input id="price" type="number" placeholder="Price per m² (USD)">
 
-  <button onclick="generate()">Generate professional invoice</button>
+<button onclick="generate()">Generate free preview</button>
+
+<div id="preview">
+  <h2>QUOTE PREVIEW</h2>
+  <p><strong>Company:</strong> <span id="p-company"></span></p>
+  <p><strong>Client:</strong> <span id="p-client"></span></p>
+  <p><strong>Work:</strong> <span id="p-work"></span></p>
+  <p><strong>Area:</strong> <span id="p-area"></span> m²</p>
+  <p><strong>Price:</strong> USD <span id="p-price"></span></p>
+  <h3>Total: USD <span id="p-total"></span></h3>
+
+  <a href="https://buy.stripe.com/9B66oH9ux2fsaG40yW1ck00" target="_blank">
+    <button>Finalize & Download PDF ($9)</button>
+  </a>
 </div>
-
-<div id="document">
-
-  <div class="invoice-header">
-    <img id="logoPreview" />
-    <div class="invoice-title">
-      <h2>STRUCTA QUOTES</h2>
-      <p>Professional Estimate</p>
-      <p id="date"></p>
-    </div>
-  </div>
-
-  <p><strong>Company:</strong> <span id="d-company"></span></p>
-  <p><strong>Client:</strong> <span id="d-client"></span></p>
-  <p><strong>Work:</strong> <span id="d-work"></span></p>
-
-  <table class="table">
-    <tr>
-      <th>Description</th>
-      <th>Area</th>
-      <th>Price</th>
-      <th>Total</th>
-    </tr>
-    <tr>
-      <td id="t-work"></td>
-      <td id="t-area"></td>
-      <td id="t-price"></td>
-      <td id="t-total"></td>
-    </tr>
-  </table>
-
-  <div class="total-box">
-    Final Total: USD <span id="final"></span>
-  </div>
-
-  <div class="signature">
-    Authorized Signature:<br><br>
-    ___________________________<br>
-    <span id="sig-company"></span>
-  </div>
-
-  <div class="pay">
-    <a href="#" onclick="window.print()">Download PDF</a>
-  </div>
-
-</div>
-
-<footer>
-© 2025 Structa — Tools for professionals who close.
-</footer>
 
 </div>
 
 <script>
-let logoData = "";
+function generate(){
+  const length = Number(document.getElementById("length").value);
+  const width = Number(document.getElementById("width").value);
+  const price = Number(document.getElementById("price").value);
 
-document.getElementById("logoUpload").addEventListener("change", function(e){
-  const reader = new FileReader();
-  reader.onload = () => logoData = reader.result;
-  reader.readAsDataURL(e.target.files[0]);
-});
-
-function generate() {
-  const length = num("length");
-  const width = num("width");
-  const price = num("price");
-
-  if (!length || !width || !price) {
-    alert("Complete all fields");
+  if(!length || !width || !price){
+    alert("Fill all numeric fields");
     return;
   }
 
   const area = length * width;
   const total = area * price;
 
-  document.getElementById("logoPreview").src = logoData;
-  document.getElementById("d-company").textContent = val("company");
-  document.getElementById("d-client").textContent = val("client");
-  document.getElementById("d-work").textContent = val("work");
+  document.getElementById("p-company").textContent = company.value;
+  document.getElementById("p-client").textContent = client.value;
+  document.getElementById("p-work").textContent = work.value;
+  document.getElementById("p-area").textContent = area.toFixed(2);
+  document.getElementById("p-price").textContent = price.toFixed(2);
+  document.getElementById("p-total").textContent = total.toFixed(2);
 
-  document.getElementById("t-work").textContent = val("work");
-  document.getElementById("t-area").textContent = area.toFixed(2) + " m²";
-  document.getElementById("t-price").textContent = "$" + price.toFixed(2);
-  document.getElementById("t-total").textContent = "$" + total.toFixed(2);
-
-  document.getElementById("final").textContent = total.toFixed(2);
-  document.getElementById("sig-company").textContent = val("company");
-
-  document.getElementById("date").textContent = new Date().toLocaleDateString();
-
-  document.getElementById("document").style.display = "block";
+  document.getElementById("preview").style.display = "block";
 }
-
-function val(id){ return document.getElementById(id).value || ""; }
-function num(id){ return parseFloat(document.getElementById(id).value) || 0; }
 </script>
 
 </body>
