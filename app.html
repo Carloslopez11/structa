@@ -2,10 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Structa Quotes - Create Quote</title>
+<title>Structa Quotes - Premium Invoice</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root{
+  --purple:#7c3aed;
+  --dark:#0f0f16;
+}
+
 body{
   margin:0;
   font-family:Arial, sans-serif;
@@ -15,14 +20,14 @@ body{
 }
 
 .container{
-  max-width:700px;
+  max-width:800px;
   margin:auto;
-  background:#0f0f16;
+  background:var(--dark);
   padding:30px;
   border-radius:20px;
 }
 
-h1 span{ color:#7c3aed; }
+h1 span{ color:var(--purple); }
 
 input{
   width:100%;
@@ -40,18 +45,89 @@ button{
   background:linear-gradient(135deg,#7c3aed,#5b21b6);
   border:none;
   color:white;
-  font-weight:600;
+  font-weight:bold;
   border-radius:10px;
   cursor:pointer;
 }
 
-#preview{
+#invoice{
   display:none;
   background:white;
   color:black;
-  padding:30px;
-  border-radius:12px;
+  padding:40px;
+  border-radius:14px;
   margin-top:30px;
+}
+
+/* PREMIUM PDF DESIGN */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:3px solid var(--purple);
+  padding-bottom:15px;
+}
+
+.header img{
+  height:70px;
+}
+
+.header h2{
+  color:var(--purple);
+  margin:0;
+}
+
+.info{
+  margin-top:20px;
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+
+.table th{
+  background:var(--purple);
+  color:white;
+  padding:10px;
+}
+
+.table td{
+  border:1px solid #ddd;
+  padding:10px;
+}
+
+.total-box{
+  margin-top:20px;
+  text-align:right;
+  font-size:20px;
+  font-weight:bold;
+  color:var(--purple);
+}
+
+.signature{
+  margin-top:40px;
+  border-top:1px solid #ccc;
+  padding-top:10px;
+  font-size:14px;
+}
+
+.pay a{
+  display:block;
+  margin-top:20px;
+  background:#22c55e;
+  color:black;
+  text-align:center;
+  padding:14px;
+  border-radius:10px;
+  font-weight:bold;
+  text-decoration:none;
+}
+
+@media print{
+  body, .container{ background:white; }
+  input, button, .pay, footer{ display:none; }
 }
 </style>
 </head>
@@ -60,8 +136,9 @@ button{
 
 <div class="container">
 
-<h1>Turn estimates into <span>money</span></h1>
+<h1>Create <span>Premium</span> Professional Quotes</h1>
 
+<input type="file" id="logoUpload" accept="image/*">
 <input id="company" placeholder="Company name">
 <input id="client" placeholder="Client name">
 <input id="work" placeholder="Type of work">
@@ -69,46 +146,102 @@ button{
 <input id="width" type="number" placeholder="Width (m)">
 <input id="price" type="number" placeholder="Price per m² (USD)">
 
-<button onclick="generate()">Generate free preview</button>
+<button onclick="generate()">Generate Premium Invoice</button>
 
-<div id="preview">
-  <h2>QUOTE PREVIEW</h2>
-  <p><strong>Company:</strong> <span id="p-company"></span></p>
-  <p><strong>Client:</strong> <span id="p-client"></span></p>
-  <p><strong>Work:</strong> <span id="p-work"></span></p>
-  <p><strong>Area:</strong> <span id="p-area"></span> m²</p>
-  <p><strong>Price:</strong> USD <span id="p-price"></span></p>
-  <h3>Total: USD <span id="p-total"></span></h3>
+<div id="invoice">
 
-  <a href="https://buy.stripe.com/9B66oH9ux2fsaG40yW1ck00" target="_blank">
-    <button>Finalize & Download PDF ($9)</button>
-  </a>
+  <div class="header">
+    <img id="logoPreview">
+    <div>
+      <h2>STRUCTA QUOTES</h2>
+      <p>Professional Estimate</p>
+      <p id="date"></p>
+    </div>
+  </div>
+
+  <div class="info">
+    <p><strong>Company:</strong> <span id="i-company"></span></p>
+    <p><strong>Client:</strong> <span id="i-client"></span></p>
+    <p><strong>Work:</strong> <span id="i-work"></span></p>
+  </div>
+
+  <table class="table">
+    <tr>
+      <th>Description</th>
+      <th>Area</th>
+      <th>Price</th>
+      <th>Total</th>
+    </tr>
+    <tr>
+      <td id="t-work"></td>
+      <td id="t-area"></td>
+      <td id="t-price"></td>
+      <td id="t-total"></td>
+    </tr>
+  </table>
+
+  <div class="total-box">
+    Final Total: USD $<span id="final"></span>
+  </div>
+
+  <div class="signature">
+    Authorized Signature:<br><br>
+    ___________________________<br>
+    <span id="sig"></span>
+  </div>
+
+  <p style="margin-top:30px;font-size:12px;">
+    Thank you for your business. This estimate is valid for 30 days.
+  </p>
+
+  <div class="pay">
+    <a href="https://buy.stripe.com/test_XXXXXXXX" target="_blank">
+      Finalize & Download PDF (TEST)
+    </a>
+  </div>
+
 </div>
+
+<footer style="text-align:center;color:#aaa;margin-top:40px;">
+© 2025 Structa — Premium Business Tools
+</footer>
 
 </div>
 
 <script>
+let logoData = "";
+
+document.getElementById("logoUpload").addEventListener("change", e=>{
+  const reader = new FileReader();
+  reader.onload = ()=> logoData = reader.result;
+  reader.readAsDataURL(e.target.files[0]);
+});
+
 function generate(){
-  const length = Number(document.getElementById("length").value);
-  const width = Number(document.getElementById("width").value);
-  const price = Number(document.getElementById("price").value);
+  const l = +length.value;
+  const w = +width.value;
+  const p = +price.value;
 
-  if(!length || !width || !price){
-    alert("Fill all numeric fields");
-    return;
-  }
+  if(!l||!w||!p){ alert("Complete all fields"); return; }
 
-  const area = length * width;
-  const total = area * price;
+  const area = l*w;
+  const total = area*p;
 
-  document.getElementById("p-company").textContent = company.value;
-  document.getElementById("p-client").textContent = client.value;
-  document.getElementById("p-work").textContent = work.value;
-  document.getElementById("p-area").textContent = area.toFixed(2);
-  document.getElementById("p-price").textContent = price.toFixed(2);
-  document.getElementById("p-total").textContent = total.toFixed(2);
+  logoPreview.src = logoData;
+  i-company.textContent = company.value;
+  i-client.textContent = client.value;
+  i-work.textContent = work.value;
 
-  document.getElementById("preview").style.display = "block";
+  t-work.textContent = work.value;
+  t-area.textContent = area.toFixed(2)+" m²";
+  t-price.textContent = "$"+p.toFixed(2);
+  t-total.textContent = "$"+total.toFixed(2);
+
+  final.textContent = total.toFixed(2);
+  sig.textContent = company.value;
+  date.textContent = new Date().toLocaleDateString();
+
+  invoice.style.display="block";
 }
 </script>
 
