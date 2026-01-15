@@ -2,132 +2,123 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Payment Success - Download</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Download Your Invoice</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
 <style>
 body {
-  background-color: #0f0f16;
-  color: white;
-  font-family: 'Segoe UI', sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
-  text-align: center;
+    background: #0f0f16; color: white; font-family: sans-serif;
+    display: flex; height: 100vh; align-items: center; justify-content: center;
+    text-align: center; margin: 0;
 }
-
 .card {
-  background: #1a1a2e;
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 0 40px rgba(124, 58, 237, 0.3);
-  max-width: 90%;
-  width: 400px;
-  border: 1px solid #333;
+    background: #1a1a2e; padding: 40px; border-radius: 20px; width: 90%; max-width: 400px;
+    border: 1px solid #333;
 }
-
-h1 span { color: #7c3aed; }
-p { color: #aaa; }
+h1 { color: #7c3aed; margin-bottom: 10px; }
+.btn {
+    background: #7c3aed; color: white; padding: 15px 30px; border: none;
+    border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; width: 100%;
+    margin-top: 20px;
+}
+.status { margin-top: 15px; color: #aaa; font-size: 14px; }
 </style>
 </head>
 <body>
 
 <div class="card">
-  <div style="font-size: 60px;">🎉</div>
-  <h1>Payment <span>Successful</span></h1>
-  <p>Your professional invoice is downloading...</p>
+    <div style="font-size:50px">✅</div>
+    <h1>Payment Successful</h1>
+    <p>Your invoice is ready.</p>
+    
+    <button class="btn" onclick="generatePDF()">Download Invoice PDF</button>
+    <div class="status" id="statusMsg">Waiting for user...</div>
+    
+    <br><br>
+    <a href="app.html" style="color:#555; text-decoration:none">Back to Home</a>
 </div>
 
 <script>
-const { jsPDF } = window.jspdf;
-
-window.onload = generatePDF;
+// Intentar descarga automática al cargar
+window.onload = function() {
+    setTimeout(() => {
+        generatePDF();
+    }, 1000);
+};
 
 function generatePDF() {
-  const rawData = localStorage.getItem("structa_invoice_data");
+    const msg = document.getElementById('statusMsg');
+    msg.textContent = "Generating PDF...";
 
-  if (!rawData) {
-    alert("No invoice data found. Please create a quote first.");
-    window.location.href = "app.html";
-    return;
-  }
+    // 1. Verificar librerías
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+        alert("Error: jsPDF library not loaded. Check internet connection.");
+        msg.textContent = "Error: Library failed.";
+        return;
+    }
 
-  const data = JSON.parse(rawData);
-  const doc = new jsPDF();
-  const purple = [124, 58, 237];
+    // 2. Recuperar datos
+    const raw = localStorage.getItem("structa_data");
+    if (!raw) {
+        alert("No invoice data found. Go back and create a quote.");
+        msg.textContent = "No data found.";
+        return;
+    }
+    
+    const data = JSON.parse(raw);
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-  // Header
-  doc.setFillColor(...purple);
-  doc.rect(0, 0, 210, 15, 'F');
+    try {
+        // --- DISEÑO ---
+        const purple = [124, 58, 237];
+        
+        // Header
+        doc.setFillColor(...purple);
+        doc.rect(0, 0, 210, 15, 'F');
+        
+        doc.setFontSize(22);
+        doc.setTextColor(...purple);
+        doc.text("INVOICE", 195, 35, { align: "right" });
 
-  // Logo
-  if (data.logo) {
-    try { doc.addImage(data.logo, 'JPEG', 15, 25, 30, 30); } catch (e) {}
-  }
+        // Logo Check
+        if(data.logo && data.logo.startsWith("data:image")) {
+            doc.addImage(data.logo, "JPEG", 15, 25, 30, 30);
+        }
 
-  // Title
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(22);
-  doc.setTextColor(...purple);
-  doc.text("INVOICE", 195, 35, { align: "right" });
+        // Info
+        doc.setFontSize(10);
+        doc.setTextColor(0);
+        doc.text("BILLED TO:", 15, 70);
+        doc.text(data.client, 15, 76);
+        doc.text("FROM:", 110, 70);
+        doc.text(data.company, 110, 76);
 
-  doc.setFontSize(10);
-  doc.setTextColor(100);
-  doc.setFont("helvetica", "normal");
-  doc.text(`Date: ${data.date}`, 195, 42, { align: "right" });
-  doc.text(`ID: #STR-${Math.floor(Math.random()*9999)}`, 195, 47, { align: "right" });
+        // Tabla
+        doc.autoTable({
+            startY: 90,
+            head: [['Description', 'Area', 'Price', 'Total']],
+            body: [[data.work, data.area + " m²", "$" + data.price, "$" + data.total]],
+            headStyles: { fillColor: purple }
+        });
 
-  // Lines
-  doc.setDrawColor(200);
-  doc.line(15, 60, 195, 60);
+        // Total
+        const y = doc.lastAutoTable.finalY + 10;
+        doc.setFontSize(16);
+        doc.setTextColor(...purple);
+        doc.text("Total: $" + data.total, 195, y, { align: "right" });
 
-  // From / To
-  doc.setFontSize(10);
-  doc.setTextColor(0);
-
-  doc.setFont("helvetica", "bold");
-  doc.text("FROM:", 15, 70);
-  doc.setFont("helvetica", "normal");
-  doc.text(data.company, 15, 76);
-
-  doc.setFont("helvetica", "bold");
-  doc.text("BILL TO:", 110, 70);
-  doc.setFont("helvetica", "normal");
-  doc.text(data.client, 110, 76);
-
-  // Table
-  doc.autoTable({
-    startY: 90,
-    head: [['DESCRIPTION', 'AREA', 'PRICE/UNIT', 'TOTAL']],
-    body: [[data.project, data.area + " m²", "$" + data.price, "$" + data.total]],
-    theme: 'grid',
-    headStyles: { fillColor: purple, textColor: 255, fontStyle: 'bold' },
-    styles: { fontSize: 11, cellPadding: 6 },
-    columnStyles: { 3: { halign: 'right', fontStyle: 'bold' } }
-  });
-
-  // Total box
-  const finalY = doc.lastAutoTable.finalY + 10;
-  doc.setFillColor(245, 245, 245);
-  doc.rect(130, finalY, 65, 20, 'F');
-
-  doc.setFontSize(14);
-  doc.setTextColor(...purple);
-  doc.setFont("helvetica", "bold");
-  doc.text(`Total: $${data.total}`, 190, finalY + 13, { align: "right" });
-
-  // Footer
-  doc.setFontSize(8);
-  doc.setTextColor(150);
-  doc.text("Generated by Structa", 105, 280, { align: "center" });
-
-  // Auto download
-  doc.save(`Invoice_${data.client}.pdf`);
+        doc.save("Invoice_" + data.client + ".pdf");
+        msg.textContent = "Download started!";
+        
+    } catch (error) {
+        console.error(error);
+        alert("Error generating PDF: " + error.message);
+        msg.textContent = "Error occurred.";
+    }
 }
 </script>
 
