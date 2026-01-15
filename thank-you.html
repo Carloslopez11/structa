@@ -2,76 +2,128 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Your Invoice</title>
+<title>Structa Quotes - Create Invoice</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-
 <style>
+:root{ --purple:#7c3aed; --dark:#0f0f16; }
+
 body{
-  background:#0b0b0f;
-  color:white;
-  font-family:Arial;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  text-align:center;
+  margin:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:radial-gradient(circle at top,#1a1a2e,#0b0b0f);
+  color:white; padding:20px;
 }
 
-button{
-  padding:16px 30px;
-  font-size:18px;
-  background:#7c3aed;
-  border:none;
-  color:white;
-  border-radius:12px;
-  cursor:pointer;
+.container{
+  max-width:800px; margin:auto; background:var(--dark);
+  padding:30px; border-radius:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
+
+h1 span{ color:var(--purple); }
+
+input{
+  width:100%; box-sizing: border-box; padding:12px; margin-bottom:10px;
+  background:#1e1e2d; border:1px solid #333; color:white; border-radius:8px;
+  outline: none; transition: 0.3s;
+}
+input:focus { border-color: var(--purple); }
+
+/* Botón principal */
+.btn-generate {
+  width:100%; padding:14px; background:linear-gradient(135deg,#7c3aed,#5b21b6);
+  border:none; color:white; font-weight:bold; border-radius:10px; cursor:pointer;
+  font-size: 16px; margin-top: 10px;
+}
+.btn-generate:hover { opacity: 0.9; }
+
+/* Pie de página */
+footer { text-align:center; color:#aaa; margin-top:40px; font-size:12px; }
 </style>
 </head>
 
 <body>
 
-<div>
-  <h1>Payment Successful 🎉</h1>
-  <p>Your professional invoice is ready.</p>
-  <button onclick="generatePDF()">Download PDF</button>
+<div class="container">
+  <h1>Create <span>Premium</span> Quotes</h1>
+
+  <label style="font-size:12px; color:#aaa;">Upload Logo (Optional)</label>
+  <input type="file" id="logoUpload" accept="image/*">
+  
+  <input id="company" placeholder="Your Company Name">
+  <input id="client" placeholder="Client Name">
+  <input id="work" placeholder="Project Description">
+  
+  <div style="display:flex; gap:10px;">
+    <input id="length" type="number" placeholder="Length (m)">
+    <input id="width" type="number" placeholder="Width (m)">
+  </div>
+  <input id="price" type="number" placeholder="Price per m² (USD)">
+
+  <button class="btn-generate" onclick="saveAndPay()">
+    Proceed to Payment & Download
+  </button>
+
+  <footer style="margin-top: 20px;">
+    © 2025 Structa — Premium Business Tools
+  </footer>
 </div>
 
 <script>
-const { jsPDF } = window.jspdf;
+// 1. Variable para guardar el logo en memoria
+let logoBase64 = "";
 
-function generatePDF(){
-  const doc = new jsPDF();
+// Escuchar cuando el usuario sube una imagen
+document.getElementById("logoUpload").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      logoBase64 = evt.target.result; // Guardamos la imagen codificada
+    };
+    reader.readAsDataURL(file);
+  }
+});
 
-  doc.setFillColor(124,58,237);
-  doc.rect(0,0,210,15,'F');
+// 2. Función Principal: Guardar y Redirigir
+function saveAndPay() {
+    // Obtener valores
+    const company = document.getElementById("company").value;
+    const client = document.getElementById("client").value;
+    const work = document.getElementById("work").value;
+    const length = document.getElementById("length").value;
+    const width = document.getElementById("width").value;
+    const price = document.getElementById("price").value;
+    
+    // Validación básica
+    if(!client || !length || !width || !price) {
+        alert("Please complete the essential fields (Client, Dimensions, Price).");
+        return;
+    }
 
-  doc.setFontSize(22);
-  doc.setTextColor(124,58,237);
-  doc.text("STRUCTA QUOTES",105,35,{align:"center"});
+    // Cálculos
+    const area = (length * width).toFixed(2);
+    const total = (area * price).toFixed(2);
 
-  doc.setFontSize(12);
-  doc.setTextColor(0);
-  doc.text("Professional Estimate",105,45,{align:"center"});
+    // Crear el objeto de datos
+    const invoiceData = {
+        logo: logoBase64,
+        company: company || "Structa User",
+        client: client,
+        project: work || "Service",
+        area: area,
+        price: price,
+        total: total,
+        date: new Date().toLocaleDateString()
+    };
 
-  doc.autoTable({
-    startY:60,
-    head:[["Description","Area","Price","Total"]],
-    body:[
-      ["Service","100 m²","$30","$3000"]
-    ],
-    headStyles:{fillColor:[124,58,237]}
-  });
+    // --- EL PASO CLAVE: Guardar en el navegador ---
+    localStorage.setItem("structa_invoice_data", JSON.stringify(invoiceData));
 
-  doc.text("Total: $3000",150,120);
-
-  doc.setFontSize(10);
-  doc.text("Generated by Structa",105,290,{align:"center"});
-
-  doc.save("Structa_Invoice.pdf");
+    // --- Redirigir a Stripe (o a thank-you.html para probar) ---
+    // NOTA: Cambia este link por tu link real de Stripe. 
+    // Stripe debe estar configurado para redirigir a "thank-you.html" al finalizar.
+    
+    window.location.href = "https://buy.stripe.com/test_00w7sL6il3jwbK81D01ck01"; 
 }
 </script>
 
