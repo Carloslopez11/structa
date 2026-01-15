@@ -2,187 +2,128 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Structa Quotes - Preview</title>
+<title>Structa Quotes - Create Invoice</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+:root{ --purple:#7c3aed; --dark:#0f0f16; }
+
 body{
-  margin:0;
-  font-family:Segoe UI, Arial;
+  margin:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background:radial-gradient(circle at top,#1a1a2e,#0b0b0f);
-  color:white;
-  padding:20px;
+  color:white; padding:20px;
 }
 
 .container{
-  max-width:800px;
-  margin:auto;
-  background:#0f0f16;
-  padding:30px;
-  border-radius:20px;
+  max-width:800px; margin:auto; background:var(--dark);
+  padding:30px; border-radius:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-h1 span{ color:#7c3aed; }
+h1 span{ color:var(--purple); }
 
 input{
-  width:100%;
-  padding:12px;
-  margin-bottom:10px;
-  background:#1e1e2d;
-  border:1px solid #333;
-  color:white;
-  border-radius:8px;
+  width:100%; box-sizing: border-box; padding:12px; margin-bottom:10px;
+  background:#1e1e2d; border:1px solid #333; color:white; border-radius:8px;
+  outline: none; transition: 0.3s;
 }
+input:focus { border-color: var(--purple); }
 
-button{
-  width:100%;
-  padding:14px;
-  background:linear-gradient(135deg,#7c3aed,#5b21b6);
-  border:none;
-  color:white;
-  font-weight:bold;
-  border-radius:10px;
-  font-size:16px;
+/* Botón principal */
+.btn-generate {
+  width:100%; padding:14px; background:linear-gradient(135deg,#7c3aed,#5b21b6);
+  border:none; color:white; font-weight:bold; border-radius:10px; cursor:pointer;
+  font-size: 16px; margin-top: 10px;
 }
+.btn-generate:hover { opacity: 0.9; }
 
-#preview{
-  display:none;
-  background:white;
-  color:black;
-  padding:30px;
-  border-radius:14px;
-  margin-top:30px;
-}
-
-.table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:20px;
-}
-
-.table th{
-  background:#7c3aed;
-  color:white;
-  padding:10px;
-  text-align:left;
-}
-
-.table td{
-  border-bottom:1px solid #ddd;
-  padding:10px;
-}
-
-.total{
-  margin-top:20px;
-  font-size:22px;
-  font-weight:bold;
-  color:#7c3aed;
-  text-align:right;
-}
-
-.pay-btn{
-  margin-top:30px;
-  display:block;
-  background:#22c55e;
-  color:black;
-  text-align:center;
-  padding:14px;
-  border-radius:10px;
-  font-weight:bold;
-  text-decoration:none;
-}
-
-footer{
-  text-align:center;
-  color:#aaa;
-  margin-top:40px;
-  font-size:12px;
-}
+/* Pie de página */
+footer { text-align:center; color:#aaa; margin-top:40px; font-size:12px; }
 </style>
 </head>
 
 <body>
 
 <div class="container">
+  <h1>Create <span>Premium</span> Quotes</h1>
 
-<h1>Create <span>Professional</span> Quote</h1>
+  <label style="font-size:12px; color:#aaa;">Upload Logo (Optional)</label>
+  <input type="file" id="logoUpload" accept="image/*">
+  
+  <input id="company" placeholder="Your Company Name">
+  <input id="client" placeholder="Client Name">
+  <input id="work" placeholder="Project Description">
+  
+  <div style="display:flex; gap:10px;">
+    <input id="length" type="number" placeholder="Length (m)">
+    <input id="width" type="number" placeholder="Width (m)">
+  </div>
+  <input id="price" type="number" placeholder="Price per m² (USD)">
 
-<input id="company" placeholder="Company Name">
-<input id="client" placeholder="Client Name">
-<input id="work" placeholder="Project Description">
-<input id="length" type="number" placeholder="Length (m)">
-<input id="width" type="number" placeholder="Width (m)">
-<input id="price" type="number" placeholder="Price per m² (USD)">
+  <button class="btn-generate" onclick="saveAndPay()">
+    Proceed to Payment & Download
+  </button>
 
-<button onclick="preview()">Generate Preview</button>
-
-<div id="preview">
-
-  <h2>QUOTE PREVIEW</h2>
-  <p><strong>Company:</strong> <span id="p-company"></span></p>
-  <p><strong>Client:</strong> <span id="p-client"></span></p>
-  <p><strong>Work:</strong> <span id="p-work"></span></p>
-
-  <table class="table">
-    <tr><th>Description</th><th>Area</th><th>Price</th><th>Total</th></tr>
-    <tr>
-      <td id="t-work"></td>
-      <td id="t-area"></td>
-      <td id="t-price"></td>
-      <td id="t-total"></td>
-    </tr>
-  </table>
-
-  <div class="total">Total: $<span id="final"></span></div>
-
-  <a href="https://buy.stripe.com/test_00w7sL6il3jwbK81D01ck01"
-     class="pay-btn"
-     target="_blank">
-     Pay & Unlock PDF
-  </a>
-
-</div>
-
-<footer>© 2025 Structa — Premium Business Tools</footer>
-
+  <footer style="margin-top: 20px;">
+    © 2025 Structa — Premium Business Tools
+  </footer>
 </div>
 
 <script>
-function preview(){
-  const l = +length.value;
-  const w = +width.value;
-  const p = +price.value;
+// 1. Variable para guardar el logo en memoria
+let logoBase64 = "";
 
-  if(!l || !w || !p){
-    alert("Complete all fields");
-    return;
+// Escuchar cuando el usuario sube una imagen
+document.getElementById("logoUpload").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      logoBase64 = evt.target.result; // Guardamos la imagen codificada
+    };
+    reader.readAsDataURL(file);
   }
+});
 
-  const area = l * w;
-  const total = area * p;
+// 2. Función Principal: Guardar y Redirigir
+function saveAndPay() {
+    // Obtener valores
+    const company = document.getElementById("company").value;
+    const client = document.getElementById("client").value;
+    const work = document.getElementById("work").value;
+    const length = document.getElementById("length").value;
+    const width = document.getElementById("width").value;
+    const price = document.getElementById("price").value;
+    
+    // Validación básica
+    if(!client || !length || !width || !price) {
+        alert("Please complete the essential fields (Client, Dimensions, Price).");
+        return;
+    }
 
-  const data = {
-    company: company.value,
-    client: client.value,
-    work: work.value,
-    area: area.toFixed(2),
-    price: p.toFixed(2),
-    total: total.toFixed(2)
-  };
+    // Cálculos
+    const area = (length * width).toFixed(2);
+    const total = (area * price).toFixed(2);
 
-  localStorage.setItem("quoteData", JSON.stringify(data));
+    // Crear el objeto de datos
+    const invoiceData = {
+        logo: logoBase64,
+        company: company || "Structa User",
+        client: client,
+        project: work || "Service",
+        area: area,
+        price: price,
+        total: total,
+        date: new Date().toLocaleDateString()
+    };
 
-  p-company.textContent = data.company;
-  p-client.textContent = data.client;
-  p-work.textContent = data.work;
+    // --- EL PASO CLAVE: Guardar en el navegador ---
+    localStorage.setItem("structa_invoice_data", JSON.stringify(invoiceData));
 
-  t-work.textContent = data.work;
-  t-area.textContent = data.area + " m²";
-  t-price.textContent = "$" + data.price;
-  t-total.textContent = "$" + data.total;
-  final.textContent = data.total;
-
-  preview.style.display = "block";
+    // --- Redirigir a Stripe (o a thank-you.html para probar) ---
+    // NOTA: Cambia este link por tu link real de Stripe. 
+    // Stripe debe estar configurado para redirigir a "thank-you.html" al finalizar.
+    
+    window.location.href = "https://buy.stripe.com/test_00w7sL6il3jwbK81D01ck01"; 
 }
 </script>
 
