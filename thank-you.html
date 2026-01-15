@@ -3,47 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Download Your Invoice</title>
-
+<title>Processing Invoice...</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
 <style>
-body {
-    background: #0f0f16; color: white; font-family: sans-serif;
-    display: flex; height: 100vh; align-items: center; justify-content: center;
-    text-align: center; margin: 0;
-}
-.card {
-    background: #1a1a2e; padding: 40px; border-radius: 20px; width: 90%; max-width: 400px;
-    border: 1px solid #333;
-}
+body { background: #0f0f16; color: white; font-family: sans-serif; display: flex; height: 100vh; align-items: center; justify-content: center; text-align: center; margin: 0; }
+.card { background: #1a1a2e; padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; border: 1px solid #333; }
 h1 { color: #7c3aed; margin-bottom: 10px; }
-.btn {
-    background: #7c3aed; color: white; padding: 15px 30px; border: none;
-    border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; width: 100%;
-    margin-top: 20px;
-}
+.btn { background: #7c3aed; color: white; padding: 15px 30px; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 20px; }
 .status { margin-top: 15px; color: #aaa; font-size: 14px; }
 </style>
 </head>
 <body>
 
 <div class="card">
-    <div style="font-size:50px">✅</div>
-    <h1>Payment Successful</h1>
-    <p>Your invoice is ready.</p>
+    <div style="font-size:50px">🎉</div>
+    <h1>Payment Verified</h1>
+    <p>Generating your premium invoice...</p>
     
-    <button class="btn" onclick="generatePDF()">Download Invoice PDF</button>
-    <div class="status" id="statusMsg">Waiting for user...</div>
-    
-    <br><br>
-    <a href="app.html" style="color:#555; text-decoration:none">Back to Home</a>
+    <div class="status" id="statusMsg">Please wait...</div>
+    <button class="btn" onclick="generatePDF()" style="display:none;" id="retryBtn">Download PDF</button>
+    <br>
+    <a href="app.html" style="color:#555; font-size:12px; text-decoration:none; margin-top:20px; display:block;">Return to Home</a>
 </div>
 
 <script>
-// Intentar descarga automática al cargar
+// Intentar descarga automática
 window.onload = function() {
+    // Verificamos si hay datos guardados antes de intentar nada
+    if(!localStorage.getItem("structa_data")) {
+        document.querySelector("h1").textContent = "Error";
+        document.querySelector("p").textContent = "No invoice data found.";
+        document.getElementById("statusMsg").textContent = "Please create a quote first.";
+        return;
+    }
+
     setTimeout(() => {
         generatePDF();
     }, 1000);
@@ -51,32 +46,21 @@ window.onload = function() {
 
 function generatePDF() {
     const msg = document.getElementById('statusMsg');
-    msg.textContent = "Generating PDF...";
+    const retryBtn = document.getElementById('retryBtn');
+    
+    msg.textContent = "Creating PDF...";
 
-    // 1. Verificar librerías
-    if (!window.jspdf || !window.jspdf.jsPDF) {
-        alert("Error: jsPDF library not loaded. Check internet connection.");
-        msg.textContent = "Error: Library failed.";
-        return;
-    }
-
-    // 2. Recuperar datos
     const raw = localStorage.getItem("structa_data");
-    if (!raw) {
-        alert("No invoice data found. Go back and create a quote.");
-        msg.textContent = "No data found.";
-        return;
-    }
+    if (!raw) return; // Ya validamos antes
     
     const data = JSON.parse(raw);
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
+    
     try {
-        // --- DISEÑO ---
+        const doc = new jsPDF();
         const purple = [124, 58, 237];
         
-        // Header
+        // --- DISEÑO PDF ---
         doc.setFillColor(...purple);
         doc.rect(0, 0, 210, 15, 'F');
         
@@ -84,7 +68,7 @@ function generatePDF() {
         doc.setTextColor(...purple);
         doc.text("INVOICE", 195, 35, { align: "right" });
 
-        // Logo Check
+        // Logo
         if(data.logo && data.logo.startsWith("data:image")) {
             doc.addImage(data.logo, "JPEG", 15, 25, 30, 30);
         }
@@ -93,8 +77,12 @@ function generatePDF() {
         doc.setFontSize(10);
         doc.setTextColor(0);
         doc.text("BILLED TO:", 15, 70);
+        doc.setFont("helvetica", "normal"); 
         doc.text(data.client, 15, 76);
+        
+        doc.setFont("helvetica", "bold");
         doc.text("FROM:", 110, 70);
+        doc.setFont("helvetica", "normal");
         doc.text(data.company, 110, 76);
 
         // Tabla
@@ -109,15 +97,21 @@ function generatePDF() {
         const y = doc.lastAutoTable.finalY + 10;
         doc.setFontSize(16);
         doc.setTextColor(...purple);
-        doc.text("Total: $" + data.total, 195, y, { align: "right" });
+        doc.text("Total Paid: $" + data.total, 195, y, { align: "right" });
 
-        doc.save("Invoice_" + data.client + ".pdf");
-        msg.textContent = "Download started!";
+        doc.save("Structa_Invoice_" + data.client + ".pdf");
+        
+        msg.textContent = "Download complete!";
+        retryBtn.style.display = "block"; // Mostrar botón por si quieren bajarlo de nuevo
+        retryBtn.textContent = "Download Again";
+        
+        // OPCIONAL: Limpiar datos para que no puedan descargar de nuevo sin pagar
+        // localStorage.removeItem("structa_data"); 
         
     } catch (error) {
-        console.error(error);
-        alert("Error generating PDF: " + error.message);
-        msg.textContent = "Error occurred.";
+        msg.textContent = "Error generating PDF.";
+        retryBtn.style.display = "block";
+        alert(error.message);
     }
 }
 </script>
