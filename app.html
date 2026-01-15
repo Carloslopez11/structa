@@ -2,128 +2,142 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Structa Quotes - Create Invoice</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<title>Structa Quotes - Create Invoice</title>
 <style>
-:root{ --purple:#7c3aed; --dark:#0f0f16; }
+:root{ --purple:#7c3aed; --dark:#0f0f16; --card:#1a1a2e; }
 
 body{
-  margin:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background:radial-gradient(circle at top,#1a1a2e,#0b0b0f);
+  margin:0; font-family:'Segoe UI', sans-serif;
+  background:radial-gradient(circle at top, var(--card), var(--dark));
   color:white; padding:20px;
 }
 
 .container{
-  max-width:800px; margin:auto; background:var(--dark);
-  padding:30px; border-radius:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  max-width:600px; margin:auto; background:var(--card);
+  padding:30px; border-radius:20px; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
 }
 
 h1 span{ color:var(--purple); }
+label { display:block; margin-top:10px; font-size:14px; color:#aaa; }
 
 input{
-  width:100%; box-sizing: border-box; padding:12px; margin-bottom:10px;
-  background:#1e1e2d; border:1px solid #333; color:white; border-radius:8px;
-  outline: none; transition: 0.3s;
+  width:100%; box-sizing: border-box; padding:14px; margin-top:5px;
+  background:#0b0b12; border:1px solid #333; color:white; border-radius:8px;
+  font-size:16px; outline:none; transition:0.3s;
 }
 input:focus { border-color: var(--purple); }
 
-/* Botón principal */
-.btn-generate {
-  width:100%; padding:14px; background:linear-gradient(135deg,#7c3aed,#5b21b6);
-  border:none; color:white; font-weight:bold; border-radius:10px; cursor:pointer;
-  font-size: 16px; margin-top: 10px;
+/* SECCIÓN DE PREVISUALIZACIÓN (NUEVA) */
+.preview-box {
+    margin-top: 20px; padding: 20px; background: rgba(124, 58, 237, 0.1);
+    border: 1px solid var(--purple); border-radius: 12px; text-align: center;
 }
-.btn-generate:hover { opacity: 0.9; }
+.total-label { font-size: 14px; color: #ccc; text-transform: uppercase; letter-spacing: 1px; }
+.total-amount { font-size: 32px; font-weight: bold; color: var(--purple); margin: 5px 0; }
+.total-area { font-size: 14px; color: #aaa; }
 
-/* Pie de página */
-footer { text-align:center; color:#aaa; margin-top:40px; font-size:12px; }
+.btn-pay {
+  width:100%; padding:16px; background:linear-gradient(135deg,#7c3aed,#5b21b6);
+  border:none; color:white; font-weight:bold; border-radius:10px; cursor:pointer;
+  font-size: 18px; margin-top: 20px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+}
+.btn-pay:hover { transform: translateY(-2px); }
 </style>
 </head>
 
 <body>
 
 <div class="container">
-  <h1>Create <span>Premium</span> Quotes</h1>
+  <h1>Create <span>Premium</span> Quote</h1>
 
-  <label style="font-size:12px; color:#aaa;">Upload Logo (Optional)</label>
+  <label>Company Logo (Optional)</label>
   <input type="file" id="logoUpload" accept="image/*">
   
-  <input id="company" placeholder="Your Company Name">
-  <input id="client" placeholder="Client Name">
-  <input id="work" placeholder="Project Description">
+  <label>From (Your Company)</label>
+  <input id="company" placeholder="Structa Inc.">
   
-  <div style="display:flex; gap:10px;">
-    <input id="length" type="number" placeholder="Length (m)">
-    <input id="width" type="number" placeholder="Width (m)">
+  <label>To (Client Name)</label>
+  <input id="client" placeholder="Client Name">
+  
+  <label>Project Description</label>
+  <input id="work" placeholder="e.g. Living Room Flooring">
+  
+  <div style="display:flex; gap:15px;">
+    <div style="flex:1"><label>Length (m)</label><input id="length" type="number" placeholder="0"></div>
+    <div style="flex:1"><label>Width (m)</label><input id="width" type="number" placeholder="0"></div>
   </div>
-  <input id="price" type="number" placeholder="Price per m² (USD)">
+  
+  <label>Price per m² ($)</label>
+  <input id="price" type="number" placeholder="0.00">
 
-  <button class="btn-generate" onclick="saveAndPay()">
-    Proceed to Payment & Download
-  </button>
+  <div class="preview-box">
+      <div class="total-label">Estimated Total</div>
+      <div class="total-amount" id="previewTotal">$0.00</div>
+      <div class="total-area" id="previewArea">Area: 0 m²</div>
+  </div>
 
-  <footer style="margin-top: 20px;">
-    © 2025 Structa — Premium Business Tools
-  </footer>
+  <button class="btn-pay" onclick="saveAndPay()">Proceed to Payment</button>
 </div>
 
 <script>
-// 1. Variable para guardar el logo en memoria
-let logoBase64 = "";
-
-// Escuchar cuando el usuario sube una imagen
-document.getElementById("logoUpload").addEventListener("change", function(e) {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      logoBase64 = evt.target.result; // Guardamos la imagen codificada
-    };
-    reader.readAsDataURL(file);
-  }
+// 1. Lógica de Previsualización en Vivo
+const inputs = ['length', 'width', 'price'];
+inputs.forEach(id => {
+    document.getElementById(id).addEventListener('input', updatePreview);
 });
 
-// 2. Función Principal: Guardar y Redirigir
-function saveAndPay() {
-    // Obtener valores
-    const company = document.getElementById("company").value;
-    const client = document.getElementById("client").value;
-    const work = document.getElementById("work").value;
-    const length = document.getElementById("length").value;
-    const width = document.getElementById("width").value;
-    const price = document.getElementById("price").value;
+function updatePreview() {
+    const l = parseFloat(document.getElementById('length').value) || 0;
+    const w = parseFloat(document.getElementById('width').value) || 0;
+    const p = parseFloat(document.getElementById('price').value) || 0;
     
-    // Validación básica
-    if(!client || !length || !width || !price) {
-        alert("Please complete the essential fields (Client, Dimensions, Price).");
+    const area = l * w;
+    const total = area * p;
+
+    document.getElementById('previewTotal').textContent = "$" + total.toFixed(2);
+    document.getElementById('previewArea').textContent = "Area: " + area.toFixed(2) + " m²";
+}
+
+// 2. Guardar Logo
+let logoBase64 = null;
+document.getElementById("logoUpload").addEventListener("change", e => {
+    const file = e.target.files[0];
+    if(file){
+        const reader = new FileReader();
+        reader.onload = evt => logoBase64 = evt.target.result;
+        reader.readAsDataURL(file);
+    }
+});
+
+// 3. Guardar y Pagar
+function saveAndPay() {
+    const client = document.getElementById('client').value;
+    const l = parseFloat(document.getElementById('length').value);
+    const w = parseFloat(document.getElementById('width').value);
+    const p = parseFloat(document.getElementById('price').value);
+
+    if(!client || !l || !w || !p) {
+        alert("Please fill in all fields correctly.");
         return;
     }
 
-    // Cálculos
-    const area = (length * width).toFixed(2);
-    const total = (area * price).toFixed(2);
-
-    // Crear el objeto de datos
-    const invoiceData = {
+    const data = {
         logo: logoBase64,
-        company: company || "Structa User",
+        company: document.getElementById('company').value || "My Company",
         client: client,
-        project: work || "Service",
-        area: area,
-        price: price,
-        total: total,
+        work: document.getElementById('work').value || "Service",
+        area: (l*w).toFixed(2),
+        price: p.toFixed(2),
+        total: (l*w*p).toFixed(2),
         date: new Date().toLocaleDateString()
     };
 
-    // --- EL PASO CLAVE: Guardar en el navegador ---
-    localStorage.setItem("structa_invoice_data", JSON.stringify(invoiceData));
-
-    // --- Redirigir a Stripe (o a thank-you.html para probar) ---
-    // NOTA: Cambia este link por tu link real de Stripe. 
-    // Stripe debe estar configurado para redirigir a "thank-you.html" al finalizar.
+    localStorage.setItem("structa_data", JSON.stringify(data));
     
-    window.location.href = "https://buy.stripe.com/test_00w7sL6il3jwbK81D01ck01"; 
+    // REDIRECCIÓN (Asegúrate de cambiar esto por tu link de Stripe real)
+    window.location.href = "thank-you.html"; 
+    // Nota: Si usas Stripe, pon el link de Stripe aquí.
 }
 </script>
 
