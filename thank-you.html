@@ -2,129 +2,169 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Structa Quotes - Create Invoice</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Success - Downloading...</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 <style>
-:root{ --purple:#7c3aed; --dark:#0f0f16; }
+    /* Estilos Dark Mode (Igual que antes) */
+    body {
+        background-color: #0f0f16; color: white; font-family: 'Segoe UI', sans-serif;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        height: 100vh; margin: 0; text-align: center;
+    }
+    .card {
+        background: #1a1a2e; padding: 40px; border-radius: 20px;
+        box-shadow: 0 0 40px rgba(124, 58, 237, 0.3);
+        max-width: 90%; width: 400px; border: 1px solid #333;
+    }
+    h1 { margin-bottom: 10px; } h1 span { color: #7c3aed; }
+    
+    /* <-- NUEVO ID para cambiar el texto dinámicamente */
+    #statusText { color: #aaa; margin-bottom: 30px; transition: color 0.3s; }
+    .downloading { color: #7c3aed !important; font-weight: bold; }
 
-body{
-  margin:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background:radial-gradient(circle at top,#1a1a2e,#0b0b0f);
-  color:white; padding:20px;
-}
-
-.container{
-  max-width:800px; margin:auto; background:var(--dark);
-  padding:30px; border-radius:20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-h1 span{ color:var(--purple); }
-
-input{
-  width:100%; box-sizing: border-box; padding:12px; margin-bottom:10px;
-  background:#1e1e2d; border:1px solid #333; color:white; border-radius:8px;
-  outline: none; transition: 0.3s;
-}
-input:focus { border-color: var(--purple); }
-
-/* Botón principal */
-.btn-generate {
-  width:100%; padding:14px; background:linear-gradient(135deg,#7c3aed,#5b21b6);
-  border:none; color:white; font-weight:bold; border-radius:10px; cursor:pointer;
-  font-size: 16px; margin-top: 10px;
-}
-.btn-generate:hover { opacity: 0.9; }
-
-/* Pie de página */
-footer { text-align:center; color:#aaa; margin-top:40px; font-size:12px; }
+    .btn-download {
+        background: linear-gradient(135deg, #7c3aed, #5b21b6);
+        color: white; border: none; padding: 15px; font-size: 18px;
+        font-weight: bold; border-radius: 12px; cursor: pointer;
+        width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+        transition: 0.2s;
+    }
+    .btn-download:hover { transform: scale(1.02); opacity: 0.9; }
+    .home-link { margin-top: 20px; display: block; color: #666; text-decoration: none; font-size: 14px; }
 </style>
 </head>
-
 <body>
 
-<div class="container">
-  <h1>Create <span>Premium</span> Quotes</h1>
+    <div class="card">
+        <div style="font-size: 60px; margin-bottom: 20px;">🎉</div>
+        <h1>Payment <span>Successful</span></h1>
+        
+        <p id="statusText">Preparing your professional invoice...</p>
+        
+        <button id="downloadBtn" class="btn-download" onclick="generatePDF()">
+            Download PDF Manually
+        </button>
 
-  <label style="font-size:12px; color:#aaa;">Upload Logo (Optional)</label>
-  <input type="file" id="logoUpload" accept="image/*">
-  
-  <input id="company" placeholder="Your Company Name">
-  <input id="client" placeholder="Client Name">
-  <input id="work" placeholder="Project Description">
-  
-  <div style="display:flex; gap:10px;">
-    <input id="length" type="number" placeholder="Length (m)">
-    <input id="width" type="number" placeholder="Width (m)">
-  </div>
-  <input id="price" type="number" placeholder="Price per m² (USD)">
-
-  <button class="btn-generate" onclick="saveAndPay()">
-    Proceed to Payment & Download
-  </button>
-
-  <footer style="margin-top: 20px;">
-    © 2025 Structa — Premium Business Tools
-  </footer>
-</div>
+        <a href="app.html" class="home-link">Create another quote</a>
+    </div>
 
 <script>
-// 1. Variable para guardar el logo en memoria
-let logoBase64 = "";
+    const { jsPDF } = window.jspdf;
 
-// Escuchar cuando el usuario sube una imagen
-document.getElementById("logoUpload").addEventListener("change", function(e) {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      logoBase64 = evt.target.result; // Guardamos la imagen codificada
-    };
-    reader.readAsDataURL(file);
-  }
-});
+    // --- NUEVO: DISPARADOR AUTOMÁTICO ---
+    // Esto espera a que la página cargue completamente
+    document.addEventListener("DOMContentLoaded", () => {
+        const statusText = document.getElementById("statusText");
+        
+        // Esperamos 1.5 segundos para que el usuario vea el "Payment Successful"
+        setTimeout(() => {
+            statusText.textContent = "Downloading invoice automatically...";
+            statusText.classList.add("downloading");
+            // EJECUTAMOS LA FUNCIÓN MÁGICA
+            generatePDF();
+        }, 1500); 
+    });
+    // ------------------------------------
 
-// 2. Función Principal: Guardar y Redirigir
-function saveAndPay() {
-    // Obtener valores
-    const company = document.getElementById("company").value;
-    const client = document.getElementById("client").value;
-    const work = document.getElementById("work").value;
-    const length = document.getElementById("length").value;
-    const width = document.getElementById("width").value;
-    const price = document.getElementById("price").value;
-    
-    // Validación básica
-    if(!client || !length || !width || !price) {
-        alert("Please complete the essential fields (Client, Dimensions, Price).");
-        return;
+
+    function generatePDF() {
+        // 1. RECUPERAR DATOS GUARDADOS
+        const rawData = localStorage.getItem("structa_invoice_data");
+        
+        if (!rawData) {
+            document.getElementById("statusText").textContent = "Error: No invoice data found.";
+            alert("No data found. Please create a quote first.");
+            return;
+        }
+
+        const data = JSON.parse(rawData);
+        const doc = new jsPDF();
+
+        // --- DISEÑO PROFESIONAL DEL PDF (El mismo que te gustó) ---
+        const purple = [124, 58, 237];
+
+        // Header Colorido
+        doc.setFillColor(...purple);
+        doc.rect(0, 0, 210, 15, 'F');
+
+        // Logo (Si existe)
+        if (data.logo) {
+            try { doc.addImage(data.logo, 'JPEG', 15, 25, 30, 30); } catch (e) {}
+        }
+
+        // Títulos
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(22);
+        doc.setTextColor(...purple);
+        doc.text("INVOICE", 195, 35, { align: "right" });
+
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Date: ${data.date}`, 195, 42, { align: "right" });
+        doc.text(`ID: #STR-${Math.floor(Math.random()*9999)}`, 195, 47, { align: "right" });
+
+        // Datos Cliente / Empresa
+        doc.setDrawColor(200);
+        doc.line(15, 60, 195, 60);
+
+        doc.setFontSize(10);
+        doc.setTextColor(0);
+        
+        // Emisor
+        doc.setFont("helvetica", "bold");
+        doc.text("FROM:", 15, 70);
+        doc.setFont("helvetica", "normal");
+        doc.text(data.company, 15, 76);
+
+        // Cliente
+        doc.setFont("helvetica", "bold");
+        doc.text("BILL TO:", 110, 70);
+        doc.setFont("helvetica", "normal");
+        doc.text(data.client, 110, 76);
+
+        // Tabla Profesional
+        doc.autoTable({
+            startY: 90,
+            head: [['DESCRIPTION', 'AREA', 'PRICE/UNIT', 'TOTAL']],
+            body: [
+                [data.project, data.area + " m²", "$" + data.price, "$" + data.total]
+            ],
+            theme: 'grid',
+            headStyles: { fillColor: purple, textColor: 255, fontStyle: 'bold' },
+            styles: { fontSize: 11, cellPadding: 6 },
+            columnStyles: { 3: { halign: 'right', fontStyle: 'bold' } }
+        });
+
+        // Total Final
+        const finalY = doc.lastAutoTable.finalY + 10;
+        doc.setFillColor(245, 245, 245);
+        doc.rect(130, finalY, 65, 20, 'F');
+        
+        doc.setFontSize(14);
+        doc.setTextColor(...purple);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Total: $${data.total}`, 190, finalY + 13, { align: "right" });
+
+        // Footer
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text("Generated by Structa Premium", 105, 280, { align: "center" });
+
+        // --- DESCARGAR ---
+        doc.save(`Invoice_${data.client}.pdf`);
+
+        // <-- NUEVO: Actualizar el texto cuando termine
+        setTimeout(() => {
+             document.getElementById("statusText").textContent = "Download started successfully!";
+             document.getElementById("statusText").classList.remove("downloading");
+             document.getElementById("downloadBtn").textContent = "Download Again";
+        }, 1000);
     }
-
-    // Cálculos
-    const area = (length * width).toFixed(2);
-    const total = (area * price).toFixed(2);
-
-    // Crear el objeto de datos
-    const invoiceData = {
-        logo: logoBase64,
-        company: company || "Structa User",
-        client: client,
-        project: work || "Service",
-        area: area,
-        price: price,
-        total: total,
-        date: new Date().toLocaleDateString()
-    };
-
-    // --- EL PASO CLAVE: Guardar en el navegador ---
-    localStorage.setItem("structa_invoice_data", JSON.stringify(invoiceData));
-
-    // --- Redirigir a Stripe (o a thank-you.html para probar) ---
-    // NOTA: Cambia este link por tu link real de Stripe. 
-    // Stripe debe estar configurado para redirigir a "thank-you.html" al finalizar.
-    
-    window.location.href = "https://buy.stripe.com/test_00w7sL6il3jwbK81D01ck01"; 
-}
 </script>
 
 </body>
