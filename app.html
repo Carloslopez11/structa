@@ -5,44 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Structa Quotes - Create Invoice</title>
 <style>
+/* ... TUS MISMOS ESTILOS DE ANTES ... */
 :root{ --purple:#7c3aed; --dark:#0f0f16; --card:#1a1a2e; }
-
-body{
-  margin:0; font-family:'Segoe UI', sans-serif;
-  background:radial-gradient(circle at top, var(--card), var(--dark));
-  color:white; padding:20px;
-}
-
-.container{
-  max-width:600px; margin:auto; background:var(--card);
-  padding:30px; border-radius:20px; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-}
-
-h1 span{ color:var(--purple); }
-label { display:block; margin-top:10px; font-size:14px; color:#aaa; }
-
-input{
-  width:100%; box-sizing: border-box; padding:14px; margin-top:5px;
-  background:#0b0b12; border:1px solid #333; color:white; border-radius:8px;
-  font-size:16px; outline:none; transition:0.3s;
-}
+body{ margin:0; font-family:'Segoe UI', sans-serif; background:radial-gradient(circle at top, var(--card), var(--dark)); color:white; padding:20px; }
+.container{ max-width:600px; margin:auto; background:var(--card); padding:30px; border-radius:20px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+input{ width:100%; box-sizing: border-box; padding:14px; margin-top:5px; background:#0b0b12; border:1px solid #333; color:white; border-radius:8px; font-size:16px; outline:none; transition:0.3s; }
 input:focus { border-color: var(--purple); }
-
-/* SECCIÓN DE PREVISUALIZACIÓN (NUEVA) */
-.preview-box {
-    margin-top: 20px; padding: 20px; background: rgba(124, 58, 237, 0.1);
-    border: 1px solid var(--purple); border-radius: 12px; text-align: center;
-}
-.total-label { font-size: 14px; color: #ccc; text-transform: uppercase; letter-spacing: 1px; }
+.preview-box { margin-top: 20px; padding: 20px; background: rgba(124, 58, 237, 0.1); border: 1px solid var(--purple); border-radius: 12px; text-align: center; }
 .total-amount { font-size: 32px; font-weight: bold; color: var(--purple); margin: 5px 0; }
-.total-area { font-size: 14px; color: #aaa; }
-
-.btn-pay {
-  width:100%; padding:16px; background:linear-gradient(135deg,#7c3aed,#5b21b6);
-  border:none; color:white; font-weight:bold; border-radius:10px; cursor:pointer;
-  font-size: 18px; margin-top: 20px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
-}
-.btn-pay:hover { transform: translateY(-2px); }
+.btn-pay { width:100%; padding:16px; background:linear-gradient(135deg,#7c3aed,#5b21b6); border:none; color:white; font-weight:bold; border-radius:10px; cursor:pointer; font-size: 18px; margin-top: 20px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); }
 </style>
 </head>
 
@@ -51,55 +22,40 @@ input:focus { border-color: var(--purple); }
 <div class="container">
   <h1>Create <span>Premium</span> Quote</h1>
 
-  <label>Company Logo (Optional)</label>
-  <input type="file" id="logoUpload" accept="image/*">
-  
-  <label>From (Your Company)</label>
-  <input id="company" placeholder="Structa Inc.">
-  
-  <label>To (Client Name)</label>
-  <input id="client" placeholder="Client Name">
-  
-  <label>Project Description</label>
-  <input id="work" placeholder="e.g. Living Room Flooring">
+  <label>Company Logo</label> <input type="file" id="logoUpload" accept="image/*">
+  <label>From (Company)</label> <input id="company" placeholder="Structa Inc.">
+  <label>To (Client)</label> <input id="client" placeholder="Client Name">
+  <label>Description</label> <input id="work" placeholder="Service description">
   
   <div style="display:flex; gap:15px;">
-    <div style="flex:1"><label>Length (m)</label><input id="length" type="number" placeholder="0"></div>
-    <div style="flex:1"><label>Width (m)</label><input id="width" type="number" placeholder="0"></div>
+    <div style="flex:1"><label>Length</label><input id="length" type="number" placeholder="0"></div>
+    <div style="flex:1"><label>Width</label><input id="width" type="number" placeholder="0"></div>
   </div>
-  
-  <label>Price per m² ($)</label>
-  <input id="price" type="number" placeholder="0.00">
+  <label>Price ($)</label> <input id="price" type="number" placeholder="0.00">
 
   <div class="preview-box">
-      <div class="total-label">Estimated Total</div>
+      <div style="font-size:12px;color:#aaa">ESTIMATED TOTAL</div>
       <div class="total-amount" id="previewTotal">$0.00</div>
-      <div class="total-area" id="previewArea">Area: 0 m²</div>
+      <div style="font-size:12px;color:#aaa" id="previewArea">0 m²</div>
   </div>
 
-  <button class="btn-pay" onclick="saveAndPay()">Proceed to Payment</button>
+  <button class="btn-pay" onclick="goToStripePayment()">Pay Now to Download PDF</button>
 </div>
 
 <script>
-// 1. Lógica de Previsualización en Vivo
+// --- LÓGICA DE PREVISUALIZACIÓN ---
 const inputs = ['length', 'width', 'price'];
-inputs.forEach(id => {
-    document.getElementById(id).addEventListener('input', updatePreview);
-});
+inputs.forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
 
 function updatePreview() {
     const l = parseFloat(document.getElementById('length').value) || 0;
     const w = parseFloat(document.getElementById('width').value) || 0;
     const p = parseFloat(document.getElementById('price').value) || 0;
-    
-    const area = l * w;
-    const total = area * p;
-
-    document.getElementById('previewTotal').textContent = "$" + total.toFixed(2);
-    document.getElementById('previewArea').textContent = "Area: " + area.toFixed(2) + " m²";
+    document.getElementById('previewTotal').textContent = "$" + (l * w * p).toFixed(2);
+    document.getElementById('previewArea').textContent = (l * w).toFixed(2) + " m²";
 }
 
-// 2. Guardar Logo
+// --- GUARDAR LOGO ---
 let logoBase64 = null;
 document.getElementById("logoUpload").addEventListener("change", e => {
     const file = e.target.files[0];
@@ -110,18 +66,20 @@ document.getElementById("logoUpload").addEventListener("change", e => {
     }
 });
 
-// 3. Guardar y Pagar
-function saveAndPay() {
+// --- LÓGICA DE COBRO (AQUÍ ESTÁ EL CAMBIO IMPORTANTE) ---
+function goToStripePayment() {
     const client = document.getElementById('client').value;
     const l = parseFloat(document.getElementById('length').value);
     const w = parseFloat(document.getElementById('width').value);
     const p = parseFloat(document.getElementById('price').value);
 
+    // 1. Validar que haya datos
     if(!client || !l || !w || !p) {
-        alert("Please fill in all fields correctly.");
+        alert("Please fill in all fields before paying.");
         return;
     }
 
+    // 2. Guardar los datos del presupuesto en el navegador (Local)
     const data = {
         logo: logoBase64,
         company: document.getElementById('company').value || "My Company",
@@ -135,9 +93,9 @@ function saveAndPay() {
 
     localStorage.setItem("structa_data", JSON.stringify(data));
     
-    // REDIRECCIÓN (Asegúrate de cambiar esto por tu link de Stripe real)
-    window.location.href = "thank-you.html"; 
-    // Nota: Si usas Stripe, pon el link de Stripe aquí.
+    // 3. REDIRECCIÓN A LA COBRANZA
+    // El usuario se va de tu web a Stripe. Cuando pague, Stripe lo regresará.
+    window.location.href = "https://buy.stripe.com/test_00w7sL6il3jwbK81D01ck01"; 
 }
 </script>
 
