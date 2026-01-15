@@ -2,15 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Structa Quotes - Premium Invoice</title>
+<title>Structa Quotes - Preview</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root{ --purple:#7c3aed; --dark:#0f0f16; }
-
 body{
   margin:0;
-  font-family:'Segoe UI', sans-serif;
+  font-family:Segoe UI, Arial;
   background:radial-gradient(circle at top,#1a1a2e,#0b0b0f);
   color:white;
   padding:20px;
@@ -19,13 +17,12 @@ body{
 .container{
   max-width:800px;
   margin:auto;
-  background:var(--dark);
+  background:#0f0f16;
   padding:30px;
   border-radius:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
 
-h1 span{ color:var(--purple); }
+h1 span{ color:#7c3aed; }
 
 input{
   width:100%;
@@ -45,7 +42,6 @@ button{
   color:white;
   font-weight:bold;
   border-radius:10px;
-  cursor:pointer;
   font-size:16px;
 }
 
@@ -58,15 +54,6 @@ button{
   margin-top:30px;
 }
 
-.header{
-  display:flex;
-  justify-content:space-between;
-  border-bottom:3px solid var(--purple);
-  padding-bottom:15px;
-}
-
-.header h2{ color:var(--purple); margin:0; }
-
 .table{
   width:100%;
   border-collapse:collapse;
@@ -74,7 +61,7 @@ button{
 }
 
 .table th{
-  background:var(--purple);
+  background:#7c3aed;
   color:white;
   padding:10px;
   text-align:left;
@@ -89,7 +76,7 @@ button{
   margin-top:20px;
   font-size:22px;
   font-weight:bold;
-  color:var(--purple);
+  color:#7c3aed;
   text-align:right;
 }
 
@@ -118,26 +105,20 @@ footer{
 
 <div class="container">
 
-<h1>Create <span>Premium</span> Professional Quotes</h1>
+<h1>Create <span>Professional</span> Quote</h1>
 
-<input id="company" placeholder="Your Company Name">
+<input id="company" placeholder="Company Name">
 <input id="client" placeholder="Client Name">
 <input id="work" placeholder="Project Description">
 <input id="length" type="number" placeholder="Length (m)">
 <input id="width" type="number" placeholder="Width (m)">
 <input id="price" type="number" placeholder="Price per m² (USD)">
 
-<button onclick="preview()">Preview Quote</button>
+<button onclick="preview()">Generate Preview</button>
 
 <div id="preview">
 
-  <div class="header">
-    <div>
-      <h2>ESTIMATE</h2>
-      <p>Date: <span id="date"></span></p>
-    </div>
-  </div>
-
+  <h2>QUOTE PREVIEW</h2>
   <p><strong>Company:</strong> <span id="p-company"></span></p>
   <p><strong>Client:</strong> <span id="p-client"></span></p>
   <p><strong>Work:</strong> <span id="p-work"></span></p>
@@ -154,10 +135,10 @@ footer{
 
   <div class="total">Total: $<span id="final"></span></div>
 
-  <a href="https://buy.stripe.com/test_00w7sL6il3jwbK81D01ck01" 
-     class="pay-btn" 
+  <a href="https://buy.stripe.com/test_00w7sL6il3jwbK81D01ck01"
+     class="pay-btn"
      target="_blank">
-     Pay & Download PDF
+     Pay & Unlock PDF
   </a>
 
 </div>
@@ -180,18 +161,28 @@ function preview(){
   const area = l * w;
   const total = area * p;
 
-  p-company.textContent = company.value;
-  p-client.textContent = client.value;
-  p-work.textContent = work.value;
+  const data = {
+    company: company.value,
+    client: client.value,
+    work: work.value,
+    area: area.toFixed(2),
+    price: p.toFixed(2),
+    total: total.toFixed(2)
+  };
 
-  t-work.textContent = work.value;
-  t-area.textContent = area.toFixed(2)+" m²";
-  t-price.textContent = "$"+p.toFixed(2);
-  t-total.textContent = "$"+total.toFixed(2);
-  final.textContent = total.toFixed(2);
-  date.textContent = new Date().toLocaleDateString();
+  localStorage.setItem("quoteData", JSON.stringify(data));
 
-  preview.style.display="block";
+  p-company.textContent = data.company;
+  p-client.textContent = data.client;
+  p-work.textContent = data.work;
+
+  t-work.textContent = data.work;
+  t-area.textContent = data.area + " m²";
+  t-price.textContent = "$" + data.price;
+  t-total.textContent = "$" + data.total;
+  final.textContent = data.total;
+
+  preview.style.display = "block";
 }
 </script>
 
