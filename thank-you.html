@@ -9,7 +9,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
 <style>
-/* TUS ESTILOS */
 body {
     background: #0f0f16;
     color: white;
@@ -24,10 +23,8 @@ body {
     max-width: 90%; width: 400px; border: 1px solid #333;
 }
 
-h1 { color: white; margin-bottom: 5px; }
 h1 span { color: #7c3aed; }
 
-/* Caja de Estado (Para ver qué pasa) */
 #statusBox {
     margin: 20px 0;
     padding: 10px;
@@ -45,133 +42,117 @@ h1 span { color: #7c3aed; }
     color: white; border: none; padding: 15px 30px; font-size: 16px;
     font-weight: bold; border-radius: 10px; cursor: pointer; width: 100%;
     margin-top: 10px;
-    /* Animación suave */
-    transition: transform 0.2s;
 }
-.btn-download:hover { transform: scale(1.02); }
 </style>
 </head>
 
 <body>
 
-    <div class="card">
-        <div style="font-size: 60px; margin-bottom: 20px;">🎉</div>
-        <h1>Pago <span>Exitoso</span></h1>
-        
-        <div id="statusBox">Iniciando sistema...</div>
-        
-        <button id="manualBtn" class="btn-download" onclick="generateInvoicePDF()">
-            Descargar Factura PDF
-        </button>
+<div class="card">
+    <div style="font-size: 60px;">🎉</div>
+    <h1>Pago <span>Exitoso</span></h1>
 
-        <a href="app.html" style="color:#666; font-size:12px; text-decoration:none; margin-top:20px; display:block;">
-            Crear nueva cotización
-        </a>
-    </div>
+    <div id="statusBox">Iniciando sistema...</div>
+
+    <button id="manualBtn" class="btn-download" onclick="generateInvoicePDF()">
+        Descargar Factura PDF
+    </button>
+
+    <a href="app.html" style="color:#666; font-size:12px; text-decoration:none; margin-top:20px; display:block;">
+        Crear nueva cotización
+    </a>
+</div>
 
 <script>
-    // 1. Ejecutar apenas carga la página
-    window.onload = function() {
-        updateStatus("Verificando librerías...");
-        
-        // Verificar si cargó jsPDF
-        if (!window.jspdf) {
-            updateStatus("Error: No se cargaron las librerías PDF. Revisa tu internet.", "error");
-            return;
-        }
+window.onload = function() {
+    updateStatus("Verificando sistema...");
 
-        updateStatus("Buscando datos del pago...");
-        
-        // Verificar si hay datos
-        const rawData = localStorage.getItem("structa_data");
-        if (!rawData) {
-            updateStatus("Error: No se encontraron datos. ¿Llenaste el formulario antes de pagar?", "error");
-            return;
-        }
-
-        // Si todo está bien, intentar descarga automática tras 1 segundo
-        updateStatus("¡Datos encontrados! Preparando descarga...", "success");
-        setTimeout(() => {
-            generateInvoicePDF();
-        }, 1000);
-    };
-
-    // Función auxiliar para mensajes
-    function updateStatus(text, type = "") {
-        const box = document.getElementById("statusBox");
-        box.textContent = text;
-        box.className = ""; // Limpiar clases
-        if (type) box.classList.add(type);
+    if (!window.jspdf) {
+        updateStatus("Error: No se cargaron las librerías PDF.", "error");
+        return;
     }
 
-    // 2. Función Generadora (La misma lógica, más robusta)
-    function generateInvoicePDF() {
-        updateStatus("Generando PDF...");
-        
-        try {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // Recuperar Datos
-            const rawData = localStorage.getItem("structa_data");
-            if (!rawData) throw new Error("No hay datos para imprimir.");
-            const data = JSON.parse(rawData);
+    updateStatus("Buscando datos de la factura...");
 
-            // --- DISEÑO ---
-            const purple = [124, 58, 237];
+    const rawData = localStorage.getItem("structa_invoice_data");
 
-            // Header
-            doc.setFillColor(...purple);
-            doc.rect(0, 0, 210, 15, 'F');
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(22);
-            doc.setTextColor(...purple);
-            doc.text("INVOICE", 195, 35, { align: "right" });
-
-            // Logo
-            if (data.logo) {
-                try { doc.addImage(data.logo, 'JPEG', 15, 25, 30, 30); } catch (e) { console.warn("Logo error", e); }
-            }
-
-            // Info Cliente/Empresa
-            doc.setFontSize(10);
-            doc.setTextColor(0);
-            doc.text("DE:", 15, 70);
-            doc.setFont("helvetica", "normal");
-            doc.text(data.company || "Structa Inc", 15, 76);
-
-            doc.setFont("helvetica", "bold");
-            doc.text("PARA:", 110, 70);
-            doc.setFont("helvetica", "normal");
-            doc.text(data.client || "Cliente", 110, 76);
-
-            // Tabla
-            doc.autoTable({
-                startY: 90,
-                head: [['Descripción', 'Área', 'Precio', 'Total']],
-                body: [[data.work, data.area + " m²", "$" + data.price, "$" + data.total]],
-                theme: 'grid',
-                headStyles: { fillColor: purple }
-            });
-
-            // Total Final
-            const finalY = doc.lastAutoTable.finalY + 15;
-            doc.setFontSize(14);
-            doc.setTextColor(...purple);
-            doc.setFont("helvetica", "bold");
-            doc.text(`TOTAL PAGADO: $${data.total}`, 190, finalY, { align: "right" });
-
-            // Descargar
-            doc.save(`Factura_${data.client.replace(/ /g, "_")}.pdf`);
-            
-            updateStatus("✅ Descarga iniciada. Si no ves el archivo, haz clic en el botón.", "success");
-            
-        } catch (err) {
-            console.error(err);
-            updateStatus("Error al crear PDF: " + err.message, "error");
-            alert("Hubo un error técnico: " + err.message);
-        }
+    if (!rawData) {
+        updateStatus("Error: No se encontraron datos. Vuelve a crear la cotización.", "error");
+        return;
     }
+
+    updateStatus("Datos encontrados. Preparando descarga...", "success");
+
+    setTimeout(() => {
+        generateInvoicePDF();
+    }, 1000);
+};
+
+function updateStatus(text, type = "") {
+    const box = document.getElementById("statusBox");
+    box.textContent = text;
+    box.className = "";
+    if (type) box.classList.add(type);
+}
+
+function generateInvoicePDF() {
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const rawData = localStorage.getItem("structa_invoice_data");
+        if (!rawData) throw new Error("No hay datos guardados.");
+
+        const data = JSON.parse(rawData);
+        const purple = [124, 58, 237];
+
+        doc.setFillColor(...purple);
+        doc.rect(0, 0, 210, 15, 'F');
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(22);
+        doc.setTextColor(...purple);
+        doc.text("INVOICE", 195, 35, { align: "right" });
+
+        if (data.logo) {
+            try { doc.addImage(data.logo, 'JPEG', 15, 25, 30, 30); } catch(e){}
+        }
+
+        doc.setFontSize(10);
+        doc.setTextColor(0);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("FROM:", 15, 70);
+        doc.setFont("helvetica", "normal");
+        doc.text(data.company || "Structa User", 15, 76);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("TO:", 110, 70);
+        doc.setFont("helvetica", "normal");
+        doc.text(data.client || "Client", 110, 76);
+
+        doc.autoTable({
+            startY: 90,
+            head: [['Description', 'Area', 'Price', 'Total']],
+            body: [[data.work, data.area + " m²", "$" + data.price, "$" + data.total]],
+            theme: 'grid',
+            headStyles: { fillColor: purple }
+        });
+
+        const finalY = doc.lastAutoTable.finalY + 15;
+        doc.setFontSize(14);
+        doc.setTextColor(...purple);
+        doc.text(`TOTAL PAID: $${data.total}`, 190, finalY, { align: "right" });
+
+        doc.save(`Invoice_${data.client.replace(/ /g,"_")}.pdf`);
+
+        updateStatus("Descarga iniciada correctamente.", "success");
+
+    } catch (err) {
+        console.error(err);
+        updateStatus("Error al crear PDF: " + err.message, "error");
+    }
+}
 </script>
 
 </body>
