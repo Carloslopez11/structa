@@ -10,38 +10,48 @@
 
 <style>
 body {
-    background: #0f0f16;
-    color: white;
-    font-family: 'Segoe UI', sans-serif;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    height: 100vh; margin: 0; text-align: center;
+  background:#0f0f16;
+  color:white;
+  font-family:'Segoe UI',sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin:0;
+  text-align:center;
 }
 
 .card {
-    background: #1a1a2e; padding: 40px; border-radius: 20px;
-    box-shadow: 0 0 40px rgba(124, 58, 237, 0.3);
-    max-width: 90%; width: 400px; border: 1px solid #333;
+  background:#1a1a2e;
+  padding:40px;
+  border-radius:20px;
+  box-shadow:0 0 40px rgba(124,58,237,0.3);
+  width:400px;
+  max-width:90%;
+  border:1px solid #333;
 }
 
-h1 span { color: #7c3aed; }
+h1 span { color:#7c3aed; }
 
 #statusBox {
-    margin: 20px 0;
-    padding: 10px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 8px;
-    font-size: 14px;
-    color: #aaa;
-    min-height: 20px;
+  margin:20px 0;
+  padding:10px;
+  background:rgba(255,255,255,0.05);
+  border-radius:8px;
+  font-size:14px;
+  color:#aaa;
 }
-.error { color: #ff4d4d !important; font-weight: bold; }
-.success { color: #00e676 !important; font-weight: bold; }
 
 .btn-download {
-    background: linear-gradient(135deg, #7c3aed, #5b21b6);
-    color: white; border: none; padding: 15px 30px; font-size: 16px;
-    font-weight: bold; border-radius: 10px; cursor: pointer; width: 100%;
-    margin-top: 10px;
+  background:linear-gradient(135deg,#7c3aed,#5b21b6);
+  color:white;
+  border:none;
+  padding:15px;
+  font-size:16px;
+  font-weight:bold;
+  border-radius:10px;
+  cursor:pointer;
+  width:100%;
 }
 </style>
 </head>
@@ -49,109 +59,81 @@ h1 span { color: #7c3aed; }
 <body>
 
 <div class="card">
-    <div style="font-size: 60px;">🎉</div>
-    <h1>Pago <span>Exitoso</span></h1>
+  <div style="font-size:60px;">🎉</div>
+  <h1>Pago <span>Exitoso</span></h1>
 
-    <div id="statusBox">Iniciando sistema...</div>
+  <div id="statusBox">Buscando datos...</div>
 
-    <button id="manualBtn" class="btn-download" onclick="generateInvoicePDF()">
-        Descargar Factura PDF
-    </button>
+  <button class="btn-download" onclick="generateInvoicePDF()">
+    Descargar Factura PDF
+  </button>
 
-    <a href="app.html" style="color:#666; font-size:12px; text-decoration:none; margin-top:20px; display:block;">
-        Crear nueva cotización
-    </a>
+  <a href="app.html" style="color:#666;font-size:12px;text-decoration:none;margin-top:20px;display:block;">
+    Crear nueva cotización
+  </a>
 </div>
 
 <script>
-window.onload = function() {
-    updateStatus("Verificando sistema...");
-
-    if (!window.jspdf) {
-        updateStatus("Error: No se cargaron las librerías PDF.", "error");
-        return;
-    }
-
-    updateStatus("Buscando datos de la factura...");
-
-    const rawData = localStorage.getItem("structa_invoice_data");
-
-    if (!rawData) {
-        updateStatus("Error: No se encontraron datos. Vuelve a crear la cotización.", "error");
-        return;
-    }
-
-    updateStatus("Datos encontrados. Preparando descarga...", "success");
-
-    setTimeout(() => {
-        generateInvoicePDF();
-    }, 1000);
-};
-
-function updateStatus(text, type = "") {
-    const box = document.getElementById("statusBox");
-    box.textContent = text;
-    box.className = "";
-    if (type) box.classList.add(type);
+window.onload = function(){
+  const data = localStorage.getItem("structa_invoice_data");
+  if(!data){
+    statusBox.textContent = "No se encontraron datos. Crea una cotización primero.";
+  } else {
+    statusBox.textContent = "Datos listos. Puedes descargar tu factura.";
+  }
 }
 
-function generateInvoicePDF() {
-    try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
+function generateInvoicePDF(){
+  try{
+    const { jsPDF } = window.jspdf;
+    const raw = localStorage.getItem("structa_invoice_data");
+    if(!raw) throw new Error("No hay datos guardados.");
 
-        const rawData = localStorage.getItem("structa_invoice_data");
-        if (!rawData) throw new Error("No hay datos guardados.");
+    const data = JSON.parse(raw);
+    const doc = new jsPDF();
+    const purple = [124,58,237];
 
-        const data = JSON.parse(rawData);
-        const purple = [124, 58, 237];
+    doc.setFillColor(...purple);
+    doc.rect(0,0,210,15,'F');
 
-        doc.setFillColor(...purple);
-        doc.rect(0, 0, 210, 15, 'F');
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(22);
+    doc.setTextColor(...purple);
+    doc.text("INVOICE",195,35,{align:"right"});
 
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(22);
-        doc.setTextColor(...purple);
-        doc.text("INVOICE", 195, 35, { align: "right" });
-
-        if (data.logo) {
-            try { doc.addImage(data.logo, 'JPEG', 15, 25, 30, 30); } catch(e){}
-        }
-
-        doc.setFontSize(10);
-        doc.setTextColor(0);
-
-        doc.setFont("helvetica", "bold");
-        doc.text("FROM:", 15, 70);
-        doc.setFont("helvetica", "normal");
-        doc.text(data.company || "Structa User", 15, 76);
-
-        doc.setFont("helvetica", "bold");
-        doc.text("TO:", 110, 70);
-        doc.setFont("helvetica", "normal");
-        doc.text(data.client || "Client", 110, 76);
-
-        doc.autoTable({
-            startY: 90,
-            head: [['Description', 'Area', 'Price', 'Total']],
-            body: [[data.work, data.area + " m²", "$" + data.price, "$" + data.total]],
-            theme: 'grid',
-            headStyles: { fillColor: purple }
-        });
-
-        const finalY = doc.lastAutoTable.finalY + 15;
-        doc.setFontSize(14);
-        doc.setTextColor(...purple);
-        doc.text(`TOTAL PAID: $${data.total}`, 190, finalY, { align: "right" });
-
-        doc.save(`Invoice_${data.client.replace(/ /g,"_")}.pdf`);
-
-        updateStatus("Descarga iniciada correctamente.", "success");
-
-    } catch (err) {
-        console.error(err);
-        updateStatus("Error al crear PDF: " + err.message, "error");
+    if(data.logo){
+      try{ doc.addImage(data.logo,'JPEG',15,25,30,30); }catch(e){}
     }
+
+    doc.setFontSize(10);
+    doc.setTextColor(0);
+
+    doc.text("FROM:",15,70);
+    doc.text(data.company,15,76);
+
+    doc.text("TO:",110,70);
+    doc.text(data.client,110,76);
+
+    doc.autoTable({
+      startY:90,
+      head:[['Description','Area','Price','Total']],
+      body:[[data.work, data.area+" m²", "$"+data.price, "$"+data.total]],
+      theme:'grid',
+      headStyles:{ fillColor: purple }
+    });
+
+    const finalY = doc.lastAutoTable.finalY + 15;
+    doc.setFontSize(14);
+    doc.setTextColor(...purple);
+    doc.text(`TOTAL PAID: $${data.total}`,190,finalY,{align:"right"});
+
+    doc.save(`Invoice_${data.client.replace(/ /g,"_")}.pdf`);
+
+    statusBox.textContent = "Factura descargada correctamente.";
+
+  } catch(err){
+    statusBox.textContent = "Error: " + err.message;
+  }
 }
 </script>
 
