@@ -3,171 +3,174 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Payment Success - Structa</title>
+<title>Descarga tu Factura - Structa</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
 <style>
-/* TUS ESTILOS OSCUROS */
+/* TUS ESTILOS */
 body {
     background: #0f0f16;
     color: white;
     font-family: 'Segoe UI', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    text-align: center;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100vh; margin: 0; text-align: center;
 }
 
 .card {
-    background: #1a1a2e;
-    padding: 40px;
-    border-radius: 20px;
+    background: #1a1a2e; padding: 40px; border-radius: 20px;
     box-shadow: 0 0 40px rgba(124, 58, 237, 0.3);
-    max-width: 90%;
-    width: 400px;
-    border: 1px solid #333;
+    max-width: 90%; width: 400px; border: 1px solid #333;
 }
 
 h1 { color: white; margin-bottom: 5px; }
 h1 span { color: #7c3aed; }
-p { color: #aaa; margin-bottom: 30px; }
 
-/* Botón manual por si acaso */
+/* Caja de Estado (Para ver qué pasa) */
+#statusBox {
+    margin: 20px 0;
+    padding: 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    font-size: 14px;
+    color: #aaa;
+    min-height: 20px;
+}
+.error { color: #ff4d4d !important; font-weight: bold; }
+.success { color: #00e676 !important; font-weight: bold; }
+
 .btn-download {
     background: linear-gradient(135deg, #7c3aed, #5b21b6);
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 100%;
+    color: white; border: none; padding: 15px 30px; font-size: 16px;
+    font-weight: bold; border-radius: 10px; cursor: pointer; width: 100%;
     margin-top: 10px;
-    display: none; /* Se oculta si descarga automático */
+    /* Animación suave */
+    transition: transform 0.2s;
 }
+.btn-download:hover { transform: scale(1.02); }
 </style>
 </head>
 
 <body>
 
     <div class="card">
-        <div style="font-size: 60px; margin-bottom: 20px;">✅</div>
-        <h1>Payment <span>Successful</span></h1>
-        <p id="statusMsg">Generando tu factura PDF...</p>
+        <div style="font-size: 60px; margin-bottom: 20px;">🎉</div>
+        <h1>Pago <span>Exitoso</span></h1>
+        
+        <div id="statusBox">Iniciando sistema...</div>
         
         <button id="manualBtn" class="btn-download" onclick="generateInvoicePDF()">
             Descargar Factura PDF
         </button>
 
         <a href="app.html" style="color:#666; font-size:12px; text-decoration:none; margin-top:20px; display:block;">
-            Volver al inicio
+            Crear nueva cotización
         </a>
     </div>
 
 <script>
-    const { jsPDF } = window.jspdf;
-
-    // AL CARGAR LA PÁGINA (Regreso de Stripe)
+    // 1. Ejecutar apenas carga la página
     window.onload = function() {
-        // Esperamos 1 segundo para que el usuario vea el check verde y luego descargamos
-        setTimeout(() => {
-            generateInvoicePDF();
-        }, 1500);
-    };
-
-    function generateInvoicePDF() {
-        // 1. RECUPERAR DATOS (Guardados antes de ir a Stripe)
-        const rawData = localStorage.getItem("structa_data");
+        updateStatus("Verificando librerías...");
         
-        if (!rawData) {
-            document.getElementById("statusMsg").textContent = "No se encontraron datos de la factura.";
+        // Verificar si cargó jsPDF
+        if (!window.jspdf) {
+            updateStatus("Error: No se cargaron las librerías PDF. Revisa tu internet.", "error");
             return;
         }
 
-        const data = JSON.parse(rawData);
-        const doc = new jsPDF();
-
-        // --- DISEÑO DE FACTURA ---
-        const purple = [124, 58, 237];
-
-        // 1. Franja Superior
-        doc.setFillColor(...purple);
-        doc.rect(0, 0, 210, 15, 'F');
-
-        // 2. Título "INVOICE"
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(22);
-        doc.setTextColor(...purple);
-        doc.text("INVOICE", 195, 35, { align: "right" });
-
-        // 3. Logo (Si el cliente subió uno)
-        if (data.logo) {
-            try { doc.addImage(data.logo, 'JPEG', 15, 25, 30, 30); } catch (e) {}
+        updateStatus("Buscando datos del pago...");
+        
+        // Verificar si hay datos
+        const rawData = localStorage.getItem("structa_data");
+        if (!rawData) {
+            updateStatus("Error: No se encontraron datos. ¿Llenaste el formulario antes de pagar?", "error");
+            return;
         }
 
-        // 4. Datos del Cliente y Empresa
-        doc.setFontSize(10);
-        doc.setTextColor(0);
+        // Si todo está bien, intentar descarga automática tras 1 segundo
+        updateStatus("¡Datos encontrados! Preparando descarga...", "success");
+        setTimeout(() => {
+            generateInvoicePDF();
+        }, 1000);
+    };
+
+    // Función auxiliar para mensajes
+    function updateStatus(text, type = "") {
+        const box = document.getElementById("statusBox");
+        box.textContent = text;
+        box.className = ""; // Limpiar clases
+        if (type) box.classList.add(type);
+    }
+
+    // 2. Función Generadora (La misma lógica, más robusta)
+    function generateInvoicePDF() {
+        updateStatus("Generando PDF...");
         
-        // Emisor (Tú)
-        doc.setFont("helvetica", "bold");
-        doc.text("DE:", 15, 70);
-        doc.setFont("helvetica", "normal");
-        doc.text(data.company || "Structa Inc", 15, 76);
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Recuperar Datos
+            const rawData = localStorage.getItem("structa_data");
+            if (!rawData) throw new Error("No hay datos para imprimir.");
+            const data = JSON.parse(rawData);
 
-        // Cliente (El que pagó)
-        doc.setFont("helvetica", "bold");
-        doc.text("PARA:", 110, 70);
-        doc.setFont("helvetica", "normal");
-        doc.text(data.client || "Cliente", 110, 76);
+            // --- DISEÑO ---
+            const purple = [124, 58, 237];
 
-        // 5. Tabla de Detalles
-        doc.autoTable({
-            startY: 90,
-            head: [['Descripción', 'Metros (m²)', 'Precio Unit.', 'Total']],
-            body: [
-                [
-                    data.work, 
-                    data.area + " m²", 
-                    "$" + data.price, 
-                    "$" + data.total
-                ]
-            ],
-            theme: 'grid',
-            headStyles: { fillColor: purple, textColor: 255, fontStyle: 'bold' },
-            styles: { fontSize: 11, cellPadding: 6 },
-            columnStyles: { 3: { halign: 'right', fontStyle: 'bold' } }
-        });
+            // Header
+            doc.setFillColor(...purple);
+            doc.rect(0, 0, 210, 15, 'F');
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(22);
+            doc.setTextColor(...purple);
+            doc.text("INVOICE", 195, 35, { align: "right" });
 
-        // 6. TOTAL FINAL (Lo más importante)
-        const finalY = doc.lastAutoTable.finalY + 10;
-        
-        // Caja gris para el total
-        doc.setFillColor(245, 245, 245);
-        doc.rect(120, finalY, 75, 20, 'F');
+            // Logo
+            if (data.logo) {
+                try { doc.addImage(data.logo, 'JPEG', 15, 25, 30, 30); } catch (e) { console.warn("Logo error", e); }
+            }
 
-        doc.setFontSize(14);
-        doc.setTextColor(...purple);
-        doc.setFont("helvetica", "bold");
-        doc.text(`TOTAL PAGADO: $${data.total}`, 190, finalY + 13, { align: "right" });
+            // Info Cliente/Empresa
+            doc.setFontSize(10);
+            doc.setTextColor(0);
+            doc.text("DE:", 15, 70);
+            doc.setFont("helvetica", "normal");
+            doc.text(data.company || "Structa Inc", 15, 76);
 
-        // 7. Pie de página
-        doc.setFontSize(8);
-        doc.setTextColor(150);
-        doc.text("Gracias por su pago - Generado por Structa", 105, 280, { align: "center" });
+            doc.setFont("helvetica", "bold");
+            doc.text("PARA:", 110, 70);
+            doc.setFont("helvetica", "normal");
+            doc.text(data.client || "Cliente", 110, 76);
 
-        // --- DESCARGAR ---
-        doc.save(`Factura_${data.client}.pdf`);
-        
-        // Actualizar mensaje en pantalla
-        document.getElementById("statusMsg").textContent = "Factura descargada exitosamente.";
-        document.getElementById("manualBtn").style.display = "block"; // Mostrar botón por si quieren bajarla otra vez
+            // Tabla
+            doc.autoTable({
+                startY: 90,
+                head: [['Descripción', 'Área', 'Precio', 'Total']],
+                body: [[data.work, data.area + " m²", "$" + data.price, "$" + data.total]],
+                theme: 'grid',
+                headStyles: { fillColor: purple }
+            });
+
+            // Total Final
+            const finalY = doc.lastAutoTable.finalY + 15;
+            doc.setFontSize(14);
+            doc.setTextColor(...purple);
+            doc.setFont("helvetica", "bold");
+            doc.text(`TOTAL PAGADO: $${data.total}`, 190, finalY, { align: "right" });
+
+            // Descargar
+            doc.save(`Factura_${data.client.replace(/ /g, "_")}.pdf`);
+            
+            updateStatus("✅ Descarga iniciada. Si no ves el archivo, haz clic en el botón.", "success");
+            
+        } catch (err) {
+            console.error(err);
+            updateStatus("Error al crear PDF: " + err.message, "error");
+            alert("Hubo un error técnico: " + err.message);
+        }
     }
 </script>
 
