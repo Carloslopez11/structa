@@ -2,147 +2,259 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Structa Quotes</title>
+<title>Structa Quotes - Professional Tools</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Create professional PDF quotes and invoices in seconds.">
 
 <style>
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:linear-gradient(135deg,#1a1a2e,#2b1055);
-  color:white;
-  text-align:center;
+/* --- 1. CONFIGURACIÓN BASE (Modernización) --- */
+:root {
+  --purple: #7c3aed;
+  --purple-hover: #6d28d9;
+  --dark: #0f0f16;
+  --card-bg: #1a1a2e;
+  --text-main: #ffffff;
+  --text-muted: #a1a1aa;
 }
 
-header{
-  padding:40px 20px;
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; /* Fuente más moderna */
+  background-color: var(--dark);
+  color: var(--text-main);
+  text-align: center;
+  line-height: 1.6;
 }
 
-h1{
-  font-size:38px;
+/* --- 2. NAVEGACIÓN (Nueva) --- */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background: rgba(15, 15, 22, 0.9);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -1px; }
+.logo span { color: var(--purple); }
+
+/* --- 3. HERO SECTION (Encabezado) --- */
+header {
+  padding: 80px 20px 40px;
+  background: radial-gradient(circle at top, #2e106540, transparent 40%);
 }
 
-h1 span{
-  color:#8b5cf6;
+h1 {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 10px;
 }
 
-p{
-  color:#ccc;
-  max-width:600px;
-  margin:15px auto;
-  line-height:1.5;
+h1 span {
+  color: var(--purple);
+  /* Efecto gradiente en texto */
+  background: -webkit-linear-gradient(45deg, #a78bfa, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.hero{
-  width:90%;
-  max-width:800px;
-  border-radius:20px;
-  margin:30px auto;
-  box-shadow:0 0 30px rgba(0,0,0,0.6);
+p {
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto 30px;
+  font-size: 1.1rem;
 }
 
-.btn{
-  display:inline-block;
-  background:#22c55e;
-  color:black;
-  padding:16px 28px;
-  border-radius:12px;
-  font-weight:bold;
-  text-decoration:none;
-  font-size:18px;
-  margin-top:20px;
+.hero-img {
+  width: 90%;
+  max-width: 800px;
+  border-radius: 20px;
+  margin: 30px auto;
+  box-shadow: 0 20px 50px rgba(124, 58, 237, 0.15); /* Sombra morada sutil */
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
-.features{
-  max-width:900px;
-  margin:40px auto;
-  display:grid;
-  gap:20px;
-  padding:20px;
+/* --- 4. BOTONES MEJORADOS --- */
+.btn {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--purple), var(--purple-hover));
+  color: white;
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 18px;
+  margin-top: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
 }
 
-.feature{
-  background:#111;
-  padding:20px;
-  border-radius:14px;
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6);
 }
 
-.feature h3{
-  color:#8b5cf6;
+/* --- 5. CARACTERÍSTICAS (Grid Responsivo) --- */
+.features {
+  max-width: 1000px;
+  margin: 60px auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Esto lo hace adaptable */
+  gap: 30px;
+  padding: 20px;
 }
 
-.testimonials{
-  background:#0f0f16;
-  padding:40px 20px;
-  border-radius:20px;
-  margin:40px auto;
-  max-width:900px;
+.feature {
+  background: var(--card-bg);
+  padding: 30px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: 0.3s;
 }
 
-.testimonials img{
-  width:100%;
-  border-radius:16px;
+.feature:hover {
+  transform: translateY(-5px);
+  border-color: var(--purple);
 }
 
-.testimonial-text{
-  font-style:italic;
-  margin-top:20px;
-  min-height:80px;
+.feature h3 {
+  color: var(--purple);
+  font-size: 1.4rem;
+  margin-bottom: 10px;
 }
 
-.testimonial-name{
-  font-weight:bold;
-  margin-top:10px;
+/* --- 6. PRECIOS (Nueva Sección Importante) --- */
+.pricing-section {
+    padding: 60px 20px;
+    background: linear-gradient(to bottom, var(--dark), #151520);
+}
+.price-card {
+    background: var(--card-bg);
+    border: 2px solid var(--purple);
+    border-radius: 25px;
+    padding: 40px;
+    max-width: 400px;
+    margin: 0 auto;
+    position: relative;
+}
+.badge {
+    background: var(--purple); color: white; padding: 5px 15px; border-radius: 20px;
+    font-size: 12px; font-weight: bold; text-transform: uppercase;
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+}
+.price-tag { font-size: 3.5rem; font-weight: 800; margin: 10px 0; }
+.price-tag span { font-size: 1rem; color: #aaa; font-weight: normal; }
+
+/* --- 7. TESTIMONIOS --- */
+.testimonials {
+  background: #13131c;
+  padding: 60px 20px;
+  border-radius: 20px;
+  margin: 40px auto;
+  max-width: 900px;
 }
 
-footer{
-  color:#aaa;
-  font-size:14px;
-  margin:40px 0;
+.testimonials img {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 16px;
+  opacity: 0.8;
+}
+
+.testimonial-text {
+  font-style: italic;
+  margin-top: 25px;
+  min-height: 60px; /* Evita saltos cuando cambia el texto */
+  font-size: 1.1rem;
+  color: #e0e0e0;
+}
+
+.testimonial-name {
+  font-weight: bold;
+  color: var(--purple);
+  margin-top: 15px;
+}
+
+/* --- FOOTER --- */
+footer {
+  color: #666;
+  font-size: 14px;
+  margin: 60px 0;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 30px;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>Turn quotes into <span>real income</span> faster</h1>
-  <p>Create professional quotes and invoices that help you close jobs faster.</p>
+<nav>
+    <div class="logo">STRUCTA<span>.</span></div>
+    <a href="app.html" style="font-size:14px; font-weight:bold; color:white; text-decoration:none;">Log In</a>
+</nav>
 
-  <img src="hero.png" class="hero">
+<header>
+  <h1>Turn quotes into <span>real income</span></h1>
+  <p>Create professional PDF quotes and invoices that help you close jobs 2x faster. No complex software needed.</p>
 
   <a href="app.html" class="btn">Start Creating Quotes</a>
+
+  <br>
+  <img src="hero.png" class="hero-img" alt="App Preview">
 </header>
 
 <section class="features">
   <div class="feature">
-    <h3>Fast</h3>
-    <p>Create quotes in under 60 seconds.</p>
+    <h3>⚡ Fast</h3>
+    <p>Create quotes in under 60 seconds directly from your phone or laptop.</p>
   </div>
   <div class="feature">
-    <h3>Professional</h3>
-    <p>Client-ready PDF every time.</p>
+    <h3>💎 Professional</h3>
+    <p>Client-ready PDF every time. Add your logo and look like a big company.</p>
   </div>
   <div class="feature">
-    <h3>Simple</h3>
-    <p>No accounts. No setup. Just results.</p>
+    <h3>🛡 Simple</h3>
+    <p>No accounts. No complex setup. Just fill, pay, and download.</p>
   </div>
+</section>
+
+<section class="pricing-section">
+    <div class="price-card">
+        <div class="badge">Limited Offer</div>
+        <h2>Professional Access</h2>
+        <div class="price-tag">$9 <span>USD</span></div>
+        <p>One-time payment. Lifetime value.</p>
+        <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
+        <ul style="text-align:left; color:#aaa; list-style:none; padding:0;">
+            <li style="margin-bottom:10px;">✅ Unlimited PDF Generation</li>
+            <li style="margin-bottom:10px;">✅ Automatic Area Calculations</li>
+            <li style="margin-bottom:10px;">✅ Custom Logo Upload</li>
+            <li style="margin-bottom:10px;">✅ Mobile & Desktop Ready</li>
+        </ul>
+        <a href="app.html" class="btn" style="width:100%; box-sizing:border-box;">Get Started Now</a>
+    </div>
 </section>
 
 <section class="testimonials">
   <h2>Trusted by professionals</h2>
-
-  <img src="testimonials.jpg">
+  <img src="testimonials.jpg" alt="Happy Clients">
 
   <p class="testimonial-text" id="testimonialText"></p>
   <div class="testimonial-name" id="testimonialName"></div>
 </section>
 
 <footer>
-© 2025 Structa — Tools for professionals who close.
+  <div class="logo" style="margin-bottom:10px;">STRUCTA<span>.</span></div>
+  © 2025 Structa — Tools for professionals who close.
 </footer>
 
 <script>
+// Tu script original (Funciona perfecto, no lo tocamos)
 const testimonials = [
   {
     text: "Structa Quotes helped me look more professional instantly. My clients take my estimates seriously and I close more jobs.",
@@ -161,10 +273,20 @@ const testimonials = [
 let index = 0;
 
 function showTestimonial(){
-  document.getElementById("testimonialText").textContent = testimonials[index].text;
-  document.getElementById("testimonialName").textContent = testimonials[index].name;
-  index = (index + 1) % testimonials.length;
+  // Agregamos una pequeña animación de opacidad si es posible
+  const textEl = document.getElementById("testimonialText");
+  textEl.style.opacity = 0;
+  
+  setTimeout(() => {
+      textEl.textContent = testimonials[index].text;
+      document.getElementById("testimonialName").textContent = testimonials[index].name;
+      textEl.style.opacity = 1;
+      index = (index + 1) % testimonials.length;
+  }, 200); // Pequeña pausa para suavizar
 }
+
+// Inicializar estilo de transición
+document.getElementById("testimonialText").style.transition = "opacity 0.3s";
 
 showTestimonial();
 setInterval(showTestimonial, 4000);
