@@ -5,10 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Structa Quotes - Create Invoice</title>
-    <!-- Netlify Identity Widget -->
+    <!-- Netlify Identity Widget indispensable para el Login -->
     <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
-        /* ... TUS MISMOS ESTILOS DE ANTES ... */
         :root {
             --purple: #7c3aed;
             --purple-hover: #6d28d9;
@@ -213,7 +212,6 @@
             }
         }
 
-        /* Estilo para mensajes de error */
         .error-msg {
             color: #ef4444;
             background: rgba(239, 68, 68, 0.1);
@@ -234,7 +232,7 @@
 <body>
 
     <div class="container">
-        <!-- Optional App Nav -->
+        <!-- Navegación y estado de autenticación -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
             <span style="font-weight:bold; color:var(--text-muted); font-size: 14px;">Logged in as: <span
                     id="userEmailLabel" style="color:white;">-</span></span>
@@ -244,7 +242,7 @@
 
         <h1>Create <span>Premium</span> Quote</h1>
 
-        <!-- Hidden input for email -->
+        <!-- Formulario (Hidden input para guardar el email verificado de Netlify) -->
         <input id="email" type="hidden">
         <label>Company Logo</label> <input type="file" id="logoUpload" accept="image/*">
         <label>From (Company)</label> <input id="company" placeholder="Structa Inc.">
@@ -270,7 +268,7 @@
         <button class="btn-pay" id="generateBtn" onclick="generateInvoice()">Generate PDF Invoice</button>
     </div>
 
-    <!-- ROBOT AI ASSISTANT UI -->
+    <!-- UI DEL ROBOT -->
     <div class="robot-container">
         <div class="robot-bubble" id="robotMessage">Hello! I'm Structy. I'm here to help you create your first
             professional quote!</div>
@@ -283,45 +281,44 @@
     </div>
 
     <script>
-        // --- AI ROBOT LOGIC ---
+        // --- LOGICA DEL ROBOT ---
         const robotMessage = document.getElementById('robotMessage');
         let currentTimeout;
 
         function speak(text, duration = 5000) {
             robotMessage.textContent = text;
             robotMessage.classList.add('visible');
-
             if (currentTimeout) clearTimeout(currentTimeout);
-
             currentTimeout = setTimeout(() => {
                 robotMessage.classList.remove('visible');
             }, duration);
         }
 
-        function pokeRobot() { // Manual click on robot
+        function pokeRobot() {
             const phrases = ["Let's win that job!", "You're doing great.", "Ready to export?", "PDFs make you look serious."];
             speak(phrases[Math.floor(Math.random() * phrases.length)]);
         }
 
-        // --- AUTH FORCING ---
-        let userEmail = "";
+        // --- AUTENTICACIÓN Y EXTRACCIÓN DEL EMAIL (Netlify Identity) ---
         if (window.netlifyIdentity) {
             window.netlifyIdentity.on("init", user => {
                 if (!user) {
-                    window.location.href = "index.html"; // No user? Kick out.
+                    // Si el usuario llega a app.html sin estar logueado, lo regresamos al index
+                    window.location.href = "index.html";
                 } else {
-                    userEmail = user.email;
-                    document.getElementById('email').value = userEmail;
-                    document.getElementById('userEmailLabel').textContent = userEmail;
-                    setTimeout(() => speak(`Welcome back, ${user.user_metadata?.full_name || 'friend'}! Let's create your quote.`, 6000), 1000);
+                    // Si el usuario está validado, guardamos su email en el input oculto y mostramos un saludo
+                    document.getElementById('email').value = user.email;
+                    document.getElementById('userEmailLabel').textContent = user.email;
+                    setTimeout(() => speak(`Welcome back! Let's create your quote.`, 6000), 1000);
                 }
             });
             window.netlifyIdentity.on("logout", () => {
+                // Si cierra sesión lo regresamos a index
                 window.location.href = "index.html";
             });
         }
 
-        // Watch for specific actions to give tips
+        // TIPS DINÁMICOS DEL ROBOT
         document.getElementById('logoUpload').addEventListener('change', () => {
             if (document.getElementById('logoUpload').files.length > 0) {
                 speak("Awesome! A custom logo makes you look like a top-tier professional.", 4000);
@@ -334,7 +331,7 @@
             }
         });
 
-        // --- LÓGICA DE PREVISUALIZACIÓN ---
+        // --- CÁLCULO EN VIVOS ---
         const inputs = ['length', 'width', 'price'];
         inputs.forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
 
@@ -349,7 +346,6 @@
             document.getElementById('previewTotal').textContent = "$" + total.toFixed(2);
             document.getElementById('previewArea').textContent = area.toFixed(2) + " m²";
 
-            // Robot feedback on calculation
             if (total > 0 && !window.hasSeenCalc) {
                 window.hasSeenCalc = true;
                 const pBox = document.getElementById('previewContainer');
@@ -360,8 +356,9 @@
             }
         }
 
-        // --- GENERAR PDF EN EL BACKEND ---
+        // --- SOLICITUD AL BACKEND Y DESCARGA DEL PDF ---
         async function generateInvoice() {
+            // Obtenemos el correo valioso extraído gracias al widget de Netlify
             const email = document.getElementById('email').value;
             const client = document.getElementById('client').value;
             const l = document.getElementById('length').value;
@@ -371,10 +368,10 @@
             const errorBox = document.getElementById('errorBox');
             errorBox.style.display = 'none';
 
-            // 1. Validar requeridos
+            // Validar campos faltantes
             if (!email || !client || !l || !w || !p) {
                 speak("Hmm, I think you missed some required fields. Please fill them out!", 4000);
-                robotMessage.style.color = "#ef4444"; // Red text warning
+                robotMessage.style.color = "#ef4444";
                 setTimeout(() => robotMessage.style.color = "", 4000);
                 return;
             }
@@ -382,9 +379,9 @@
             const btn = document.getElementById('generateBtn');
             btn.textContent = "Generating...";
             btn.disabled = true;
-            speak("Processing your PDF... building the matrix...", 3000);
+            speak("Processing your PDF... checking limitations...", 3000);
 
-            // 2. Preparar datos (FormData permite enviar archivos y texto mixto)
+            // FormData compila todos los datos y el archivo (logo)
             const formData = new FormData();
             formData.append('email', email);
             formData.append('company', document.getElementById('company').value);
@@ -400,9 +397,7 @@
             }
 
             try {
-                // Enviar a nuestro backend SERVERLESS
-                // El rewrite de netlify.toml se encargará de transformar /api/generate-pdf en la función lambda correcta.
-                // En dev (netlify dev) correrá en el localhost mapeado
+                // Enviar llamada a nuestra Serverless Function de Netlify
                 const response = await fetch('/api/generate-pdf', {
                     method: 'POST',
                     body: formData
@@ -412,16 +407,16 @@
                     let errorData;
                     try { errorData = await response.json(); } catch (e) { }
 
-                    // Revisa si es límite de uso
+                    // Aquí atrapamos el error si su límite de 3 PDFs llega a su fin en la Base de Datos
                     if (response.status === 403 && errorData?.error === "LimitReached") {
-                        speak("Oh no! You've used your 3 free quotes this month.", 6000);
-                        errorBox.innerHTML = `You have reached the free limit of 3 quotes per month. <a href="index.html#pricing">Upgrade to Pro</a> for unlimited access.`;
+                        speak("Oh no! You've used your 3 free quotes limit.", 6000);
+                        errorBox.innerHTML = `You have reached the free limit of 3 quotes per month (Supabase Checked). <a href="index.html#pricing">Upgrade to Pro</a> for unlimited access.`;
                         errorBox.style.display = 'block';
                     } else {
                         throw new Error("Server error.");
                     }
                 } else {
-                    // Generación de PDF exitosa. El servidor devuelve el .pdf directamente.
+                    // ¡Todo salió bien! Descargamos directamente el archivo binario enviado por PDFKit.
                     const blob = await response.blob();
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
@@ -435,14 +430,13 @@
                 }
             } catch (err) {
                 console.error(err);
-                speak("Sorry, I couldn't reach the server. Is it running?", 5000);
+                speak("Sorry, I couldn't reach the server. Please try again.", 5000);
             }
 
             btn.textContent = "Generate PDF Invoice";
             btn.disabled = false;
         }
     </script>
-
 </body>
 
 </html>
