@@ -397,8 +397,8 @@
             }
 
             try {
-                // Enviar llamada a nuestra Serverless Function de Netlify
-                const response = await fetch('/api/generate-pdf', {
+                // Enviar llamada a nuestra Serverless Function de Netlify (Ruta corregida)
+                const response = await fetch('/.netlify/functions/api/generate-pdf', {
                     method: 'POST',
                     body: formData
                 });
