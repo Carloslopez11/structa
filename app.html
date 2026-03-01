@@ -1,103 +1,448 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Structa Quotes - Create Invoice</title>
-<style>
-/* ... TUS MISMOS ESTILOS DE ANTES ... */
-:root{ --purple:#7c3aed; --dark:#0f0f16; --card:#1a1a2e; }
-body{ margin:0; font-family:'Segoe UI', sans-serif; background:radial-gradient(circle at top, var(--card), var(--dark)); color:white; padding:20px; }
-.container{ max-width:600px; margin:auto; background:var(--card); padding:30px; border-radius:20px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
-input{ width:100%; box-sizing: border-box; padding:14px; margin-top:5px; background:#0b0b12; border:1px solid #333; color:white; border-radius:8px; font-size:16px; outline:none; transition:0.3s; }
-input:focus { border-color: var(--purple); }
-.preview-box { margin-top: 20px; padding: 20px; background: rgba(124, 58, 237, 0.1); border: 1px solid var(--purple); border-radius: 12px; text-align: center; }
-.total-amount { font-size: 32px; font-weight: bold; color: var(--purple); margin: 5px 0; }
-.btn-pay { width:100%; padding:16px; background:linear-gradient(135deg,#7c3aed,#5b21b6); border:none; color:white; font-weight:bold; border-radius:10px; cursor:pointer; font-size: 18px; margin-top: 20px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Structa Quotes - Create Invoice</title>
+    <!-- Netlify Identity Widget -->
+    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <style>
+        /* ... TUS MISMOS ESTILOS DE ANTES ... */
+        :root {
+            --purple: #7c3aed;
+            --purple-hover: #6d28d9;
+            --dark: #0f0f16;
+            --card: #1a1a2e;
+            --text-muted: #a1a1aa;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at top, var(--card), var(--dark));
+            color: white;
+            padding: 20px;
+            padding-bottom: 120px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: var(--card);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out forwards;
+            animation-delay: 0.2s;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 14px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            background: #0b0b12;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--purple);
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--text-muted);
+        }
+
+        .preview-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid var(--purple);
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .preview-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.2);
+        }
+
+        .total-amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--purple);
+            margin: 5px 0;
+        }
+
+        .btn-pay {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-pay:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.6);
+        }
+
+        /* --- AI ROBOT ASSISTANT --- */
+        .robot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: flex-end;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out forwards;
+            animation-delay: 1s;
+        }
+
+        .robot-bubble {
+            background: white;
+            color: var(--dark);
+            padding: 15px 20px;
+            border-radius: 20px;
+            border-bottom-right-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            max-width: 250px;
+            margin-right: -10px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: auto;
+        }
+
+        .robot-bubble.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .robot-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed);
+            border-radius: 50%;
+            border: 3px solid white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.6);
+            cursor: pointer;
+            pointer-events: auto;
+            animation: float 3s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
+        }
+
+        .robot-eyes {
+            display: flex;
+            gap: 8px;
+        }
+
+        .robot-eye {
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            animation: blink 4s infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes blink {
+
+            0%,
+            96%,
+            98%,
+            100% {
+                transform: scaleY(1);
+            }
+
+            97%,
+            99% {
+                transform: scaleY(0.1);
+            }
+        }
+
+        /* Estilo para mensajes de error */
+        .error-msg {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error-msg a {
+            color: #ef4444;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h1>Create <span>Premium</span> Quote</h1>
+    <div class="container">
+        <!-- Optional App Nav -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+            <span style="font-weight:bold; color:var(--text-muted); font-size: 14px;">Logged in as: <span
+                    id="userEmailLabel" style="color:white;">-</span></span>
+            <a href="#" onclick="netlifyIdentity.logout();"
+                style="color:var(--purple); font-size:12px; text-decoration:none;">Log out</a>
+        </div>
 
-  <label>Company Logo</label> <input type="file" id="logoUpload" accept="image/*">
-  <label>From (Company)</label> <input id="company" placeholder="Structa Inc.">
-  <label>To (Client)</label> <input id="client" placeholder="Client Name">
-  <label>Description</label> <input id="work" placeholder="Service description">
-  
-  <div style="display:flex; gap:15px;">
-    <div style="flex:1"><label>Length</label><input id="length" type="number" placeholder="0"></div>
-    <div style="flex:1"><label>Width</label><input id="width" type="number" placeholder="0"></div>
-  </div>
-  <label>Price ($)</label> <input id="price" type="number" placeholder="0.00">
+        <h1>Create <span>Premium</span> Quote</h1>
 
-  <div class="preview-box">
-      <div style="font-size:12px;color:#aaa">ESTIMATED TOTAL</div>
-      <div class="total-amount" id="previewTotal">$0.00</div>
-      <div style="font-size:12px;color:#aaa" id="previewArea">0 m²</div>
-  </div>
+        <!-- Hidden input for email -->
+        <input id="email" type="hidden">
+        <label>Company Logo</label> <input type="file" id="logoUpload" accept="image/*">
+        <label>From (Company)</label> <input id="company" placeholder="Structa Inc.">
+        <label>To (Client)</label> <input id="client" placeholder="Client Name">
+        <label>Description</label> <input id="work" placeholder="Service description">
 
-  <button class="btn-pay" onclick="goToStripePayment()">Pay Now to Download PDF</button>
-</div>
+        <div style="display:flex; gap:15px;">
+            <div style="flex:1"><label>Length (m)</label><input id="length" type="number" step="0.01" placeholder="0">
+            </div>
+            <div style="flex:1"><label>Width (m)</label><input id="width" type="number" step="0.01" placeholder="0">
+            </div>
+        </div>
+        <label>Price per m² ($)</label> <input id="price" type="number" step="0.01" placeholder="0.00">
 
-<script>
-// --- LÓGICA DE PREVISUALIZACIÓN ---
-const inputs = ['length', 'width', 'price'];
-inputs.forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
+        <div class="preview-box" id="previewContainer">
+            <div style="font-size:12px;color:var(--text-muted)">ESTIMATED TOTAL</div>
+            <div class="total-amount" id="previewTotal">$0.00</div>
+            <div style="font-size:12px;color:var(--text-muted)" id="previewArea">0 m²</div>
+        </div>
 
-function updatePreview() {
-    const l = parseFloat(document.getElementById('length').value) || 0;
-    const w = parseFloat(document.getElementById('width').value) || 0;
-    const p = parseFloat(document.getElementById('price').value) || 0;
-    document.getElementById('previewTotal').textContent = "$" + (l * w * p).toFixed(2);
-    document.getElementById('previewArea').textContent = (l * w).toFixed(2) + " m²";
-}
+        <div id="errorBox" class="error-msg"></div>
 
-// --- GUARDAR LOGO ---
-let logoBase64 = null;
-document.getElementById("logoUpload").addEventListener("change", e => {
-    const file = e.target.files[0];
-    if(file){
-        const reader = new FileReader();
-        reader.onload = evt => logoBase64 = evt.target.result;
-        reader.readAsDataURL(file);
-    }
-});
+        <button class="btn-pay" id="generateBtn" onclick="generateInvoice()">Generate PDF Invoice</button>
+    </div>
 
-// --- LÓGICA DE COBRO (AQUÍ ESTÁ EL CAMBIO IMPORTANTE) ---
-function goToStripePayment() {
-    const client = document.getElementById('client').value;
-    const l = parseFloat(document.getElementById('length').value);
-    const w = parseFloat(document.getElementById('width').value);
-    const p = parseFloat(document.getElementById('price').value);
+    <!-- ROBOT AI ASSISTANT UI -->
+    <div class="robot-container">
+        <div class="robot-bubble" id="robotMessage">Hello! I'm Structy. I'm here to help you create your first
+            professional quote!</div>
+        <div class="robot-icon" onclick="pokeRobot()">
+            <div class="robot-eyes">
+                <div class="robot-eye"></div>
+                <div class="robot-eye"></div>
+            </div>
+        </div>
+    </div>
 
-    // 1. Validar que haya datos
-    if(!client || !l || !w || !p) {
-        alert("Please fill in all fields before paying.");
-        return;
-    }
+    <script>
+        // --- AI ROBOT LOGIC ---
+        const robotMessage = document.getElementById('robotMessage');
+        let currentTimeout;
 
-    // 2. Guardar los datos del presupuesto en el navegador (Local)
-    const data = {
-        logo: logoBase64,
-        company: document.getElementById('company').value || "My Company",
-        client: client,
-        work: document.getElementById('work').value || "Service",
-        area: (l*w).toFixed(2),
-        price: p.toFixed(2),
-        total: (l*w*p).toFixed(2),
-        date: new Date().toLocaleDateString()
-    };
+        function speak(text, duration = 5000) {
+            robotMessage.textContent = text;
+            robotMessage.classList.add('visible');
 
-    localStorage.setItem("structa_data", JSON.stringify(data));
-    
-    // 3. REDIRECCIÓN A LA COBRANZA
-    // El usuario se va de tu web a Stripe. Cuando pague, Stripe lo regresará.
-    window.location.href = "https://buy.stripe.com/test_00w7sL6il3jwbK81D01ck01"; 
-}
-</script>
+            if (currentTimeout) clearTimeout(currentTimeout);
+
+            currentTimeout = setTimeout(() => {
+                robotMessage.classList.remove('visible');
+            }, duration);
+        }
+
+        function pokeRobot() { // Manual click on robot
+            const phrases = ["Let's win that job!", "You're doing great.", "Ready to export?", "PDFs make you look serious."];
+            speak(phrases[Math.floor(Math.random() * phrases.length)]);
+        }
+
+        // --- AUTH FORCING ---
+        let userEmail = "";
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("init", user => {
+                if (!user) {
+                    window.location.href = "index.html"; // No user? Kick out.
+                } else {
+                    userEmail = user.email;
+                    document.getElementById('email').value = userEmail;
+                    document.getElementById('userEmailLabel').textContent = userEmail;
+                    setTimeout(() => speak(`Welcome back, ${user.user_metadata?.full_name || 'friend'}! Let's create your quote.`, 6000), 1000);
+                }
+            });
+            window.netlifyIdentity.on("logout", () => {
+                window.location.href = "index.html";
+            });
+        }
+
+        // Watch for specific actions to give tips
+        document.getElementById('logoUpload').addEventListener('change', () => {
+            if (document.getElementById('logoUpload').files.length > 0) {
+                speak("Awesome! A custom logo makes you look like a top-tier professional.", 4000);
+            }
+        });
+        document.getElementById('client').addEventListener('input', (e) => {
+            if (e.target.value.length === 2 && !window.hasGreetedClient) {
+                window.hasGreetedClient = true;
+                speak("Make sure the client's name is spelled correctly. It shows attention to detail!", 4000);
+            }
+        });
+
+        // --- LÓGICA DE PREVISUALIZACIÓN ---
+        const inputs = ['length', 'width', 'price'];
+        inputs.forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
+
+        function updatePreview() {
+            const l = parseFloat(document.getElementById('length').value) || 0;
+            const w = parseFloat(document.getElementById('width').value) || 0;
+            const p = parseFloat(document.getElementById('price').value) || 0;
+
+            const area = (l * w);
+            const total = area * p;
+
+            document.getElementById('previewTotal').textContent = "$" + total.toFixed(2);
+            document.getElementById('previewArea').textContent = area.toFixed(2) + " m²";
+
+            // Robot feedback on calculation
+            if (total > 0 && !window.hasSeenCalc) {
+                window.hasSeenCalc = true;
+                const pBox = document.getElementById('previewContainer');
+                pBox.style.borderColor = "#a78bfa";
+                pBox.style.boxShadow = "0 0 15px rgba(124, 58, 237, 0.4)";
+                setTimeout(() => { pBox.style.boxShadow = "none"; pBox.style.borderColor = "var(--purple)"; }, 1000);
+                speak(`Perfect! The automatic calculation is ${area.toFixed(2)} m² for a total of $${total.toFixed(2)}.`, 4000);
+            }
+        }
+
+        // --- GENERAR PDF EN EL BACKEND ---
+        async function generateInvoice() {
+            const email = document.getElementById('email').value;
+            const client = document.getElementById('client').value;
+            const l = document.getElementById('length').value;
+            const w = document.getElementById('width').value;
+            const p = document.getElementById('price').value;
+
+            const errorBox = document.getElementById('errorBox');
+            errorBox.style.display = 'none';
+
+            // 1. Validar requeridos
+            if (!email || !client || !l || !w || !p) {
+                speak("Hmm, I think you missed some required fields. Please fill them out!", 4000);
+                robotMessage.style.color = "#ef4444"; // Red text warning
+                setTimeout(() => robotMessage.style.color = "", 4000);
+                return;
+            }
+
+            const btn = document.getElementById('generateBtn');
+            btn.textContent = "Generating...";
+            btn.disabled = true;
+            speak("Processing your PDF... building the matrix...", 3000);
+
+            // 2. Preparar datos (FormData permite enviar archivos y texto mixto)
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('company', document.getElementById('company').value);
+            formData.append('client', client);
+            formData.append('work', document.getElementById('work').value);
+            formData.append('length', l);
+            formData.append('width', w);
+            formData.append('price', p);
+
+            const logoFile = document.getElementById('logoUpload').files[0];
+            if (logoFile) {
+                formData.append('logo', logoFile);
+            }
+
+            try {
+                // Enviar a nuestro backend SERVERLESS
+                // El rewrite de netlify.toml se encargará de transformar /api/generate-pdf en la función lambda correcta.
+                // En dev (netlify dev) correrá en el localhost mapeado
+                const response = await fetch('/api/generate-pdf', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    let errorData;
+                    try { errorData = await response.json(); } catch (e) { }
+
+                    // Revisa si es límite de uso
+                    if (response.status === 403 && errorData?.error === "LimitReached") {
+                        speak("Oh no! You've used your 3 free quotes this month.", 6000);
+                        errorBox.innerHTML = `You have reached the free limit of 3 quotes per month. <a href="index.html#pricing">Upgrade to Pro</a> for unlimited access.`;
+                        errorBox.style.display = 'block';
+                    } else {
+                        throw new Error("Server error.");
+                    }
+                } else {
+                    // Generación de PDF exitosa. El servidor devuelve el .pdf directamente.
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Quote_${client.replace(/\s+/g, '_')}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+
+                    speak("Success! Your quote has been downloaded. Go close that job!", 5000);
+                }
+            } catch (err) {
+                console.error(err);
+                speak("Sorry, I couldn't reach the server. Is it running?", 5000);
+            }
+
+            btn.textContent = "Generate PDF Invoice";
+            btn.disabled = false;
+        }
+    </script>
 
 </body>
+
 </html>
