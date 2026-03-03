@@ -3,6 +3,7 @@ const cors = require('cors');
 const multer = require('multer');
 const PDFDocument = require('pdfkit');
 const serverless = require('serverless-http');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // Requiere variable de entorno
 
 // Importamos Cliente Oficial de Supabase
 const { createClient } = require('@supabase/supabase-js');
@@ -11,6 +12,58 @@ const app = express();
 const router = express.Router();
 
 app.use(cors());
+
+// --- STRIPE WEBHOOK (DEBE USAR BODY RAW ANTES DE express.json) ---
+// Stripe lo necesita crudo para verificar la firma de seguridad
+router.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+        console.error(`Webhook Error: ${err.message}`);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Comprobar si fue una nueva suscripción exitosa o pago procesado
+    if (event.type === 'checkout.session.completed' || event.type === 'invoice.payment_succeeded') {
+        let email = '';
+
+        if (event.type === 'checkout.session.completed') {
+            email = event.data.object.customer_details.email;
+        } else {
+            email = event.data.object.customer_email;
+        }
+
+        console.log(`Pago recibido de: ${email}. Actualizando a PRO...`);
+
+        // Configuramos la llave para acualizar Supabase
+        const supabaseUrl = process.env.SUPABASE_URL;
+        const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        // Actualizamos is_pro = true para el cliente que acaba de pagar
+        if (email) {
+            const { error: upsertError } = await supabase
+                .from('usage')
+                // Le damos PRO, y por si acaso reseteamos count a 0 aunque el límite de PRO sea infinito
+                .upsert({ email: email, is_pro: true, count: 0 });
+
+            if (upsertError) {
+                console.error("Error al actualizar Supabase en el Webhook:", upsertError);
+            } else {
+                console.log(`Usuario ${email} actualizado a PRO con éxito.`);
+            }
+        }
+    }
+
+    res.status(200).send('Webhook process completed');
+});
+
+// A partir de aquí Express usa JSON normal
 app.use(express.json());
 
 // Configuramos las llaves mediante variables de entorno en tu panel de Netlify
@@ -18,7 +71,7 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
-// Base de datos de reserva temporal (útil si aún no pones las llaves de Netlify en tu Dashboard)
+// Base de datos de reserva temporal
 const usageDB = {};
 
 // Configuramos Multer para recibir nuestro formData y guardar la imagen en memoria RAM
@@ -51,12 +104,19 @@ router.post('/generate-pdf', upload.single('logo'), async (req, res) => {
                 console.error("Supabase Error:", error);
             }
         } else {
-            // Si Supabase falla o falta de configurar variables corre desde nuestra Memory BD
             if (!usageDB[email]) usageDB[email] = { count: 0, isPro: false };
             userStatus = usageDB[email];
         }
 
-        // VALIDACIÓN: Si es gratis (is_pro false) y ya llegó al máximo de 3, lo negamos
+        // 1. VALIDACIÓN LOGOS: Si subió logo pero NO es pro, lo bloqueamos
+        if (req.file && !userStatus.isPro) {
+            return res.status(403).json({
+                error: "ProFeatureLogo",
+                message: "Uploading a logo requires the Pro Plan."
+            });
+        }
+
+        // 2. VALIDACIÓN LIMITES: Si es gratis (is_pro false) y ya llegó al máximo de 3, lo negamos
         if (!userStatus.isPro && userStatus.count >= 3) {
             return res.status(403).json({
                 error: "LimitReached",
@@ -78,7 +138,7 @@ router.post('/generate-pdf', upload.single('logo'), async (req, res) => {
             usageDB[email] = userStatus;
         }
 
-        // PASAMOS A RENDERIZAR SU ARCHIVO (Los créditos están asegurados a cobrar)
+        // PASAMOS A RENDERIZAR SU ARCHIVO
         const l = parseFloat(length), w = parseFloat(width), p = parseFloat(price);
         if (isNaN(l) || isNaN(w) || isNaN(p)) return res.status(400).json({ error: "Invalid numbers." });
 
@@ -94,6 +154,13 @@ router.post('/generate-pdf', upload.single('logo'), async (req, res) => {
             const pdfData = Buffer.concat(buffers);
             res.setHeader('Content-disposition', 'attachment; filename="structa_quote.pdf"');
             res.setHeader('Content-type', 'application/pdf');
+
+            // Calculamos cuántos le quedan si es Free y lo mandamos en Header oculto al Frontend para Structy
+            if (!userStatus.isPro) {
+                const remaining = 3 - userStatus.count;
+                res.setHeader('X-Remaining-Quotes', remaining.toString());
+            }
+
             // send native buffer a tu navegador
             res.send(pdfData);
         });
@@ -102,11 +169,11 @@ router.post('/generate-pdf', upload.single('logo'), async (req, res) => {
         const primaryColor = '#7c3aed', textColor = '#1f2937', textMuted = '#6b7280';
         const headerTop = 50;
 
-        if (req.file) {
-            // Imagen inyectada por el usuario Frontend (multer)
+        if (req.file && userStatus.isPro) {
+            // Imagen inyectada por el usuario Frontend (multer) y PERMITIDA POR PLAN PRO
             doc.image(req.file.buffer, 50, headerTop, { width: 120 });
         } else {
-            // Default caso de no haber logo
+            // Default caso de no haber logo (o ser Free plan y haberse intentado colar)
             doc.fontSize(24).font('Helvetica-Bold').fillColor(primaryColor).text(company || "My Company", 50, headerTop);
         }
 
@@ -170,7 +237,7 @@ router.post('/generate-pdf', upload.single('logo'), async (req, res) => {
         if (!userStatus.isPro) {
             const bottomPosition = doc.page.height - 50;
             doc.fontSize(9).font('Helvetica').fillColor('#9ca3af')
-                .text('Generated by Structa Quotes (Free Version) - Upgrade to Pro.',
+                .text('Generated by Structa Quotes (Free Version) - Subscribe for unlimited usage.',
                     50, bottomPosition, { align: 'center', width: 495 });
         }
 

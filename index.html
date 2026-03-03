@@ -274,7 +274,8 @@
       flex-direction: column;
       text-align: left;
       width: 100%;
-      max-width: 380px;
+      max-width: 320px;
+      /* Un poco más estrechas para que quepan 3 */
       opacity: 0;
       animation: fadeUp 0.8s ease-out forwards;
     }
@@ -284,7 +285,11 @@
     }
 
     .price-card:nth-child(2) {
-      animation-delay: 0.6s;
+      animation-delay: 0.5s;
+    }
+
+    .price-card:nth-child(3) {
+      animation-delay: 0.7s;
     }
 
     .price-card:hover {
@@ -296,6 +301,12 @@
     .price-card.popular {
       border: 2px solid var(--purple);
       box-shadow: 0 10px 30px rgba(124, 58, 237, 0.2);
+      transform: scale(1.05);
+      /* Ligeramente más grande */
+    }
+
+    .price-card.popular:hover {
+      transform: scale(1.05) translateY(-10px);
     }
 
     .price-card h3 {
@@ -486,32 +497,51 @@
     </div>
 
     <div class="pricing-cards">
-      <!-- Starter Plan -->
+      <!-- Free Plan -->
       <div class="price-card">
-        <h3>Starter</h3>
-        <p class="desc">Perfect for testing out your new professional look.</p>
+        <h3>Free</h3>
+        <p class="desc">Take it for a spin.</p>
         <div class="price-tag">$0 <span>/mo</span></div>
         <ul class="features-list">
           <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg> Up to 3 quotes per month</li>
+            </svg> 3 quotes per month</li>
           <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg> Standard PDF Template</li>
+            </svg> Standard Template</li>
           <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg> Structa watermark</li>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg> No custom logo</li>
         </ul>
-        <!-- Botón que invoca login en vez de llevar directo a la app (para freemium) -->
         <a href="#" onclick="netlifyIdentity.open();" class="price-btn">Start for Free</a>
+      </div>
+
+      <!-- Starter Plan -->
+      <div class="price-card">
+        <h3>Starter</h3>
+        <p class="desc">Perfect for testing out your new professional look.</p>
+        <div class="price-tag">$3.99 <span>/mo</span></div>
+        <ul class="features-list">
+          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg> Unlimited PDF Generation</li>
+          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg> No Watermark</li>
+          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg> No custom logo</li>
+        </ul>
+        <!-- PEGA AQUÍ TU LINK DE PAGO DE STRIPE PARA STARTER -->
+        <a href="https://buy.stripe.com/00w7sL6il3jwbK81D01ck01" target="_blank" class="price-btn">Subscribe Starter</a>
       </div>
 
       <!-- Pro Plan (Highlighted) -->
       <div class="price-card popular">
-        <div class="badge">Limited Offer</div>
-        <h3>Professional Access</h3>
+        <div class="badge">Most Popular</div>
+        <h3>Pro</h3>
         <p class="desc">For professionals who want to stand out and win big projects.</p>
-        <div class="price-tag">$9 <span>USD</span></div>
+        <div class="price-tag">$8.99 <span>/mo</span></div>
         <ul class="features-list">
           <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -522,13 +552,9 @@
           <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg> Automatic Area Calculations</li>
-          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg> Mobile & Desktop Ready</li>
         </ul>
-        <!-- PEGA AQUÍ TU LINK DE PAGO DE STRIPE -->
-        <!-- Ejemplo: href="https://buy.stripe.com/TU_ENLACE_DE_PAGO" -->
-        <a href="https://buy.stripe.com/test_tú_link_de_pago" target="_blank" class="price-btn">Get Lifetime Access</a>
+        <!-- PEGA AQUÍ TU LINK DE PAGO DE STRIPE PARA PRO -->
+        <a href="https://buy.stripe.com/bJebJ14ad9HU5lKepM1ck02" target="_blank" class="price-btn">Subscribe Pro</a>
       </div>
     </div>
   </section>
@@ -547,7 +573,6 @@
   </footer>
 
   <script>
-    // Tu script original (Funciona perfecto, no lo tocamos)
     const testimonials = [
       {
         text: "Structa Quotes helped me look more professional instantly. My clients take my estimates seriously and I close more jobs.",
@@ -566,7 +591,6 @@
     let index = 0;
 
     function showTestimonial() {
-      // Agregamos una pequeña animación de opacidad si es posible
       const textEl = document.getElementById("testimonialText");
       textEl.style.opacity = 0;
 
@@ -575,58 +599,46 @@
         document.getElementById("testimonialName").textContent = testimonials[index].name;
         textEl.style.opacity = 1;
         index = (index + 1) % testimonials.length;
-      }, 200); // Pequeña pausa para suavizar
+      }, 200);
     }
 
-    // Inicializar estilo de transición
     document.getElementById("testimonialText").style.transition = "opacity 0.3s";
 
     showTestimonial();
     setInterval(showTestimonial, 4000);
 
-    // --- EFECTO 3D TILT INTERACTIVO PARA HERO IMAGE ---
     const heroContainer = document.getElementById('heroContainer');
     const heroImage = document.getElementById('heroImage');
 
     if (heroContainer && heroImage) {
-      // Cuando el mouse se mueve DENTRO del contenedor
       heroContainer.addEventListener('mousemove', (e) => {
-        // Pausar animación de flotación para que el tracking sea suave
         heroContainer.style.animationPlayState = 'paused';
         heroImage.classList.add('is-hovered');
 
-        // Calcular posición del mouse relativa al centro de la imagen
         const rect = heroContainer.getBoundingClientRect();
-        const x = e.clientX - rect.left; // Posición X dentro del elemento
-        const y = e.clientY - rect.top;  // Posición Y dentro del elemento
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
 
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
 
-        // Calcular ángulos de rotación (inversos para efecto espejo mágico)
-        // Multiplicador más alto = efecto más agresivo. 15 grados máx.
         const rotateX = ((y - centerY) / centerY) * -8;
         const rotateY = ((x - centerX) / centerX) * 8;
 
-        // Aplicar transformación 3D (rotación en ejes + ligero acercamiento)
         heroImage.style.transform = `scale3d(1.02, 1.02, 1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
       });
 
-      // Cuando el mouse SALE del contenedor, restaurar estado original
       heroContainer.addEventListener('mouseleave', () => {
         heroImage.classList.remove('is-hovered');
 
-        // La clase CSS transition se encargará de suavizar el retorno a 0
         heroImage.style.transform = `scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg)`;
 
-        // Reanudar flotación infinita después de un breve momento
         setTimeout(() => {
           heroContainer.style.animationPlayState = 'running';
-        }, 400); // 400ms = tiempo de la transición CSS
+        }, 400);
       });
     }
 
-    // --- NETLIFY IDENTITY LOGIC ---
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
         if (!user) {

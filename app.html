@@ -244,7 +244,10 @@
 
         <!-- Formulario (Hidden input para guardar el email verificado de Netlify) -->
         <input id="email" type="hidden">
-        <label>Company Logo</label> <input type="file" id="logoUpload" accept="image/*">
+
+        <label>Company Logo (Pro Plan Only)</label>
+        <input type="file" id="logoUpload" accept="image/*">
+
         <label>From (Company)</label> <input id="company" placeholder="Structa Inc.">
         <label>To (Client)</label> <input id="client" placeholder="Client Name">
         <label>Description</label> <input id="work" placeholder="Service description">
@@ -321,7 +324,7 @@
         // TIPS DINÁMICOS DEL ROBOT
         document.getElementById('logoUpload').addEventListener('change', () => {
             if (document.getElementById('logoUpload').files.length > 0) {
-                speak("Awesome! A custom logo makes you look like a top-tier professional.", 4000);
+                speak("Awesome! But remember, custom logos are an exclusive feature of the Pro Plan!", 5000);
             }
         });
         document.getElementById('client').addEventListener('input', (e) => {
@@ -407,16 +410,31 @@
                     let errorData;
                     try { errorData = await response.json(); } catch (e) { }
 
+                    // Aquí atrapamos el error si subió logo y no es Pro
+                    if (response.status === 403 && errorData?.error === "ProFeatureLogo") {
+                        speak("Oops! Custom logos are for Pro users. Let's upgrade!", 6000);
+                        errorBox.innerHTML = `Uploading a custom logo is an exclusive feature of the <b>Pro Plan</b>. Please remove the logo or <a href="index.html#pricing">Upgrade to Pro</a>.`;
+                        errorBox.style.display = 'block';
+                    }
                     // Aquí atrapamos el error si su límite de 3 PDFs llega a su fin en la Base de Datos
-                    if (response.status === 403 && errorData?.error === "LimitReached") {
+                    else if (response.status === 403 && errorData?.error === "LimitReached") {
                         speak("Oh no! You've used your 3 free quotes limit.", 6000);
-                        errorBox.innerHTML = `You have reached the free limit of 3 quotes per month (Supabase Checked). <a href="index.html#pricing">Upgrade to Pro</a> for unlimited access.`;
+                        errorBox.innerHTML = `You have reached the free limit of 3 quotes per month. <a href="index.html#pricing">View our plans</a> for unlimited access.`;
                         errorBox.style.display = 'block';
                     } else {
                         throw new Error("Server error.");
                     }
                 } else {
-                    // ¡Todo salió bien! Descargamos directamente el archivo binario enviado por PDFKit.
+                    // ¡Todo salió bien! Leemos cuántos quotes le quedan de los headers enviados por el server
+                    const remainingQuotesHeader = response.headers.get('X-Remaining-Quotes');
+                    if (remainingQuotesHeader === '1') {
+                        // Structy avisa que queda 1 quote
+                        speak("Heads up! You only have 1 free quote left this month. Consider subscribing!", 7000);
+                    } else {
+                        speak("Success! Your quote has been downloaded. Go close that job!", 5000);
+                    }
+
+                    // Descargamos directamente el archivo binario enviado por PDFKit.
                     const blob = await response.blob();
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
@@ -425,8 +443,6 @@
                     document.body.appendChild(a);
                     a.click();
                     window.URL.revokeObjectURL(url);
-
-                    speak("Success! Your quote has been downloaded. Go close that job!", 5000);
                 }
             } catch (err) {
                 console.error(err);
