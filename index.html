@@ -7,24 +7,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Create professional PDF quotes and invoices in seconds.">
 
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <!-- Netlify Identity Widget -->
   <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
   <style>
-    /* --- 1. CONFIGURACIÓN BASE (Modernización) --- */
+    /* --- 1. CONFIGURACIÓN BASE (Premium SaaS Redesign) --- */
     :root {
-      --purple: #7c3aed;
-      --purple-hover: #6d28d9;
-      --dark: #0f0f16;
-      --card-bg: #1a1a2e;
-      --text-main: #ffffff;
-      --text-muted: #a1a1aa;
+      --bg-dark: #0B0E14;
+      --card-bg: #161B22;
+      --purple: #7C3AED;
+      --purple-hover: #6D28D9;
+      --cyan: #2DD4BF;
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --border-subtle: rgba(124, 58, 237, 0.12);
+      /* 1px solid #7C3AED20 roughly */
     }
 
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      text-align: center;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    /* ANIMACIONES */
     @keyframes fadeUp {
       0% {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(20px);
       }
 
       100% {
@@ -33,60 +56,68 @@
       }
     }
 
-    /* Animación infinita de flotación sutil */
     @keyframes floating {
       0% {
-        transform: translateY(0px) rotateX(0) rotateY(0);
+        transform: translateY(0px);
       }
 
       50% {
-        transform: translateY(-10px) rotateX(0) rotateY(0);
+        transform: translateY(-15px);
       }
 
       100% {
-        transform: translateY(0px) rotateX(0) rotateY(0);
+        transform: translateY(0px);
       }
     }
 
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      /* Fuente más moderna */
-      background-color: var(--dark);
-      color: var(--text-main);
-      text-align: center;
-      line-height: 1.6;
-    }
-
-    /* --- 2. NAVEGACIÓN (Nueva) --- */
+    /* --- 2. NAVEGACIÓN --- */
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 5%;
-      background: rgba(15, 15, 22, 0.9);
-      backdrop-filter: blur(10px);
+      padding: 1.5rem 5%;
+      background: rgba(11, 14, 20, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
       z-index: 100;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      animation: fadeUp 0.8s ease-out forwards;
+      animation: fadeUp 0.6s ease-out forwards;
     }
 
     .logo {
       font-weight: 800;
-      font-size: 1.2rem;
-      letter-spacing: -1px;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
     }
 
     .logo span {
       color: var(--purple);
     }
 
-    /* --- 3. HERO SECTION (Encabezado) --- */
+    #nav-actions a {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    #nav-actions a:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--cyan);
+    }
+
+    /* --- 3. HERO SECTION --- */
     header {
-      padding: 80px 20px 40px;
-      background: radial-gradient(circle at top, #2e106540, transparent 40%);
+      padding: 100px 20px 60px;
+      position: relative;
+      /* Subtle radial gradient background behind title */
+      background: radial-gradient(circle at center 30%, rgba(124, 58, 237, 0.15) 0%, transparent 60%);
     }
 
     header>* {
@@ -106,21 +137,24 @@
       animation-delay: 0.3s;
     }
 
-    header .hero-img {
+    .hero-img-container {
       animation-delay: 0.4s;
     }
 
     h1 {
-      font-size: 42px;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
       font-weight: 800;
       letter-spacing: -1px;
-      margin-bottom: 10px;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+      /* Text gradient from white to light lavender */
+      background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 40%, #A78BFA 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     h1 span {
-      color: var(--purple);
-      /* Efecto gradiente en texto */
-      background: -webkit-linear-gradient(45deg, #a78bfa, #7c3aed);
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -128,241 +162,211 @@
     p {
       color: var(--text-muted);
       max-width: 600px;
-      margin: 0 auto 30px;
-      font-size: 1.1rem;
+      margin: 0 auto 40px;
+      font-size: 1.15rem;
     }
 
+    /* --- 4. BOTONES PRINCIPALES --- */
+    .btn {
+      display: inline-block;
+      background: var(--purple);
+      color: #fff;
+      padding: 16px 36px;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 1.1rem;
+      position: relative;
+      transition: all 0.3s ease;
+      /* Borde brillante base */
+      border: 1px solid rgba(124, 58, 237, 0.5);
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.2);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+      background: var(--purple-hover);
+      border-color: var(--cyan);
+    }
+
+    /* --- HERO IMAGE / ROBOT CONTAINER --- */
     .hero-img-container {
-      perspective: 1000px;
-      /* Habilita el espacio 3D para los hijos */
+      position: relative;
       width: 90%;
       max-width: 800px;
-      margin: 30px auto;
-      opacity: 0;
-      /* Animación de entrada: aparece y luego flota infinitamente */
-      animation: fadeUp 0.8s ease-out 0.4s forwards, floating 6s ease-in-out 1.2s infinite;
+      margin: 60px auto 30px;
+      perspective: 1000px;
     }
 
     .hero-img {
       width: 100%;
-      border-radius: 20px;
-      box-shadow: 0 20px 50px rgba(124, 58, 237, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      /* Transición para cuando el mouse SALE de la imagen (vuelve a su estado original suavemente) */
-      transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
       transform-style: preserve-3d;
       will-change: transform;
+      /* Animación de flotación */
+      animation: floating 6s ease-in-out infinite;
     }
 
-    /* Estado cuando se interactúa por JS (el JS maneja la rotación) */
     .hero-img.is-hovered {
-      /* La transición es 0 para un seguimiento instantáneo del mouse (manejado en JS) */
+      animation-play-state: paused;
       transition: box-shadow 0.4s ease;
-      box-shadow: 0 35px 80px rgba(124, 58, 237, 0.35), 0 0 40px rgba(124, 58, 237, 0.2);
+      box-shadow: 0 30px 60px rgba(45, 212, 191, 0.15);
     }
 
-    /* --- 4. BOTONES MEJORADOS --- */
-    .btn {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--purple), var(--purple-hover));
-      color: white;
-      padding: 16px 32px;
-      border-radius: 50px;
-      font-weight: bold;
-      text-decoration: none;
-      font-size: 18px;
-      margin-top: 20px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+    /* Burbuja de chat esmerilada */
+    .chat-bubble {
+      position: absolute;
+      top: -30px;
+      right: -20px;
+      background: rgba(22, 27, 34, 0.6);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 15px 25px;
+      border-radius: 20px 20px 0 20px;
+      color: var(--text-main);
+      font-weight: 500;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      animation: floating 5s ease-in-out infinite alternate;
+      z-index: 10;
     }
 
-    .btn:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.6);
+    .chat-bubble::before {
+      content: "✨ Ready to build!";
     }
 
-    /* --- 5. CARACTERÍSTICAS (Grid Responsivo) --- */
+    @media (max-width: 768px) {
+      .chat-bubble {
+        right: 10px;
+        top: -40px;
+      }
+    }
+
+    /* --- 5. CARACTERÍSTICAS --- */
     .features {
-      max-width: 1000px;
-      margin: 60px auto;
+      max-width: 1100px;
+      margin: 80px auto;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      /* Esto lo hace adaptable */
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 30px;
-      padding: 20px;
+      padding: 0 20px;
     }
 
     .feature {
       background: var(--card-bg);
-      padding: 30px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      padding: 40px 30px;
+      border-radius: 16px;
+      border: 1px solid var(--border-subtle);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       opacity: 0;
       animation: fadeUp 0.8s ease-out forwards;
-    }
-
-    .feature:nth-child(1) {
-      animation-delay: 0.2s;
-    }
-
-    .feature:nth-child(2) {
-      animation-delay: 0.4s;
-    }
-
-    .feature:nth-child(3) {
-      animation-delay: 0.6s;
     }
 
     .feature:hover {
       transform: translateY(-8px);
-      border-color: var(--purple);
-      box-shadow: 0 15px 35px rgba(124, 58, 237, 0.15);
+      border-color: var(--cyan);
+      box-shadow: 0 15px 35px rgba(45, 212, 191, 0.1);
     }
 
     .feature h3 {
-      color: var(--purple);
-      font-size: 1.4rem;
-      margin-bottom: 10px;
+      color: var(--text-main);
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
-    /* --- 6. PRECIOS (Mejorado para Profesionales) --- */
+    .feature p {
+      margin-bottom: 0;
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    /* --- 6. PRECIOS (SaaS Premium) --- */
     .pricing-section {
-      padding: 80px 20px;
-      background: linear-gradient(to bottom, var(--dark), #151520);
+      padding: 100px 20px;
+      position: relative;
     }
 
     .pricing-header {
       text-align: center;
-      margin-bottom: 50px;
-      opacity: 0;
-      animation: fadeUp 0.8s ease-out forwards;
-      animation-delay: 0.2s;
+      margin-bottom: 60px;
     }
 
     .pricing-header h2 {
       font-size: 2.5rem;
-      color: var(--text-main);
+      font-weight: 800;
       margin-bottom: 15px;
     }
 
-    .pricing-header p {
-      color: var(--text-muted);
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
     .pricing-cards {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 30px;
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 0 20px;
+      align-items: center;
     }
 
     .price-card {
       background: var(--card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 25px;
-      padding: 40px 30px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 40px;
       position: relative;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-      display: flex;
-      flex-direction: column;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       text-align: left;
-      width: 100%;
-      max-width: 320px;
-      /* Un poco más estrechas para que quepan 3 */
-      opacity: 0;
-      animation: fadeUp 0.8s ease-out forwards;
-    }
-
-    .price-card:nth-child(1) {
-      animation-delay: 0.3s;
-    }
-
-    .price-card:nth-child(2) {
-      animation-delay: 0.5s;
-    }
-
-    .price-card:nth-child(3) {
-      animation-delay: 0.7s;
     }
 
     .price-card:hover {
       transform: translateY(-10px);
-      box-shadow: 0 20px 50px rgba(124, 58, 237, 0.2);
-      border-color: rgba(124, 58, 237, 0.4);
-    }
-
-    .price-card.popular {
-      border: 2px solid var(--purple);
-      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.2);
-      transform: scale(1.05);
-      /* Ligeramente más grande */
-    }
-
-    .price-card.popular:hover {
-      transform: scale(1.05) translateY(-10px);
+      border-color: var(--cyan);
+      box-shadow: 0 20px 40px rgba(45, 212, 191, 0.1);
     }
 
     .price-card h3 {
       font-size: 1.5rem;
-      margin-top: 0;
-      margin-bottom: 5px;
       color: var(--text-main);
+      margin: 0 0 10px;
     }
 
     .price-card p.desc {
       color: var(--text-muted);
       font-size: 0.95rem;
-      margin-bottom: 25px;
+      margin-bottom: 30px;
       min-height: 45px;
     }
 
-    .badge {
-      background: var(--purple);
-      color: white;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-      text-transform: uppercase;
-      position: absolute;
-      top: -14px;
-      left: 50%;
-      transform: translateX(-50%);
-      box-shadow: 0 4px 10px rgba(124, 58, 237, 0.4);
-      white-space: nowrap;
-    }
-
     .price-tag {
-      font-size: 3rem;
+      font-size: 3.5rem;
       font-weight: 800;
-      margin: 0 0 20px;
+      margin: 0 0 30px;
       color: var(--text-main);
-      fill: currentcolor;
+      letter-spacing: -1px;
     }
 
     .price-tag span {
-      font-size: 1rem;
+      font-size: 1.1rem;
       color: var(--text-muted);
-      font-weight: normal;
+      font-weight: 500;
     }
 
     .features-list {
       list-style: none;
       padding: 0;
-      margin: 0 0 30px 0;
-      flex-grow: 1;
+      margin: 0 0 40px;
     }
 
     .features-list li {
-      margin-bottom: 15px;
-      color: #e0e0e0;
+      margin-bottom: 16px;
+      color: var(--text-main);
       display: flex;
       align-items: flex-start;
       font-size: 0.95rem;
@@ -371,83 +375,135 @@
     .features-list li svg {
       width: 20px;
       height: 20px;
-      color: var(--purple);
-      margin-right: 10px;
+      color: var(--cyan);
+      margin-right: 12px;
       flex-shrink: 0;
     }
 
     .price-btn {
       display: block;
       text-align: center;
-      background: rgba(255, 255, 255, 0.05);
-      color: white;
+      background: transparent;
+      color: var(--text-main);
       padding: 14px 24px;
-      border-radius: 12px;
-      font-weight: bold;
+      border-radius: 8px;
+      font-weight: 600;
       text-decoration: none;
-      transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      transition: all 0.3s ease;
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .price-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--text-main);
+    }
+
+    /* Popular Card override */
+    .price-card.popular {
+      background: linear-gradient(180deg, #1A1F2B 0%, var(--card-bg) 100%);
+      border: 1px solid var(--purple);
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.1);
+    }
+
+    .price-card.popular:hover {
+      transform: scale(1.05) translateY(-10px);
+      border-color: var(--cyan);
+      box-shadow: 0 20px 40px rgba(45, 212, 191, 0.15);
+    }
+
+    .badge {
+      background: var(--purple);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      letter-spacing: 1px;
     }
 
     .price-card.popular .price-btn {
-      background: linear-gradient(135deg, var(--purple), var(--purple-hover));
+      background: var(--purple);
+      color: white;
       border: none;
-      box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
     }
 
     .price-card.popular .price-btn:hover {
-      box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6);
-      transform: translateY(-2px);
+      background: var(--purple-hover);
+      box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+    }
+
+    @media (max-width: 1024px) {
+      .price-card.popular {
+        transform: scale(1);
+      }
+
+      .price-card.popular:hover {
+        transform: translateY(-10px);
+      }
     }
 
     /* --- 7. TESTIMONIOS --- */
     .testimonials {
-      background: #13131c;
-      padding: 60px 20px;
-      border-radius: 20px;
-      margin: 40px auto;
+      background: var(--card-bg);
+      padding: 80px 20px;
+      border-radius: 24px;
+      margin: 80px auto;
       max-width: 900px;
-      opacity: 0;
-      animation: fadeUp 0.8s ease-out forwards;
-      animation-delay: 0.5s;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .testimonials h2 {
+      font-size: 2rem;
+      margin-top: 0;
+      margin-bottom: 40px;
     }
 
     .testimonials img {
       width: 100%;
-      max-width: 600px;
-      border-radius: 16px;
-      opacity: 0.8;
+      max-width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border: 2px solid var(--purple);
+      padding: 4px;
+      background: rgba(255, 255, 255, 0.05);
     }
 
     .testimonial-text {
-      font-style: italic;
-      margin-top: 25px;
-      min-height: 60px;
-      /* Evita saltos cuando cambia el texto */
-      font-size: 1.1rem;
-      color: #e0e0e0;
+      font-size: 1.25rem;
+      color: var(--text-main);
+      font-weight: 400;
+      line-height: 1.7;
+      max-width: 700px;
+      margin: 0 auto;
+      min-height: 80px;
     }
 
     .testimonial-name {
-      font-weight: bold;
-      color: var(--purple);
-      margin-top: 15px;
+      font-weight: 600;
+      color: var(--cyan);
+      margin-top: 20px;
+      font-size: 1rem;
     }
 
-    /* --- FOOTER --- */
+    /* --- 8. FOOTER --- */
     footer {
-      color: #666;
-      font-size: 14px;
-      margin: 60px 0;
+      padding: 60px 20px 40px;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
-      padding-top: 30px;
-      opacity: 0;
-      animation: fadeUp 0.8s ease-out forwards;
-      animation-delay: 0.8s;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    footer .logo {
+      margin-bottom: 15px;
+      opacity: 0.8;
     }
   </style>
 </head>
@@ -457,8 +513,7 @@
   <nav>
     <div class="logo">STRUCTA<span>.</span></div>
     <div id="nav-actions">
-      <a href="#" onclick="netlifyIdentity.open();"
-        style="font-size:14px; font-weight:bold; color:white; text-decoration:none;">Log In / Sign Up</a>
+      <a href="#" onclick="netlifyIdentity.open();">Log In / Sign Up</a>
     </div>
   </nav>
 
@@ -471,6 +526,7 @@
     <br>
 
     <div class="hero-img-container" id="heroContainer">
+      <div class="chat-bubble"></div>
       <img src="hero.png" class="hero-img" id="heroImage" alt="App Preview">
     </div>
   </header>
@@ -532,7 +588,6 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg> No custom logo</li>
         </ul>
-        <!-- PEGA AQUÍ TU LINK DE PAGO DE STRIPE PARA STARTER -->
         <a href="https://buy.stripe.com/00w7sL6il3jwbK81D01ck01" target="_blank" class="price-btn">Subscribe Starter</a>
       </div>
 
@@ -553,7 +608,6 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg> Automatic Area Calculations</li>
         </ul>
-        <!-- PEGA AQUÍ TU LINK DE PAGO DE STRIPE PARA PRO -->
         <a href="https://buy.stripe.com/bJebJ14ad9HU5lKepM1ck02" target="_blank" class="price-btn">Subscribe Pro</a>
       </div>
     </div>
@@ -575,15 +629,15 @@
   <script>
     const testimonials = [
       {
-        text: "Structa Quotes helped me look more professional instantly. My clients take my estimates seriously and I close more jobs.",
+        text: '"Structa Quotes helped me look more professional instantly. My clients take my estimates seriously and I close more jobs."',
         name: "Mark — Contractor"
       },
       {
-        text: "I used to send messy quotes. Now everything looks clean and professional. My clients trust me more.",
+        text: '"I used to send messy quotes. Now everything looks clean and professional. My clients trust me more."',
         name: "David — Construction Manager"
       },
       {
-        text: "This tool saves me time and helps me win more jobs. Worth every dollar.",
+        text: '"This tool saves me time and helps me win more jobs. Worth every dollar."',
         name: "Alex — Service Business Owner"
       }
     ];
@@ -599,10 +653,10 @@
         document.getElementById("testimonialName").textContent = testimonials[index].name;
         textEl.style.opacity = 1;
         index = (index + 1) % testimonials.length;
-      }, 200);
+      }, 300);
     }
 
-    document.getElementById("testimonialText").style.transition = "opacity 0.3s";
+    document.getElementById("testimonialText").style.transition = "opacity 0.4s ease";
 
     showTestimonial();
     setInterval(showTestimonial, 4000);
@@ -612,7 +666,6 @@
 
     if (heroContainer && heroImage) {
       heroContainer.addEventListener('mousemove', (e) => {
-        heroContainer.style.animationPlayState = 'paused';
         heroImage.classList.add('is-hovered');
 
         const rect = heroContainer.getBoundingClientRect();
@@ -622,20 +675,15 @@
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
 
-        const rotateX = ((y - centerY) / centerY) * -8;
-        const rotateY = ((x - centerX) / centerX) * 8;
+        const rotateX = ((y - centerY) / centerY) * -5;
+        const rotateY = ((x - centerX) / centerX) * 5;
 
         heroImage.style.transform = `scale3d(1.02, 1.02, 1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
       });
 
       heroContainer.addEventListener('mouseleave', () => {
         heroImage.classList.remove('is-hovered');
-
         heroImage.style.transform = `scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg)`;
-
-        setTimeout(() => {
-          heroContainer.style.animationPlayState = 'running';
-        }, 400);
       });
     }
 
