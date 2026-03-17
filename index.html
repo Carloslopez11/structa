@@ -10,33 +10,44 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Netlify Identity Widget -->
   <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
   <style>
-    /* --- 1. CONFIGURACIÓN BASE (Premium SaaS Redesign) --- */
+    /* --- 1. CONFIGURACIÓN BASE (Premium SaaS Redesign - Midnight Blue & Violet) --- */
     :root {
-      --bg-dark: #0B0E14;
-      --card-bg: #161B22;
-      --purple: #7C3AED;
-      --purple-hover: #6D28D9;
-      --cyan: #2DD4BF;
-      --text-main: #E2E8F0;
+      /* Fondos */
+      --bg-midnight: #0A0F24;
+      --card-bg: #121A38;
+
+      /* Acentos */
+      --violet: #8B5CF6;
+      --violet-hover: #7C3AED;
+      --cyan-glow: #2DD4BF;
+
+      /* Textos */
+      --text-main: #F8FAFC;
       --text-muted: #94A3B8;
-      --border-subtle: rgba(124, 58, 237, 0.12);
-      /* 1px solid #7C3AED20 roughly */
+
+      /* Bordes y Sombras */
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --glass-bg: rgba(18, 26, 56, 0.6);
     }
 
     body {
       margin: 0;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-dark);
+      font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-midnight);
       color: var(--text-main);
       text-align: center;
       line-height: 1.6;
       overflow-x: hidden;
+      /* Background pattern sutil */
+      background-image:
+        radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.05), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(45, 212, 191, 0.03), transparent 25%);
     }
 
     * {
@@ -70,19 +81,33 @@
       }
     }
 
+    @keyframes pulseGlow {
+
+      0%,
+      100% {
+        opacity: 0.5;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+      }
+    }
+
     /* --- 2. NAVEGACIÓN --- */
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 1.5rem 5%;
-      background: rgba(11, 14, 20, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(10, 15, 36, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       position: sticky;
       top: 0;
       z-index: 100;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--border-glass);
       animation: fadeUp 0.6s ease-out forwards;
     }
 
@@ -94,7 +119,7 @@
     }
 
     .logo span {
-      color: var(--purple);
+      color: var(--violet);
     }
 
     #nav-actions a {
@@ -104,20 +129,35 @@
       text-decoration: none;
       padding: 0.5rem 1rem;
       border-radius: 8px;
-      transition: background 0.3s ease, color 0.3s ease;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
     }
 
     #nav-actions a:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--cyan);
+      background: rgba(139, 92, 246, 0.1);
+      border-color: rgba(139, 92, 246, 0.3);
+      color: #A78BFA;
     }
 
     /* --- 3. HERO SECTION --- */
     header {
-      padding: 100px 20px 60px;
+      padding: 120px 20px 80px;
       position: relative;
-      /* Subtle radial gradient background behind title */
-      background: radial-gradient(circle at center 30%, rgba(124, 58, 237, 0.15) 0%, transparent 60%);
+    }
+
+    /* Resplandor radial detrás del texto */
+    header::before {
+      content: '';
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 70%);
+      pointer-events: none;
+      z-index: -1;
+      animation: pulseGlow 8s infinite alternate ease-in-out;
     }
 
     header>* {
@@ -142,96 +182,113 @@
     }
 
     h1 {
-      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-size: clamp(2.5rem, 6vw, 4.8rem);
       font-weight: 800;
-      letter-spacing: -1px;
-      margin-bottom: 1rem;
+      letter-spacing: -1.5px;
+      margin-bottom: 1.2rem;
       line-height: 1.1;
-      /* Text gradient from white to light lavender */
-      background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 40%, #A78BFA 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--text-main);
     }
 
+    /* Degradado en la palabra clave */
     h1 span {
-      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      background: linear-gradient(135deg, #A78BFA 0%, var(--cyan-glow) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      display: inline-block;
     }
 
     p {
       color: var(--text-muted);
-      max-width: 600px;
+      max-width: 650px;
       margin: 0 auto 40px;
-      font-size: 1.15rem;
+      font-size: 1.2rem;
+      font-weight: 400;
     }
 
     /* --- 4. BOTONES PRINCIPALES --- */
     .btn {
       display: inline-block;
-      background: var(--purple);
+      background: linear-gradient(135deg, var(--violet) 0%, #6D28D9 100%);
       color: #fff;
-      padding: 16px 36px;
+      padding: 18px 40px;
       border-radius: 12px;
       font-weight: 600;
       text-decoration: none;
       font-size: 1.1rem;
       position: relative;
-      transition: all 0.3s ease;
-      /* Borde brillante base */
-      border: 1px solid rgba(124, 58, 237, 0.5);
-      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.2);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(167, 139, 250, 0.3);
+      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+      overflow: hidden;
+    }
+
+    /* Efecto de brillo interior en el botón */
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
     }
 
     .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
-      background: var(--purple-hover);
-      border-color: var(--cyan);
+      transform: translateY(-4px);
+      box-shadow: 0 15px 35px rgba(139, 92, 246, 0.5), 0 0 15px rgba(45, 212, 191, 0.3);
+      border-color: var(--cyan-glow);
+    }
+
+    .btn:hover::after {
+      left: 100%;
     }
 
     /* --- HERO IMAGE / ROBOT CONTAINER --- */
     .hero-img-container {
       position: relative;
       width: 90%;
-      max-width: 800px;
-      margin: 60px auto 30px;
-      perspective: 1000px;
+      max-width: 850px;
+      margin: 80px auto 30px;
+      perspective: 1200px;
     }
 
     .hero-img {
       width: 100%;
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-glass);
       transition: transform 0.4s ease, box-shadow 0.4s ease;
       transform-style: preserve-3d;
       will-change: transform;
-      /* Animación de flotación */
-      animation: floating 6s ease-in-out infinite;
+      animation: floating 7s ease-in-out infinite;
     }
 
     .hero-img.is-hovered {
       animation-play-state: paused;
-      transition: box-shadow 0.4s ease;
-      box-shadow: 0 30px 60px rgba(45, 212, 191, 0.15);
+      transition: box-shadow 0.4s ease, border-color 0.4s ease;
+      box-shadow: 0 35px 70px rgba(139, 92, 246, 0.2);
+      border-color: rgba(139, 92, 246, 0.3);
     }
 
-    /* Burbuja de chat esmerilada */
+    /* Burbuja de chat esmerilada (Glassmorphism intenso) */
     .chat-bubble {
       position: absolute;
-      top: -30px;
-      right: -20px;
-      background: rgba(22, 27, 34, 0.6);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 15px 25px;
-      border-radius: 20px 20px 0 20px;
+      top: -40px;
+      right: -30px;
+      background: rgba(30, 41, 59, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      border-left: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 16px 28px;
+      border-radius: 24px 24px 0 24px;
       color: var(--text-main);
       font-weight: 500;
-      font-size: 0.95rem;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      font-size: 1rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05);
       animation: floating 5s ease-in-out infinite alternate;
       z-index: 10;
     }
@@ -244,13 +301,15 @@
       .chat-bubble {
         right: 10px;
         top: -40px;
+        font-size: 0.9rem;
+        padding: 12px 20px;
       }
     }
 
-    /* --- 5. CARACTERÍSTICAS --- */
+    /* --- 5. CARACTERÍSTICAS (Glassmorphism Cards) --- */
     .features {
       max-width: 1100px;
-      margin: 80px auto;
+      margin: 100px auto;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 30px;
@@ -258,29 +317,56 @@
     }
 
     .feature {
-      background: var(--card-bg);
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       padding: 40px 30px;
-      border-radius: 16px;
-      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      border: 1px solid var(--border-glass);
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       opacity: 0;
       animation: fadeUp 0.8s ease-out forwards;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Glow effect on hover para las cards */
+    .feature::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 20px;
+      padding: 2px;
+      background: linear-gradient(135deg, var(--violet), var(--cyan-glow));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.4s ease;
     }
 
     .feature:hover {
       transform: translateY(-8px);
-      border-color: var(--cyan);
-      box-shadow: 0 15px 35px rgba(45, 212, 191, 0.1);
+      background: rgba(22, 32, 68, 0.8);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.15);
+    }
+
+    .feature:hover::before {
+      opacity: 1;
     }
 
     .feature h3 {
       color: var(--text-main);
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
+      font-weight: 700;
     }
 
     .feature p {
@@ -293,17 +379,19 @@
     .pricing-section {
       padding: 100px 20px;
       position: relative;
+      background: linear-gradient(to bottom, var(--bg-midnight), #060918);
     }
 
     .pricing-header {
       text-align: center;
-      margin-bottom: 60px;
+      margin-bottom: 70px;
     }
 
     .pricing-header h2 {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: 800;
       margin-bottom: 15px;
+      letter-spacing: -1px;
     }
 
     .pricing-cards {
@@ -316,10 +404,11 @@
     }
 
     .price-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 40px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-glass);
+      border-radius: 24px;
+      padding: 45px 35px;
       position: relative;
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       text-align: left;
@@ -327,14 +416,15 @@
 
     .price-card:hover {
       transform: translateY(-10px);
-      border-color: var(--cyan);
-      box-shadow: 0 20px 40px rgba(45, 212, 191, 0.1);
+      border-color: rgba(139, 92, 246, 0.5);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(139, 92, 246, 0.1);
     }
 
     .price-card h3 {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       color: var(--text-main);
       margin: 0 0 10px;
+      font-weight: 700;
     }
 
     .price-card p.desc {
@@ -349,13 +439,14 @@
       font-weight: 800;
       margin: 0 0 30px;
       color: var(--text-main);
-      letter-spacing: -1px;
+      letter-spacing: -2px;
     }
 
     .price-tag span {
       font-size: 1.1rem;
       color: var(--text-muted);
       font-weight: 500;
+      letter-spacing: 0;
     }
 
     .features-list {
@@ -365,28 +456,29 @@
     }
 
     .features-list li {
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       color: var(--text-main);
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       font-size: 0.95rem;
     }
 
     .features-list li svg {
-      width: 20px;
-      height: 20px;
-      color: var(--cyan);
+      width: 22px;
+      height: 22px;
+      color: var(--cyan-glow);
       margin-right: 12px;
       flex-shrink: 0;
+      filter: drop-shadow(0 0 8px rgba(45, 212, 191, 0.4));
     }
 
     .price-btn {
       display: block;
       text-align: center;
-      background: transparent;
+      background: rgba(255, 255, 255, 0.03);
       color: var(--text-main);
-      padding: 14px 24px;
-      border-radius: 8px;
+      padding: 16px 24px;
+      border-radius: 12px;
       font-weight: 600;
       text-decoration: none;
       transition: all 0.3s ease;
@@ -394,48 +486,51 @@
     }
 
     .price-btn:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: var(--text-main);
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
     }
 
     /* Popular Card override */
     .price-card.popular {
-      background: linear-gradient(180deg, #1A1F2B 0%, var(--card-bg) 100%);
-      border: 1px solid var(--purple);
+      background: linear-gradient(160deg, rgba(18, 26, 56, 0.9), rgba(10, 15, 36, 0.9));
+      border: 1px solid var(--violet);
       transform: scale(1.05);
-      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.1);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(139, 92, 246, 0.1);
     }
 
     .price-card.popular:hover {
       transform: scale(1.05) translateY(-10px);
-      border-color: var(--cyan);
-      box-shadow: 0 20px 40px rgba(45, 212, 191, 0.15);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(139, 92, 246, 0.2), 0 0 20px rgba(139, 92, 246, 0.3);
+      border-color: #A78BFA;
     }
 
     .badge {
-      background: var(--purple);
+      background: linear-gradient(90deg, var(--violet), var(--cyan-glow));
       color: white;
-      padding: 6px 14px;
+      padding: 8px 16px;
       border-radius: 20px;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       font-weight: 700;
       text-transform: uppercase;
       position: absolute;
-      top: -14px;
+      top: -16px;
       left: 50%;
       transform: translateX(-50%);
       letter-spacing: 1px;
+      box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
     }
 
     .price-card.popular .price-btn {
-      background: var(--purple);
+      background: linear-gradient(135deg, var(--violet) 0%, #6D28D9 100%);
       color: white;
       border: none;
+      box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
     }
 
     .price-card.popular .price-btn:hover {
-      background: var(--purple-hover);
-      box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+      transform: translateY(-3px);
     }
 
     @media (max-width: 1024px) {
@@ -450,18 +545,33 @@
 
     /* --- 7. TESTIMONIOS --- */
     .testimonials {
-      background: var(--card-bg);
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
       padding: 80px 20px;
       border-radius: 24px;
       margin: 80px auto;
       max-width: 900px;
-      border: 1px solid var(--border-subtle);
+      border: 1px solid var(--border-glass);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .testimonials::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(45, 212, 191, 0.05) 0%, transparent 50%);
+      pointer-events: none;
     }
 
     .testimonials h2 {
-      font-size: 2rem;
+      font-size: 2.2rem;
       margin-top: 0;
       margin-bottom: 40px;
+      font-weight: 700;
     }
 
     .testimonials img {
@@ -471,39 +581,44 @@
       border-radius: 50%;
       object-fit: cover;
       margin-bottom: 20px;
-      border: 2px solid var(--purple);
+      border: 3px solid var(--violet);
       padding: 4px;
       background: rgba(255, 255, 255, 0.05);
+      position: relative;
+      z-index: 1;
     }
 
     .testimonial-text {
       font-size: 1.25rem;
       color: var(--text-main);
-      font-weight: 400;
-      line-height: 1.7;
-      max-width: 700px;
+      font-weight: 500;
+      line-height: 1.8;
+      max-width: 750px;
       margin: 0 auto;
-      min-height: 80px;
+      min-height: 90px;
+      font-style: italic;
     }
 
     .testimonial-name {
       font-weight: 600;
-      color: var(--cyan);
-      margin-top: 20px;
-      font-size: 1rem;
+      color: var(--cyan-glow);
+      margin-top: 25px;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
     }
 
     /* --- 8. FOOTER --- */
     footer {
-      padding: 60px 20px 40px;
+      padding: 80px 20px 40px;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      background: #060918;
     }
 
     footer .logo {
       margin-bottom: 15px;
-      opacity: 0.8;
+      opacity: 0.5;
     }
   </style>
 </head>
