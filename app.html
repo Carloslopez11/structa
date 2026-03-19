@@ -417,25 +417,60 @@
                 return;
             }
 
+            // Primero validamos límites FrontEnd consultando Supabase directamente
+            let { data: usageData, error: usageError } = await supabase
+                .from('usage')
+                .select('*')
+                .eq('email', email)
+                .maybeSingle();
+
+            let isPro = false;
+            let currentCount = 0;
+            if (usageData) {
+                isPro = usageData.is_pro || false;
+                currentCount = usageData.count || 0;
+            }
+
+            const logoFile = document.getElementById('logoUpload').files[0];
+            if (logoFile && !isPro) {
+                speak("Oops! Custom logos are for Pro users. Let's upgrade!", 6000);
+                errorBox.innerHTML = `Uploading a custom logo is an exclusive feature of the <b>Pro Plan</b>. Please remove the logo or <a href="index.html#pricing">Upgrade to Pro</a>.`;
+                errorBox.style.display = 'block';
+                return;
+            }
+
+            if (!isPro && currentCount >= 3) {
+                speak("Oh no! You've reached the free limit. Time to level up!", 6000);
+                document.getElementById('paywall').style.display = 'flex';
+                return;
+            }
+
             const btn = document.getElementById('generateBtn');
             btn.textContent = "Generating...";
             btn.disabled = true;
-            speak("Processing your PDF... checking limitations...", 3000);
+            speak("Processing your PDF... checking AI details...", 3000);
 
-            // FormData compila todos los datos y el archivo (logo)
-            const formData = new FormData();
-            formData.append('email', email);
-            formData.append('company', document.getElementById('company').value);
-            formData.append('client', client);
-            formData.append('work', document.getElementById('work').value);
-            formData.append('length', l);
-            formData.append('width', w);
-            formData.append('price', p);
+            // Convert image to base64 to avoid ugly boundaries and multipart headers
+            const fileToBase64 = (file) => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
 
-            const logoFile = document.getElementById('logoUpload').files[0];
+            let logoBase64 = null;
             if (logoFile) {
-                formData.append('logo', logoFile);
+                logoBase64 = await fileToBase64(logoFile);
             }
+
+            const payload = {
+                email,
+                company: document.getElementById('company').value,
+                client,
+                work: document.getElementById('work').value,
+                length: l, width: w, price: p,
+                logoBase64
+            };
 
             try {
                 // Determine API route dynamically based on host
@@ -445,7 +480,8 @@
 
                 const response = await fetch(endpoint, {
                     method: 'POST',
-                    body: formData
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
 
                 if (!response.ok) {
@@ -466,11 +502,9 @@
                         throw new Error("Server error.");
                     }
                 } else {
-                    // ¡Todo salió bien! Leemos cuántos quotes le quedan de los headers enviados por el server
-                    const remainingQuotesHeader = response.headers.get('X-Remaining-Quotes');
-                    if (remainingQuotesHeader === '1') {
-                        // Structy avisa que queda 1 quote
-                        speak("Heads up! You only have 1 free quote left this month. Consider subscribing!", 7000);
+                    // Ya no leemos Headers. Las cuentas se aumentaron en BE, pero frontend ya sabe.
+                    if (!isPro && currentCount === 2) {
+                        speak("Heads up! You just used your LAST free quote. Next one requires Pro!", 7000);
                     } else {
                         speak("Success! Your quote has been downloaded. Go close that job!", 5000);
                     }
@@ -493,7 +527,22 @@
             btn.textContent = "Generate PDF Invoice";
             btn.disabled = false;
         }
+
+        // --- CERRAR PAYWALL ---
+        function closePaywall() {
+            document.getElementById('paywall').style.display = 'none';
+        }
     </script>
+
+    <!-- PAYWALL ROJO -->
+    <div id="paywall" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(10px);">
+        <div style="background:linear-gradient(135deg, #ef4444, #991b1b); padding:40px; border-radius:24px; border:1px solid #fca5a5; text-align:center; max-width:400px; width:90%; box-shadow:0 20px 40px rgba(239,68,68,0.5);">
+            <h2 style="margin-top:0; margin-bottom: 20px; font-weight:800; font-size:2rem; color:white;">LÍMITE ALCANZADO</h2>
+            <p style="color:#fee2e2; margin-bottom:30px; font-size:1.1rem; line-height:1.5;">Has alcanzado tu límite de 3 cotizaciones gratis de este mes. Para continuar exportando y desbloquear todo, por favor actualízate a Pro.</p>
+            <a href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" style="display:inline-block; width:100%; padding:18px; margin-bottom:15px; background:white; color:#991b1b; border:none; border-radius:12px; font-size:1.1rem; font-weight:bold; cursor:pointer; text-decoration:none;">¡Mejorar a Plan PRO ahora!</a>
+            <button onclick="closePaywall()" style="background:transparent; border:none; color:#fca5a5; cursor:pointer; font-weight:500; font-family:inherit; text-decoration:underline;">Quizás más tarde</button>
+        </div>
+    </div>
 </body>
 
 </html>
