@@ -442,6 +442,7 @@
             if (!isPro && currentCount >= 3) {
                 speak("Oh no! You've reached the free limit. Time to level up!", 6000);
                 document.getElementById('paywall').style.display = 'flex';
+                startPaymentPolling(email);
                 return;
             }
 
@@ -527,9 +528,30 @@
             btn.disabled = false;
         }
 
+        let paymentPollTimer = null;
+
+        function startPaymentPolling(email) {
+            if (paymentPollTimer) clearInterval(paymentPollTimer);
+            paymentPollTimer = setInterval(async () => {
+                let { data: usageData } = await supabaseClient.from('usage').select('is_pro').eq('email', email).maybeSingle();
+                if (usageData && usageData.is_pro) {
+                    clearInterval(paymentPollTimer);
+                    paymentPollTimer = null;
+                    closePaywall();
+                    document.getElementById('errorBox').style.display = 'none';
+                    speak("Payment successful! You are now Pro. Generating your PDF...", 6000);
+                    setTimeout(() => generateInvoice(), 1000);
+                }
+            }, 3000);
+        }
+
         // --- CERRAR PAYWALL ---
         function closePaywall() {
             document.getElementById('paywall').style.display = 'none';
+            if (paymentPollTimer) {
+                clearInterval(paymentPollTimer);
+                paymentPollTimer = null;
+            }
         }
     </script>
 
