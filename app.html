@@ -354,10 +354,10 @@
         // --- AUTENTICACIÓN Y EXTRACCIÓN DEL EMAIL (Supabase) ---
         const supabaseUrl = 'https://tadjlpeifkidsghbirlj.supabase.co'; // Replace with your Supabase Project URL
         const supabaseAnonKey = 'sb_publishable_ieKM-eclueRcHs7pa4K6Bg_TTAymXer'; // Replace with your Supabase Anon Key
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
         async function checkAuth() {
-            const { data: { session }, error } = await supabase.auth.getSession();
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
             if (!session) {
                 // Si el usuario llega a app.html sin estar logueado, lo regresamos al index
                 window.location.href = "index.html";
@@ -372,12 +372,12 @@
         checkAuth();
 
         async function handleLogout() {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             window.location.href = "index.html";
         }
 
         // Listener para cambios de sesión protectores
-        supabase.auth.onAuthStateChange((event, session) => {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_OUT') {
                 window.location.href = "index.html";
             }
@@ -418,7 +418,7 @@
             }
 
             // Primero validamos límites FrontEnd consultando Supabase directamente
-            let { data: usageData, error: usageError } = await supabase
+            let { data: usageData, error: usageError } = await supabaseClient
                 .from('usage')
                 .select('*')
                 .eq('email', email)
