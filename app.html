@@ -474,8 +474,7 @@
 
             try {
                 // Determine API route dynamically based on host
-                const hostname = window.location.hostname;
-                const apiBase = hostname.includes('netlify.app') ? '/.netlify/functions/api' : '/api';
+                const apiBase = '/api';
                 const endpoint = `${apiBase}/generate-pdf`;
 
                 const response = await fetch(endpoint, {
