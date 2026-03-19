@@ -12,8 +12,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Netlify Identity Widget -->
-  <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     /* --- 1. CONFIGURACIÓN BASE (Premium SaaS Redesign - Midnight Blue & Violet) --- */
@@ -194,6 +194,7 @@
     h1 span {
       background: linear-gradient(135deg, #A78BFA 0%, var(--cyan-glow) 100%);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
       display: inline-block;
     }
@@ -343,6 +344,7 @@
       background: linear-gradient(135deg, var(--violet), var(--cyan-glow));
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       mask-composite: exclude;
       opacity: 0;
       transition: opacity 0.4s ease;
@@ -628,7 +630,7 @@
   <nav>
     <div class="logo">STRUCTA<span>.</span></div>
     <div id="nav-actions">
-      <a href="#" onclick="netlifyIdentity.open();">Log In / Sign Up</a>
+      <a href="#" onclick="openAuthModal();">Log In / Sign Up</a>
     </div>
   </nav>
 
@@ -684,7 +686,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg> No custom logo</li>
         </ul>
-        <a href="#" onclick="netlifyIdentity.open();" class="price-btn">Start for Free</a>
+        <a href="#" onclick="openAuthModal();" class="price-btn">Start for Free</a>
       </div>
 
       <!-- Starter Plan -->
@@ -804,16 +806,102 @@
       });
     }
 
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "app.html";
-          });
-        }
-      });
+    // --- SUPABASE AUTHENTICATION ---
+    const supabaseUrl = 'https://tadjlpeifkidsghbirlj.supabase.co'; // Replace with your Supabase Project URL
+    const supabaseAnonKey = 'sb_publishable_ieKM-eclueRcHs7pa4K6Bg_TTAymXer'; // Replace with your Supabase Anon Key
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+    function openAuthModal() {
+      document.getElementById('authModal').style.display = 'flex';
     }
+
+    function closeAuthModal() {
+      document.getElementById('authModal').style.display = 'none';
+      document.getElementById('authError').style.display = 'none';
+    }
+
+    async function handleAuth(action) {
+      const email = document.getElementById('authEmail').value;
+      const password = document.getElementById('authPassword').value;
+      const errorDiv = document.getElementById('authError');
+
+      if (!email || !password) {
+        errorDiv.textContent = "Please enter email and password";
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      errorDiv.style.display = 'none';
+      const btn = document.getElementById(action + 'Btn');
+      const originalText = btn.textContent;
+      btn.textContent = "Processing...";
+      btn.disabled = true;
+
+      try {
+        if (action === 'login') {
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          window.location.href = "app.html";
+        } else {
+          const { data, error } = await supabase.auth.signUp({ email, password });
+          if (error) throw error;
+          if (data.session) {
+            window.location.href = "app.html";
+          } else {
+            alert("Success! Check your email to verify your account (if email confirmation is required).");
+            closeAuthModal();
+          }
+        }
+      } catch (err) {
+        errorDiv.textContent = err.message;
+        errorDiv.style.display = 'block';
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    // Check if already logged in to change Nav button to 'Go to App'
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        const navBtn = document.querySelector('#nav-actions a');
+        if (navBtn) {
+          navBtn.textContent = 'Go to App';
+          navBtn.onclick = () => window.location.href = 'app.html';
+        }
+      }
+    });
+
+    // Handle token refresh & auth state transitions natively handled by Supabase session detection
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') {
+        window.location.href = "app.html";
+      }
+    });
   </script>
+
+  <!-- SUPABASE AUTH MODAL -->
+  <div id="authModal"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(5px);">
+    <div
+      style="background:var(--card-bg); padding:40px; border-radius:24px; border:1px solid var(--border-glass); text-align:center; max-width:400px; width:90%; box-shadow:0 20px 40px rgba(0,0,0,0.5);">
+      <h2 style="margin-top:0; margin-bottom: 20px; font-weight:700;">Welcome to Structa</h2>
+      <div id="authError"
+        style="display:none; color:#ef4444; background:rgba(239,68,68,0.1); padding:10px; border-radius:8px; margin-bottom:15px; font-size:0.9rem;">
+      </div>
+      <input id="authEmail" type="email" placeholder="Email address"
+        style="width:100%; padding:14px; margin-bottom:15px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:#060918; color:white; outline:none; transition:0.3s; font-family:inherit;">
+      <input id="authPassword" type="password" placeholder="Password"
+        style="width:100%; padding:14px; margin-bottom:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:#060918; color:white; outline:none; transition:0.3s; font-family:inherit;">
+      <button id="loginBtn" onclick="handleAuth('login')" class="btn"
+        style="width:100%; padding:14px; margin-bottom:10px; border:none; cursor:pointer;">Log In</button>
+      <button id="signupBtn" onclick="handleAuth('signup')" class="btn"
+        style="width:100%; padding:14px; background:transparent; border:1px solid var(--violet); color:white; cursor:pointer;">Sign
+        Up</button>
+      <button onclick="closeAuthModal()"
+        style="margin-top:20px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-weight:500; font-family:inherit;">Cancel</button>
+    </div>
+  </div>
 
 </body>
 
