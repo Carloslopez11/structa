@@ -266,6 +266,55 @@
             <div style="font-size:12px;color:var(--text-muted)" id="previewArea">0 m²</div>
         </div>
 
+        <!-- SCRIPT DEDICADO AL CÁLCULO (Aislado para garantizar ejecución) -->
+        <script>
+            (function () {
+                const lInput = document.getElementById('length');
+                const wInput = document.getElementById('width');
+                const pInput = document.getElementById('price');
+                const pTotal = document.getElementById('previewTotal');
+                const pArea = document.getElementById('previewArea');
+                const pBox = document.getElementById('previewContainer');
+
+                function safeParseNumber(el) {
+                    if (!el || !el.value) return 0;
+                    const val = parseFloat(el.value.replace(',', '.'));
+                    return isNaN(val) ? 0 : val;
+                }
+
+                function doUpdate() {
+                    const l = safeParseNumber(lInput);
+                    const w = safeParseNumber(wInput);
+                    const p = safeParseNumber(pInput);
+
+                    const area = l * w;
+                    const total = area * p;
+
+                    if (pTotal) pTotal.textContent = "$" + total.toFixed(2);
+                    if (pArea) pArea.textContent = area.toFixed(2) + " m²";
+
+                    if (total > 0 && !window.hasSeenCalc) {
+                        window.hasSeenCalc = true;
+                        if (pBox) {
+                            pBox.style.borderColor = "#a78bfa";
+                            pBox.style.boxShadow = "0 0 15px rgba(124, 58, 237, 0.4)";
+                            setTimeout(() => {
+                                pBox.style.boxShadow = "none";
+                                pBox.style.borderColor = "var(--purple)";
+                            }, 1000);
+                        }
+                        if (typeof speak === "function") {
+                            speak(`Perfect! The automatic calculation is ${area.toFixed(2)} m² for a total of $${total.toFixed(2)}.`, 4000);
+                        }
+                    }
+                }
+
+                if (lInput) { lInput.addEventListener('input', doUpdate); lInput.addEventListener('change', doUpdate); }
+                if (wInput) { wInput.addEventListener('input', doUpdate); wInput.addEventListener('change', doUpdate); }
+                if (pInput) { pInput.addEventListener('input', doUpdate); pInput.addEventListener('change', doUpdate); }
+            })();
+        </script>
+
         <div id="errorBox" class="error-msg"></div>
 
         <button class="btn-pay" id="generateBtn" onclick="generateInvoice()">Generate PDF Invoice</button>
@@ -347,61 +396,6 @@
             }
         });
 
-        // --- CÁLCULO EN VIVOS ---
-        const calcInputs = ['length', 'width', 'price'];
-        
-        calcInputs.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                // Escuchamos ambos eventos para asegurar que no se pierda nada
-                el.addEventListener('input', updatePreview);
-                el.addEventListener('change', updatePreview);
-            } else {
-                console.error("No se encontró el input con ID:", id);
-            }
-        });
-
-        function updatePreview() {
-            try {
-                // Helper robusto para parsear comas o puntos y fallback a 0
-                const parseNumber = (id) => {
-                    const el = document.getElementById(id);
-                    if (!el || !el.value) return 0;
-                    // Reemplazamos coma por punto por si el usuario escribe "10,5"
-                    const val = parseFloat(el.value.replace(',', '.'));
-                    return isNaN(val) ? 0 : val;
-                };
-
-                const l = parseNumber('length');
-                const w = parseNumber('width');
-                const p = parseNumber('price');
-
-                const area = l * w;
-                const total = area * p;
-
-                const previewTotalObj = document.getElementById('previewTotal');
-                const previewAreaObj = document.getElementById('previewArea');
-
-                if (previewTotalObj) previewTotalObj.textContent = "$" + total.toFixed(2);
-                if (previewAreaObj) previewAreaObj.textContent = area.toFixed(2) + " m²";
-
-                if (total > 0 && !window.hasSeenCalc) {
-                    window.hasSeenCalc = true;
-                    const pBox = document.getElementById('previewContainer');
-                    if (pBox) {
-                        pBox.style.borderColor = "#a78bfa";
-                        pBox.style.boxShadow = "0 0 15px rgba(124, 58, 237, 0.4)";
-                        setTimeout(() => { 
-                            pBox.style.boxShadow = "none"; 
-                            pBox.style.borderColor = "var(--purple)"; 
-                        }, 1000);
-                    }
-                    speak(`Perfect! The automatic calculation is ${area.toFixed(2)} m² for a total of $${total.toFixed(2)}.`, 4000);
-                }
-            } catch (err) {
-                console.error("Error calculando el preview:", err);
-            }
-        }
 
         // --- SOLICITUD AL BACKEND Y DESCARGA DEL PDF ---
         async function generateInvoice() {
