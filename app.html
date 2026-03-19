@@ -413,8 +413,12 @@
             }
 
             try {
-                // Enviar llamada a nuestra Serverless Function de Netlify (Ruta corregida)
-                const response = await fetch('/.netlify/functions/api/generate-pdf', {
+                // Determine API route dynamically based on host
+                const hostname = window.location.hostname;
+                const apiBase = hostname.includes('netlify.app') ? '/.netlify/functions/api' : '/api';
+                const endpoint = `${apiBase}/generate-pdf`;
+
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     body: formData
                 });
@@ -423,7 +427,6 @@
                     let errorData;
                     try { errorData = await response.json(); } catch (e) { }
 
-                    // Aquí atrapamos el error si subió logo y no es Pro
                     if (response.status === 403 && errorData?.error === "ProFeatureLogo") {
                         speak("Oops! Custom logos are for Pro users. Let's upgrade!", 6000);
                         errorBox.innerHTML = `Uploading a custom logo is an exclusive feature of the <b>Pro Plan</b>. Please remove the logo or <a href="index.html#pricing">Upgrade to Pro</a>.`;
