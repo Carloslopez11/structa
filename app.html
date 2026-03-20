@@ -442,6 +442,11 @@
             if (!isPro && currentCount >= 3) {
                 speak("Oh no! You've reached the free limit. Time to level up!", 6000);
                 document.getElementById('paywall').style.display = 'flex';
+                // Añadir prefilled_email al link para que Stripe asocie el pago al mismo correo del usuario logueado
+                const stripeLink = document.getElementById('stripeLink');
+                if (stripeLink) {
+                    stripeLink.href = `https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00?prefilled_email=${encodeURIComponent(email)}`;
+                }
                 startPaymentPolling(email);
                 return;
             }
@@ -539,7 +544,7 @@
                     paymentPollTimer = null;
                     closePaywall();
                     document.getElementById('errorBox').style.display = 'none';
-                    speak("Payment successful! You are now Pro. Generating your PDF...", 6000);
+                    speak("¡Felicidades! Ahora eres usuario PRO. Generando tu cotización sin límites...", 6000);
                     setTimeout(() => generateInvoice(), 1000);
                 }
             }, 3000);
@@ -560,7 +565,7 @@
         <div style="background:linear-gradient(135deg, #ef4444, #991b1b); padding:40px; border-radius:24px; border:1px solid #fca5a5; text-align:center; max-width:400px; width:90%; box-shadow:0 20px 40px rgba(239,68,68,0.5);">
             <h2 style="margin-top:0; margin-bottom: 20px; font-weight:800; font-size:2rem; color:white;">LÍMITE ALCANZADO</h2>
             <p style="color:#fee2e2; margin-bottom:30px; font-size:1.1rem; line-height:1.5;">Has alcanzado tu límite de 3 cotizaciones gratis de este mes. Para continuar exportando y desbloquear todo, por favor actualízate a Pro.</p>
-            <a href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" style="display:inline-block; width:100%; padding:18px; margin-bottom:15px; background:white; color:#991b1b; border:none; border-radius:12px; font-size:1.1rem; font-weight:bold; cursor:pointer; text-decoration:none;">¡Mejorar a Plan PRO ahora!</a>
+            <a id="stripeLink" href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" style="display:inline-block; width:100%; padding:18px; margin-bottom:15px; background:white; color:#991b1b; border:none; border-radius:12px; font-size:1.1rem; font-weight:bold; cursor:pointer; text-decoration:none;">¡Mejorar a Plan PRO ahora!</a>
             <button onclick="closePaywall()" style="background:transparent; border:none; color:#fca5a5; cursor:pointer; font-weight:500; font-family:inherit; text-decoration:underline;">Quizás más tarde</button>
         </div>
     </div>
