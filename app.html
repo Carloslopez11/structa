@@ -30,36 +30,42 @@
 
         body {
             margin: 0;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: radial-gradient(circle at top, var(--card), var(--dark));
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at top, #1a1a2e 0%, #0f0f16 100%);
             color: white;
             padding: 20px;
             padding-bottom: 120px;
+            min-height: 100vh;
+            color: #f8fafc;
         }
 
         .container {
             max-width: 600px;
             margin: auto;
-            background: var(--card);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             opacity: 0;
             animation: fadeUp 0.8s ease-out forwards;
             animation-delay: 0.2s;
+            position: relative;
+            z-index: 10;
         }
 
         input {
             width: 100%;
             box-sizing: border-box;
-            padding: 14px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            background: #0b0b12;
-            border: 1px solid #333;
+            padding: 16px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             color: white;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 16px;
             outline: none;
             transition: 0.3s;
@@ -71,19 +77,23 @@
         }
 
         label {
-            font-size: 0.9rem;
-            font-weight: bold;
+            font-size: 0.85rem;
+            font-weight: 600;
             color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .preview-box {
             margin-top: 20px;
-            padding: 20px;
-            background: rgba(124, 58, 237, 0.1);
-            border: 1px solid var(--purple);
-            border-radius: 12px;
+            padding: 24px;
+            background: rgba(124, 58, 237, 0.05);
+            border: 1px solid rgba(124, 58, 237, 0.4);
+            border-radius: 16px;
             text-align: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .preview-box:hover {
@@ -100,16 +110,16 @@
 
         .btn-pay {
             width: 100%;
-            padding: 16px;
+            padding: 20px;
             background: linear-gradient(135deg, #7c3aed, #5b21b6);
             border: none;
             color: white;
             font-weight: bold;
-            border-radius: 10px;
+            border-radius: 16px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 1.15rem;
             margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -226,10 +236,65 @@
             color: #ef4444;
             font-weight: bold;
         }
+
+        /* Copywriting / Header Text */
+        .copywriting-header {
+            text-align: center;
+            max-width: 600px;
+            margin: 40px auto 30px auto;
+            animation: fadeUp 0.8s ease-out forwards;
+        }
+
+        .copywriting-header h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            margin-top: 0;
+            background: linear-gradient(180deg, #FFFFFF 0%, #A1A1AA 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .copywriting-header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px 20px;
+                border-radius: 20px;
+                margin: 20px auto 100px;
+            }
+            .copywriting-header h2 {
+                font-size: 1.8rem;
+            }
+            .copywriting-header p {
+                font-size: 1rem;
+            }
+            body {
+                padding: 15px;
+            }
+            .btn-pay {
+                padding: 18px;
+            }
+        }
     </style>
 </head>
 
 <body>
+
+    <div class="copywriting-header">
+        <h2>Genera presupuestos precisos en segundos.</h2>
+        <p>Sube de nivel tu negocio, cierra más ventas y olvídate del papeleo manual.</p>
+    </div>
 
     <div class="container">
         <!-- Navegación y estado de autenticación -->
@@ -561,12 +626,12 @@
     </script>
 
     <!-- PAYWALL ROJO -->
-    <div id="paywall" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(10px);">
-        <div style="background:linear-gradient(135deg, #ef4444, #991b1b); padding:40px; border-radius:24px; border:1px solid #fca5a5; text-align:center; max-width:400px; width:90%; box-shadow:0 20px 40px rgba(239,68,68,0.5);">
-            <h2 style="margin-top:0; margin-bottom: 20px; font-weight:800; font-size:2rem; color:white;">LÍMITE ALCANZADO</h2>
-            <p style="color:#fee2e2; margin-bottom:30px; font-size:1.1rem; line-height:1.5;">Has alcanzado tu límite de 3 cotizaciones gratis de este mes. Para continuar exportando y desbloquear todo, por favor actualízate a Pro.</p>
-            <a id="stripeLink" href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" style="display:inline-block; width:100%; padding:18px; margin-bottom:15px; background:white; color:#991b1b; border:none; border-radius:12px; font-size:1.1rem; font-weight:bold; cursor:pointer; text-decoration:none;">¡Mejorar a Plan PRO ahora!</a>
-            <button onclick="closePaywall()" style="background:transparent; border:none; color:#fca5a5; cursor:pointer; font-weight:500; font-family:inherit; text-decoration:underline;">Quizás más tarde</button>
+    <div id="paywall" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); padding: 20px; box-sizing: border-box;">
+        <div style="background:rgba(185, 28, 28, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding:40px 25px; border-radius:32px; border:1px solid rgba(252, 165, 165, 0.3); text-align:center; max-width:400px; width:100%; box-shadow:0 30px 60px rgba(239,68,68,0.3), inset 0 1px 0 rgba(255,255,255,0.1); box-sizing: border-box;">
+            <h2 style="margin-top:0; margin-bottom: 15px; font-weight:800; font-size:2rem; color:white; letter-spacing: -0.5px;">LÍMITE ALCANZADO</h2>
+            <p style="color:#fecaca; margin-bottom:35px; font-size:1.1rem; line-height:1.6; font-weight: 400;">Has alcanzado tu límite de 3 cotizaciones gratis de este mes. Para continuar exportando y desbloquear todo, por favor actualízate a Pro.</p>
+            <a id="stripeLink" href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" style="display:block; width:100%; padding:22px 15px; margin-bottom:20px; background:linear-gradient(135deg, #ef4444, #b91c1c); color:white; border:none; border-radius:18px; font-size:1.2rem; font-weight:bold; cursor:pointer; text-decoration:none; box-sizing: border-box; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5), inset 0 1px 0 rgba(255,255,255,0.2);">¡Mejorar a Plan PRO ahora!</a>
+            <button onclick="closePaywall()" style="background:transparent; border:none; color:#fca5a5; cursor:pointer; font-size:1rem; font-weight:600; font-family:inherit; text-decoration:underline;">Quizás más tarde</button>
         </div>
     </div>
 </body>
