@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Structa Quotes - Create Invoice</title>
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -35,8 +35,10 @@
             color: white;
             padding: 20px;
             padding-bottom: 120px;
-            min-height: 100vh;
+            min-height: 100svh;
             color: #f8fafc;
+            background-attachment: fixed;
+            background-size: cover;
         }
 
         .container {
@@ -626,8 +628,8 @@
     </script>
 
     <!-- PAYWALL ROJO -->
-    <div id="paywall" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); padding: 20px; box-sizing: border-box;">
-        <div style="background:rgba(185, 28, 28, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding:40px 25px; border-radius:32px; border:1px solid rgba(252, 165, 165, 0.3); text-align:center; max-width:400px; width:100%; box-shadow:0 30px 60px rgba(239,68,68,0.3), inset 0 1px 0 rgba(255,255,255,0.1); box-sizing: border-box;">
+    <div id="paywall" style="display:none; position:fixed; top:0; left:0; width:100%; height:100svh; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); padding: 20px; box-sizing: border-box; overflow-y:auto;">
+        <div style="background:rgba(185, 28, 28, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding:40px 25px; border-radius:32px; border:1px solid rgba(252, 165, 165, 0.3); text-align:center; max-width:400px; width:100%; margin:auto; box-shadow:0 30px 60px rgba(239,68,68,0.3), inset 0 1px 0 rgba(255,255,255,0.1); box-sizing: border-box; display:flex; flex-direction:column;">
             <h2 style="margin-top:0; margin-bottom: 15px; font-weight:800; font-size:2rem; color:white; letter-spacing: -0.5px;">LÍMITE ALCANZADO</h2>
             <p style="color:#fecaca; margin-bottom:35px; font-size:1.1rem; line-height:1.6; font-weight: 400;">Has alcanzado tu límite de 3 cotizaciones gratis de este mes. Para continuar exportando y desbloquear todo, por favor actualízate a Pro.</p>
             <a id="stripeLink" href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" style="display:block; width:100%; padding:22px 15px; margin-bottom:20px; background:linear-gradient(135deg, #ef4444, #b91c1c); color:white; border:none; border-radius:18px; font-size:1.2rem; font-weight:bold; cursor:pointer; text-decoration:none; box-sizing: border-box; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5), inset 0 1px 0 rgba(255,255,255,0.2);">¡Mejorar a Plan PRO ahora!</a>
