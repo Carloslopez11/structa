@@ -703,7 +703,7 @@
             }
         }
 
-        function simularAnalisisIA(imageSrc) {
+        async function simularAnalisisIA(imageSrc) {
             const zone = document.getElementById('aiUploadZone');
             const content = document.getElementById('aiUploadContent');
             
@@ -711,13 +711,28 @@
             content.innerHTML = `
                 <img src="${imageSrc}" class="ai-preview-img">
                 <div class="ai-loading-spinner"></div>
-                <p style="color: var(--purple); font-weight: 600;">Analizando medidas con IA...</p>
+                <p style="color: var(--purple); font-weight: 600;">Analizando con IA real...</p>
             `;
             zone.style.borderColor = "var(--purple)";
             zone.style.background = "rgba(124, 58, 237, 0.08)";
             
-            // Wait 3 seconds
-            setTimeout(() => {
+            try {
+                const response = await fetch('/api/analizar-plano', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ imageBase64: imageSrc })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Error en la respuesta de la IA.");
+                }
+
+                const data = await response.json();
+                
+                if (!data || (data.largo === 0 && data.ancho === 0)) {
+                    throw new Error("No se detectaron dimensiones inteligibles en la imagen.");
+                }
+                
                 // Success State
                 content.innerHTML = `
                     <img src="${imageSrc}" class="ai-preview-img">
@@ -735,17 +750,36 @@
                 const lenInput = document.getElementById('length');
                 const widInput = document.getElementById('width');
                 
-                lenInput.value = "12";
-                widInput.value = "8";
+                // Truncate to 2 decimal places or keep valid float format
+                lenInput.value = data.largo;
+                widInput.value = data.ancho;
                 
                 // Trigger change to update total
                 lenInput.dispatchEvent(new Event('input'));
                 widInput.dispatchEvent(new Event('input'));
                 
                 if (typeof speak === "function") {
-                    speak("¡Excelente! He analizado el plano. Las medidas detectadas son 12m x 8m. El cálculo se ha actualizado.", 6000);
+                    speak("¡Excelente! He analizado el plano con inteligencia artificial. El cálculo se ha actualizado.", 6000);
                 }
-            }, 3000);
+            } catch (error) {
+                console.error("AI Analysis Error:", error);
+                // Error State
+                content.innerHTML = `
+                    <img src="${imageSrc}" class="ai-preview-img" style="filter: grayscale(100%) opacity(0.5);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <p style="color: #ef4444; font-weight: 600;">No pude detectar los números. Por favor, sube una imagen más clara.</p>
+                `;
+                zone.style.borderColor = "#ef4444";
+                zone.style.background = "rgba(239, 68, 68, 0.05)";
+                
+                if (typeof speak === "function") {
+                    speak("Mmm... La imagen no es del todo clara para extraer medidas automáticamente. ¿Intentamos con otra?", 7000);
+                }
+            }
         }
 
         // Drag and Drop listeners
