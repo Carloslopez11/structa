@@ -130,6 +130,69 @@
             box-shadow: 0 10px 30px rgba(124, 58, 237, 0.6);
         }
 
+        /* --- AI BLUEPRINT SCANNER --- */
+        .ai-upload-zone {
+            margin-top: 8px;
+            margin-bottom: 20px;
+            padding: 30px 20px;
+            background: rgba(124, 58, 237, 0.05);
+            border: 2px dashed rgba(124, 58, 237, 0.4);
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-upload-zone:hover {
+            background: rgba(124, 58, 237, 0.1);
+            border-color: var(--purple);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.15);
+        }
+
+        .ai-upload-content p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        .ai-loading-spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(124, 58, 237, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--purple);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .ai-preview-img {
+            max-width: 100%;
+            max-height: 120px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            object-fit: contain;
+        }
+        
+        .ai-success-icon {
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+
         /* --- AI ROBOT ASSISTANT --- */
         .robot-container {
             position: fixed;
@@ -318,6 +381,18 @@
         <label>From (Company)</label> <input id="company" placeholder="Structa Inc.">
         <label>To (Client)</label> <input id="client" placeholder="Client Name">
         <label>Description</label> <input id="work" placeholder="Service description">
+
+        <label>Planos / Bosquejos (Con IA)</label>
+        <div class="ai-upload-zone" id="aiUploadZone" onclick="document.getElementById('aiFileInput').click()">
+            <input type="file" id="aiFileInput" accept="image/*" style="display:none;" onchange="handleAIUpload(this)">
+            <div class="ai-upload-content" id="aiUploadContent">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--purple); margin-bottom: 12px; filter: drop-shadow(0 2px 5px rgba(124,58,237,0.3));">
+                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <p>Sube tu plano o bosquejo y la IA extraerá las medidas</p>
+            </div>
+        </div>
 
         <div style="display:flex; gap:15px;">
             <div style="flex:1"><label>Length (m)</label><input id="length" type="number" step="0.01" placeholder="0">
@@ -615,6 +690,93 @@
                     setTimeout(() => generateInvoice(), 1000);
                 }
             }, 3000);
+        }
+
+        // --- SIMULACIÓN IA (FASE 2) ---
+        function handleAIUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    simularAnalisisIA(e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function simularAnalisisIA(imageSrc) {
+            const zone = document.getElementById('aiUploadZone');
+            const content = document.getElementById('aiUploadContent');
+            
+            // Loading State
+            content.innerHTML = `
+                <img src="${imageSrc}" class="ai-preview-img">
+                <div class="ai-loading-spinner"></div>
+                <p style="color: var(--purple); font-weight: 600;">Analizando medidas con IA...</p>
+            `;
+            zone.style.borderColor = "var(--purple)";
+            zone.style.background = "rgba(124, 58, 237, 0.08)";
+            
+            // Wait 3 seconds
+            setTimeout(() => {
+                // Success State
+                content.innerHTML = `
+                    <img src="${imageSrc}" class="ai-preview-img">
+                    <svg class="ai-success-icon" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 5px rgba(16,185,129,0.3));">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <p style="color: #10b981; font-weight: 600; font-size: 1.05rem;">¡Medidas extraídas con éxito!</p>
+                `;
+                zone.style.borderColor = "#10b981";
+                zone.style.background = "rgba(16, 185, 129, 0.08)";
+                zone.style.boxShadow = "0 0 25px rgba(16, 185, 129, 0.25)";
+                
+                // Set inputs
+                const lenInput = document.getElementById('length');
+                const widInput = document.getElementById('width');
+                
+                lenInput.value = "12";
+                widInput.value = "8";
+                
+                // Trigger change to update total
+                lenInput.dispatchEvent(new Event('input'));
+                widInput.dispatchEvent(new Event('input'));
+                
+                if (typeof speak === "function") {
+                    speak("¡Excelente! He analizado el plano. Las medidas detectadas son 12m x 8m. El cálculo se ha actualizado.", 6000);
+                }
+            }, 3000);
+        }
+
+        // Drag and Drop listeners
+        const aiDropZone = document.getElementById('aiUploadZone');
+        if (aiDropZone) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                aiDropZone.addEventListener(eventName, preventDefaults, false);
+            });
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            ['dragenter', 'dragover'].forEach(eventName => {
+                aiDropZone.addEventListener(eventName, () => {
+                    aiDropZone.style.background = "rgba(124, 58, 237, 0.15)";
+                    aiDropZone.style.borderColor = "var(--purple)";
+                }, false);
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                aiDropZone.addEventListener(eventName, () => {
+                    aiDropZone.style.background = "rgba(124, 58, 237, 0.05)";
+                    aiDropZone.style.borderColor = "rgba(124, 58, 237, 0.4)";
+                }, false);
+            });
+            aiDropZone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                const input = document.getElementById('aiFileInput');
+                input.files = files;
+                handleAIUpload(input);
+            }, false);
         }
 
         // --- CERRAR PAYWALL ---
