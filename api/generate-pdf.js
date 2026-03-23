@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
     }
 
     try {
-        const { email, company, client, work, length, width, price, logoBase64 } = req.body;
+        const { email, company, client, work, length, width, price, logoBase64, renderUrl } = req.body;
 
         if (!email || !client || !length || !width || !price) {
             return res.status(400).json({ error: "Missing required fields." });
@@ -133,6 +133,31 @@ module.exports = async (req, res) => {
         doc.rect(340, totalY - 5, 205, 30).fill('#f3f4f6');
         doc.fontSize(14).font('Helvetica-Bold').fillColor(primaryColor).text('ESTIMATED TOTAL:', 350, totalY + 2, { width: 150, align: 'left' });
         doc.text(`$${calculatedTotal.toFixed(2)}`, 440, totalY + 2, { width: 95, align: 'right' });
+
+        if (renderUrl) {
+            try {
+                const imgRes = await fetch(renderUrl);
+                if (imgRes.ok) {
+                    const arrayBuffer = await imgRes.arrayBuffer();
+                    const imgBuffer = Buffer.from(arrayBuffer);
+                    
+                    doc.moveDown(4);
+                    if (doc.y > 500) {
+                        doc.addPage();
+                    }
+                    
+                    doc.fontSize(12).font('Helvetica-Bold').fillColor(primaryColor).text('PROJECT VISUALIZATION', { align: 'center' });
+                    doc.moveDown(1);
+                    
+                    const imgWidth = 250;
+                    const imgX = (doc.page.width - imgWidth) / 2;
+                    doc.image(imgBuffer, imgX, doc.y, { width: imgWidth });
+                    doc.y += imgWidth + 20;
+                }
+            } catch (err) {
+                console.error("Error fetching render image:", err);
+            }
+        }
 
         if (!userStatus.isPro) {
             const bottomPosition = doc.page.height - 50;

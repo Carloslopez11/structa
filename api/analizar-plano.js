@@ -76,7 +76,7 @@ export default async function handler(req, res) {
       try {
         const dallePayload = {
           model: "dall-e-3",
-          prompt: `3D Cutaway Isometric architectural model. A photorealistic 3D architectural model of a complete single-level family house (${tipo}), showing interior walls, doors, and basic furniture in 2 bedrooms, 2 bathrooms, living room, dining room, and kitchen, organized according to the floor plan layout. Warm, cozy, and realistic residential style with natural light. Features warm materials like wooden floors, softly painted walls, and realistic textiles on furniture so it feels like a real home. Strictly avoid any industrial style, futuristic, or sterile minimalism. The space is approximately ${largo}m by ${ancho}m.`,
+          prompt: `3D Cutaway Isometric architectural model. A photorealistic 3D architectural model of a complete single-level family house (${tipo}), showing interior walls, doors, and basic furniture in 2 bedrooms, 2 bathrooms, living room, dining room, and kitchen, organized according to the floor plan layout. Warm, cozy, and realistic residential style with natural light. Features warm materials like wooden floors, softly painted walls, and realistic textiles on furniture so it feels like a real home. Strictly avoid any industrial style, futuristic, or sterile minimalism. CRITICAL: DO NOT include any text, letters, measurements, or numbers in the image. The image must be purely visual 3D art without any annotations. The space represents approximately ${largo}m by ${ancho}m, but do not write this on the image.`,
           n: 1,
           size: "1024x1024",
           quality: "standard"

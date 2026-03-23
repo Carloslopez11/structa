@@ -398,6 +398,10 @@
             <label style="display: block; margin-bottom: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Visualización del Proyecto</label>
             <div style="background: rgba(124, 58, 237, 0.05); border: 1px solid rgba(124, 58, 237, 0.4); border-radius: 16px; padding: 15px; text-align: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease;">
                 <img id="renderImage" src="" alt="Render arquitectónico" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); object-fit: cover; display: block;" />
+                <div style="margin-top: 15px; display: flex; justify-content: space-around; font-size: 0.95rem; font-weight: 600; color: #fff;">
+                    <div>Largo: <span id="renderLargo" style="color: var(--purple);">0</span> m</div>
+                    <div>Ancho: <span id="renderAncho" style="color: var(--purple);">0</span> m</div>
+                </div>
             </div>
         </div>
 
@@ -624,7 +628,8 @@
                 client,
                 work: document.getElementById('work').value,
                 length: l, width: w, price: p,
-                logoBase64
+                logoBase64,
+                renderUrl: window.currentRenderUrl || null
             };
 
             try {
@@ -767,6 +772,9 @@
                     const renderImage = document.getElementById('renderImage');
                     if (renderContainer && renderImage) {
                         renderImage.src = data.renderUrl;
+                        document.getElementById('renderLargo').textContent = data.largo;
+                        document.getElementById('renderAncho').textContent = data.ancho;
+                        window.currentRenderUrl = data.renderUrl;
                         renderContainer.style.display = 'block';
                     }
                 }
