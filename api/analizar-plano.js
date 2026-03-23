@@ -26,14 +26,14 @@ export default async function handler(req, res) {
       messages: [
         {
           role: "system",
-          content: "You are an expert architect and blueprint reader. Analyze the provided image of a blueprint or sketch. Identify the main dimensions (length and width) of the space, and the type of room it is (e.g., 'baño', 'cocina', 'habitación', 'sala', 'jardín', 'oficina', etc.). Respond ONLY with a valid JSON object strictly in this format: {\"largo\": number, \"ancho\": number, \"tipo\": \"string\"}. Si no hay medidas evidentes y no puedes intuirlo, responde {\"largo\": 0, \"ancho\": 0, \"tipo\": \"desconocido\"}.",
+          content: "You are an expert architect and blueprint reader. Analyze the provided image of a blueprint or sketch. Identify the main dimensions (length and width) of the space, the type of room it is (e.g., 'baño', 'cocina', 'habitación', 'sala', 'jardín', 'oficina', etc.), and determine the EXACT count of bedrooms and bathrooms present. Respond ONLY with a valid JSON object strictly in this format: {\"largo\": number, \"ancho\": number, \"tipo\": \"string\", \"habitaciones\": number, \"banos\": number}. Si no hay medidas evidentes y no puedes intuirlo, responde {\"largo\": 0, \"ancho\": 0, \"tipo\": \"desconocido\", \"habitaciones\": 0, \"banos\": 0}.",
         },
         {
           role: "user",
           content: [
             {
               type: "text",
-              text: "Extract the exact or best estimated length (largo), width (ancho) in numbers, and the room type (tipo) from this blueprint.",
+              text: "Extract the exact or best estimated length (largo), width (ancho) in numbers, the room type (tipo), and EXACTLY how many bedrooms (habitaciones) and bathrooms (banos) are visible in this blueprint.",
             },
             {
               type: "image_url",
@@ -70,13 +70,15 @@ export default async function handler(req, res) {
     const largo = parseFloat(parsedResult.largo) || 0;
     const ancho = parseFloat(parsedResult.ancho) || 0;
     const tipo = parsedResult.tipo || "espacio arquitectónico";
+    const habitaciones = parsedResult.habitaciones || 1;
+    const banos = parsedResult.banos || 1;
 
     let renderUrl = null;
     if (largo > 0 || ancho > 0 || tipo !== "desconocido") {
       try {
         const dallePayload = {
           model: "dall-e-3",
-          prompt: `3D Cutaway Isometric architectural model. A photorealistic 3D architectural model of a complete single-level family house (${tipo}), showing interior walls, doors, and basic furniture in 2 bedrooms, 2 bathrooms, living room, dining room, and kitchen, organized according to the floor plan layout. Warm, cozy, and realistic residential style with natural light. Features warm materials like wooden floors, softly painted walls, and realistic textiles on furniture so it feels like a real home. Strictly avoid any industrial style, futuristic, or sterile minimalism. CRITICAL: DO NOT include any text, letters, measurements, or numbers in the image. The image must be purely visual 3D art without any annotations. The space represents approximately ${largo}m by ${ancho}m, but do not write this on the image.`,
+          prompt: `Un render arquitectónico isométrico 3D hiperrealista de una casa familiar completa de un solo nivel (${tipo}). DEBE TENER EXACTAMENTE ${habitaciones} HABITACIONES, ${banos} BAÑOS, UNA SALA, UN COMEDOR Y UNA COCINA, organizados de forma idéntica a la distribución detectada en el plano. Mantén un estilo cálido residencial, con abundante luz natural, y utiliza materiales cálidos como pisos de madera y textiles suaves para que se sienta como un hogar acogedor. RESTRICCIÓN DE GENERACIÓN MUY ESTRICTA: Prohibido añadir elementos externos o estructurales no presentes en el plano (nada de patios adicionales, sin árboles dentro del edificio, sin balcones si no existen inicialmente). CRITICAL: DO NOT include any text, letters, measurements, or numbers in the image. The image must be purely visual 3D art without any annotations. The space represents approximately ${largo}m by ${ancho}m, but do not write this on the image.`,
           n: 1,
           size: "1024x1024",
           quality: "standard"

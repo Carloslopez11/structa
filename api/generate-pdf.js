@@ -106,25 +106,27 @@ module.exports = async (req, res) => {
         const tableTop = doc.y;
         doc.rect(50, tableTop, 495, 25).fill('#f3f4f6');
 
+        const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+
         doc.fontSize(10).font('Helvetica-Bold').fillColor('#374151');
-        doc.text('MEASUREMENT', 60, tableTop + 8);
-        doc.text('AREA', 200, tableTop + 8, { width: 100, align: 'right' });
-        doc.text('PRICE PER M²', 320, tableTop + 8, { width: 100, align: 'right' });
-        doc.text('TOTAL', 440, tableTop + 8, { width: 95, align: 'right' });
+        doc.text('MEASUREMENT', 60, tableTop + 8, { width: 100 });
+        doc.text('AREA', 160, tableTop + 8, { width: 80, align: 'right' });
+        doc.text('PRICE PER M²', 250, tableTop + 8, { width: 130, align: 'right' });
+        doc.text('TOTAL', 390, tableTop + 8, { width: 145, align: 'right' });
 
         const itemTop = tableTop + 35;
         doc.fontSize(10).font('Helvetica').fillColor(textColor);
-        doc.text(`${l}m x ${w}m`, 60, itemTop);
-        doc.text(`${calculatedArea.toFixed(2)} m²`, 200, itemTop, { width: 100, align: 'right' });
-        doc.text(`$${p.toFixed(2)}`, 320, itemTop, { width: 100, align: 'right' });
-        doc.text(`$${calculatedTotal.toFixed(2)}`, 440, itemTop, { width: 95, align: 'right' });
+        doc.text(`${l}m x ${w}m`, 60, itemTop, { width: 100 });
+        doc.text(`${calculatedArea.toFixed(2)} m²`, 160, itemTop, { width: 80, align: 'right' });
+        doc.text(formatCurrency(p), 250, itemTop, { width: 130, align: 'right' });
+        doc.text(formatCurrency(calculatedTotal), 390, itemTop, { width: 145, align: 'right' });
 
         const afterItemY = itemTop + 20;
         doc.moveTo(50, afterItemY).lineTo(545, afterItemY).lineWidth(0.5).strokeColor('#e5e7eb').stroke();
 
         doc.y = afterItemY + 30;
-        doc.fontSize(10).font('Helvetica').fillColor(textMuted).text('Subtotal:', 350, doc.y, { width: 80, align: 'right' });
-        doc.fillColor(textColor).text(`$${calculatedTotal.toFixed(2)}`, 440, doc.y, { width: 95, align: 'right' });
+        doc.fontSize(10).font('Helvetica').fillColor(textMuted).text('Subtotal:', 290, doc.y, { width: 90, align: 'right' });
+        doc.fillColor(textColor).text(formatCurrency(calculatedTotal), 390, doc.y, { width: 145, align: 'right' });
         doc.moveDown(1);
         doc.moveTo(350, doc.y).lineTo(545, doc.y).lineWidth(1).strokeColor('#e5e7eb').stroke();
         doc.moveDown(1);
@@ -132,7 +134,7 @@ module.exports = async (req, res) => {
         const totalY = doc.y;
         doc.rect(340, totalY - 5, 205, 30).fill('#f3f4f6');
         doc.fontSize(14).font('Helvetica-Bold').fillColor(primaryColor).text('ESTIMATED TOTAL:', 350, totalY + 2, { width: 150, align: 'left' });
-        doc.text(`$${calculatedTotal.toFixed(2)}`, 440, totalY + 2, { width: 95, align: 'right' });
+        doc.text(formatCurrency(calculatedTotal), 340, totalY + 2, { width: 195, align: 'right' });
 
         if (renderUrl) {
             try {
