@@ -133,8 +133,7 @@ module.exports = async (req, res) => {
 
         const totalY = doc.y;
         doc.rect(340, totalY - 5, 205, 30).fill('#f3f4f6');
-        doc.fontSize(14).font('Helvetica-Bold').fillColor(primaryColor).text('ESTIMATED TOTAL:', 350, totalY + 2, { width: 150, align: 'left' });
-        doc.text(formatCurrency(calculatedTotal), 340, totalY + 2, { width: 195, align: 'right' });
+        doc.fontSize(14).font('Helvetica-Bold').fillColor(primaryColor).text(`ESTIMATED TOTAL: ${formatCurrency(calculatedTotal)}`, 340, totalY + 2, { width: 195, align: 'right' });
 
         if (renderUrl) {
             try {
