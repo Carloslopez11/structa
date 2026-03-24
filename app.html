@@ -592,11 +592,9 @@
             const errorBox = document.getElementById('errorBox');
             errorBox.style.display = 'none';
 
-            // Validar campos faltantes
-            if (!email || !client || !l || !w || !p) {
-                speak("Hmm, I think you missed some required fields. Please fill them out!", 4000);
-                robotMessage.style.color = "#ef4444";
-                setTimeout(() => robotMessage.style.color = "", 4000);
+            // Validar campos faltantes eliminados por solicitud (cero fricción)
+            if (!email) {
+                speak("Please log in again.", 4000);
                 return;
             }
 

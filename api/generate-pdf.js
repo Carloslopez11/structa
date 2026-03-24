@@ -19,8 +19,8 @@ module.exports = async (req, res) => {
     try {
         const { email, company, client, work, length, width, price, logoBase64, renderUrl, desglose } = req.body;
 
-        if (!email || !client || !length || !width || !price) {
-            return res.status(400).json({ error: "Missing required fields." });
+        if (!email) {
+            return res.status(400).json({ error: "Missing email for quota tracking." });
         }
 
         const supabaseUrl = process.env.SUPABASE_URL;
@@ -56,8 +56,9 @@ module.exports = async (req, res) => {
             await supabase.from('usage').upsert({ email: email, count: userStatus.count, is_pro: userStatus.isPro });
         }
 
-        const l = parseFloat(length), w = parseFloat(width), p = parseFloat(price);
-        if (isNaN(l) || isNaN(w) || isNaN(p)) return res.status(400).json({ error: "Invalid numbers." });
+        const l = parseFloat(length) || 0;
+        const w = parseFloat(width) || 0;
+        const p = parseFloat(price) || 0;
 
         const calculatedArea = l * w;
         const calculatedTotal = calculatedArea * p;
@@ -95,7 +96,7 @@ module.exports = async (req, res) => {
 
         const clientTop = doc.y;
         doc.fontSize(10).font('Helvetica-Bold').fillColor(textMuted).text('BILL TO:', 50, clientTop);
-        doc.fontSize(14).font('Helvetica-Bold').fillColor(textColor).text(client, 50, clientTop + 15);
+        doc.fontSize(14).font('Helvetica-Bold').fillColor(textColor).text(client || 'Client Name', 50, clientTop + 15);
 
         doc.fontSize(10).font('Helvetica-Bold').fillColor(textMuted).text('DESCRIPTION:', 250, clientTop);
         doc.fontSize(12).font('Helvetica').fillColor(textColor).text(work || "Service provided", 250, clientTop + 15, { width: 295 });
@@ -126,15 +127,17 @@ module.exports = async (req, res) => {
 
         if (desglose && desglose.length > 0) {
             for (const room of desglose) {
-                const cleanNombre = (room.nombre || '').replace(/[\r\n]+/g, ' ').trim();
-                const roomArea = room.largo * room.ancho;
-                const roomPrice = room.precio !== undefined ? parseFloat(room.precio) : p;
+                const cleanNombre = (room.nombre || '').replace(/[\r\n]+/g, ' ').trim() || 'Espacio';
+                const lRoom = parseFloat(room.largo) || 0;
+                const wRoom = parseFloat(room.ancho) || 0;
+                const roomArea = lRoom * wRoom;
+                const roomPrice = room.precio !== undefined ? (parseFloat(room.precio) || 0) : p;
                 const roomTotal = roomArea * roomPrice;
                 actualTotalArea += roomArea;
                 actualTotalPrice += roomTotal;
                 
                 doc.font('Helvetica-Bold').text(cleanNombre, 60, currentY, { width: 100 });
-                doc.font('Helvetica').fillColor(textMuted).text(`${room.largo}m x ${room.ancho}m`, 60, currentY + 12, { width: 100 });
+                doc.font('Helvetica').fillColor(textMuted).text(`${lRoom}m x ${wRoom}m`, 60, currentY + 12, { width: 100 });
                 
                 doc.fillColor(textColor);
                 doc.text(`${roomArea.toFixed(2)} m²`, 160, currentY + 6, { width: 80, align: 'right' });
