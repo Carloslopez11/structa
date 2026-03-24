@@ -126,17 +126,19 @@ module.exports = async (req, res) => {
 
         if (desglose && desglose.length > 0) {
             for (const room of desglose) {
+                const cleanNombre = (room.nombre || '').replace(/[\r\n]+/g, ' ').trim();
                 const roomArea = room.largo * room.ancho;
-                const roomTotal = roomArea * p;
+                const roomPrice = room.precio !== undefined ? parseFloat(room.precio) : p;
+                const roomTotal = roomArea * roomPrice;
                 actualTotalArea += roomArea;
                 actualTotalPrice += roomTotal;
                 
-                doc.font('Helvetica-Bold').text(room.nombre, 60, currentY, { width: 100 });
+                doc.font('Helvetica-Bold').text(cleanNombre, 60, currentY, { width: 100 });
                 doc.font('Helvetica').fillColor(textMuted).text(`${room.largo}m x ${room.ancho}m`, 60, currentY + 12, { width: 100 });
                 
                 doc.fillColor(textColor);
                 doc.text(`${roomArea.toFixed(2)} m²`, 160, currentY + 6, { width: 80, align: 'right' });
-                doc.text(formatCurrency(p), 250, currentY + 6, { width: 130, align: 'right' });
+                doc.text(formatCurrency(roomPrice), 250, currentY + 6, { width: 130, align: 'right' });
                 doc.text(formatCurrency(roomTotal), 390, currentY + 6, { width: 145, align: 'right' });
                 
                 currentY += 35;

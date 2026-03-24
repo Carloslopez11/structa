@@ -416,7 +416,9 @@
             <label style="display: block; margin-bottom: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Desglose por Espacios</label>
             <div id="roomsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
         </div>
-        <label>Price per m² ($)</label> <input id="price" type="number" step="0.01" placeholder="0.00">
+        <div id="globalPriceContainer">
+            <label>Price per m² ($)</label> <input id="price" type="number" step="0.01" placeholder="0.00">
+        </div>
 
         <div class="preview-box" id="previewContainer">
             <div style="font-size:12px;color:var(--text-muted)">ESTIMATED TOTAL</div>
@@ -447,14 +449,21 @@
                     
                     if (window.currentDesglose && window.currentDesglose.length > 0) {
                         area = window.currentDesglose.reduce((sum, room) => sum + (safeParseNumber({value: room.largo.toString()}) * safeParseNumber({value: room.ancho.toString()})), 0);
-                        total = area * p;
                         
+                        let computedTotal = 0;
                         window.currentDesglose.forEach((room, index) => {
                             const roomArea = safeParseNumber({value: room.largo.toString()}) * safeParseNumber({value: room.ancho.toString()});
-                            const roomCost = roomArea * p;
+                            const roomPriceInput = document.getElementById(`roomPriceInput_${index}`);
+                            const roomPrice = roomPriceInput ? safeParseNumber(roomPriceInput) : p;
+                            room.precio = roomPrice; // Guardamos el precio del input en este objeto o el global como fallback
+                            
+                            const roomCost = roomArea * roomPrice;
+                            computedTotal += roomCost;
+                            
                             const costEl = document.getElementById(`roomCost_${index}`);
                             if (costEl) costEl.textContent = "$" + roomCost.toFixed(2);
                         });
+                        total = computedTotal;
                     } else {
                         const l = safeParseNumber(lInput);
                         const w = safeParseNumber(wInput);
@@ -484,6 +493,8 @@
                 if (lInput) { lInput.addEventListener('input', doUpdate); lInput.addEventListener('change', doUpdate); }
                 if (wInput) { wInput.addEventListener('input', doUpdate); wInput.addEventListener('change', doUpdate); }
                 if (pInput) { pInput.addEventListener('input', doUpdate); pInput.addEventListener('change', doUpdate); }
+                
+                window.fireUpdate = doUpdate;
             })();
         </script>
 
@@ -790,19 +801,30 @@
                 if (data.desglose && data.desglose.length > 0) {
                   window.currentDesglose = data.desglose;
                   document.getElementById('manualDimensions').style.display = 'none';
+                  const globalPriceCont = document.getElementById('globalPriceContainer');
+                  if (globalPriceCont) globalPriceCont.style.display = 'none';
+                  
                   const roomsContainer = document.getElementById('roomsContainer');
                   const roomsList = document.getElementById('roomsList');
                   roomsList.innerHTML = '';
                   
+                  const currentGlobalPrice = document.getElementById('price').value || 0;
+                  
                   data.desglose.forEach((room, index) => {
                       const roomArea = room.largo * room.ancho;
                       roomsList.innerHTML += `
-                          <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center;">
-                              <div>
+                          <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                              <div style="flex: 1; min-width: 150px;">
                                   <div style="font-weight: 600; font-size: 1rem; color: #fff;">${room.nombre}</div>
                                   <div style="font-size: 0.85rem; color: var(--text-muted);">${room.largo}m x ${room.ancho}m (${roomArea.toFixed(2)} m²)</div>
                               </div>
-                              <div id="roomCost_${index}" style="font-weight: bold; color: var(--purple); font-size: 1.1rem;">$0.00</div>
+                              <div style="display: flex; align-items: center; gap: 10px;">
+                                  <div style="display: flex; flex-direction: column; width: 90px;">
+                                      <label style="font-size: 0.65rem; margin-bottom: 2px;">Precio m² ($)</label>
+                                      <input type="number" id="roomPriceInput_${index}" value="${currentGlobalPrice}" step="0.01" style="margin: 0; padding: 8px; font-size: 0.9rem;" oninput="if(window.fireUpdate) window.fireUpdate()">
+                                  </div>
+                                  <div id="roomCost_${index}" style="font-weight: bold; color: var(--purple); font-size: 1.1rem; min-width: 80px; text-align: right;">$0.00</div>
+                              </div>
                           </div>
                       `;
                   });
@@ -810,6 +832,8 @@
                 } else {
                   window.currentDesglose = null;
                   document.getElementById('manualDimensions').style.display = 'flex';
+                  const globalPriceCont = document.getElementById('globalPriceContainer');
+                  if (globalPriceCont) globalPriceCont.style.display = 'block';
                   document.getElementById('roomsContainer').style.display = 'none';
                 }
 
