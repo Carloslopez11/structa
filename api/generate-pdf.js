@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
     }
 
     try {
-        const { email, company, client, work, length, width, price, logoBase64, renderUrl } = req.body;
+        const { email, company, client, work, length, width, price, logoBase64, renderUrl, desglose } = req.body;
 
         if (!email || !client || !length || !width || !price) {
             return res.status(400).json({ error: "Missing required fields." });
@@ -109,31 +109,61 @@ module.exports = async (req, res) => {
         const formatCurrency = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
 
         doc.fontSize(10).font('Helvetica-Bold').fillColor('#374151');
-        doc.text('MEASUREMENT', 60, tableTop + 8, { width: 100 });
+        if (desglose && desglose.length > 0) {
+            doc.text('ROOM / MEASUREMENT', 60, tableTop + 8, { width: 100 });
+        } else {
+            doc.text('MEASUREMENT', 60, tableTop + 8, { width: 100 });
+        }
         doc.text('AREA', 160, tableTop + 8, { width: 80, align: 'right' });
         doc.text('PRICE PER M²', 250, tableTop + 8, { width: 130, align: 'right' });
         doc.text('TOTAL', 390, tableTop + 8, { width: 145, align: 'right' });
 
-        const itemTop = tableTop + 35;
-        doc.fontSize(10).font('Helvetica').fillColor(textColor);
-        doc.text(`${l}m x ${w}m`, 60, itemTop, { width: 100 });
-        doc.text(`${calculatedArea.toFixed(2)} m²`, 160, itemTop, { width: 80, align: 'right' });
-        doc.text(formatCurrency(p), 250, itemTop, { width: 130, align: 'right' });
-        doc.text(formatCurrency(calculatedTotal), 390, itemTop, { width: 145, align: 'right' });
+        let currentY = tableTop + 35;
+        let actualTotalArea = 0;
+        let actualTotalPrice = 0;
 
-        const afterItemY = itemTop + 20;
+        doc.fontSize(10).font('Helvetica').fillColor(textColor);
+
+        if (desglose && desglose.length > 0) {
+            for (const room of desglose) {
+                const roomArea = room.largo * room.ancho;
+                const roomTotal = roomArea * p;
+                actualTotalArea += roomArea;
+                actualTotalPrice += roomTotal;
+                
+                doc.font('Helvetica-Bold').text(room.nombre, 60, currentY, { width: 100 });
+                doc.font('Helvetica').fillColor(textMuted).text(`${room.largo}m x ${room.ancho}m`, 60, currentY + 12, { width: 100 });
+                
+                doc.fillColor(textColor);
+                doc.text(`${roomArea.toFixed(2)} m²`, 160, currentY + 6, { width: 80, align: 'right' });
+                doc.text(formatCurrency(p), 250, currentY + 6, { width: 130, align: 'right' });
+                doc.text(formatCurrency(roomTotal), 390, currentY + 6, { width: 145, align: 'right' });
+                
+                currentY += 35;
+            }
+        } else {
+            actualTotalArea = calculatedArea;
+            actualTotalPrice = calculatedTotal;
+            doc.text(`${l}m x ${w}m`, 60, currentY, { width: 100 });
+            doc.text(`${actualTotalArea.toFixed(2)} m²`, 160, currentY, { width: 80, align: 'right' });
+            doc.text(formatCurrency(p), 250, currentY, { width: 130, align: 'right' });
+            doc.text(formatCurrency(actualTotalPrice), 390, currentY, { width: 145, align: 'right' });
+            currentY += 20;
+        }
+
+        const afterItemY = currentY;
         doc.moveTo(50, afterItemY).lineTo(545, afterItemY).lineWidth(0.5).strokeColor('#e5e7eb').stroke();
 
         doc.y = afterItemY + 30;
         doc.fontSize(10).font('Helvetica').fillColor(textMuted).text('Subtotal:', 290, doc.y, { width: 90, align: 'right' });
-        doc.fillColor(textColor).text(formatCurrency(calculatedTotal), 390, doc.y, { width: 145, align: 'right' });
+        doc.fillColor(textColor).text(formatCurrency(actualTotalPrice), 390, doc.y, { width: 145, align: 'right' });
         doc.moveDown(1);
         doc.moveTo(350, doc.y).lineTo(545, doc.y).lineWidth(1).strokeColor('#e5e7eb').stroke();
         doc.moveDown(1);
 
         const totalY = doc.y;
         doc.rect(340, totalY - 5, 205, 30).fill('#f3f4f6');
-        doc.fontSize(14).font('Helvetica-Bold').fillColor(primaryColor).text(`ESTIMATED TOTAL: ${formatCurrency(calculatedTotal)}`, 340, totalY + 2, { width: 195, align: 'right' });
+        doc.fontSize(14).font('Helvetica-Bold').fillColor(primaryColor).text(`ESTIMATED TOTAL: ${formatCurrency(actualTotalPrice)}`, 340, totalY + 2, { width: 195, align: 'right' });
 
         if (renderUrl) {
             try {

@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       messages: [
         {
           role: "system",
-          content: "You are an expert architect and blueprint reader. Analyze the provided image of a blueprint or sketch. Identify the main dimensions (length and width) of the space, the type of room it is (e.g., 'baño', 'cocina', 'habitación', 'sala', 'jardín', 'oficina', etc.), and determine the EXACT count of bedrooms and bathrooms present. Respond ONLY with a valid JSON object strictly in this format: {\"largo\": number, \"ancho\": number, \"tipo\": \"string\", \"habitaciones\": number, \"banos\": number}. Si no hay medidas evidentes y no puedes intuirlo, responde {\"largo\": 0, \"ancho\": 0, \"tipo\": \"desconocido\", \"habitaciones\": 0, \"banos\": 0}.",
+          content: "You are an expert architect and blueprint reader. Analyze the provided image of a blueprint or sketch. Identify the main dimensions (length and width) of the space, the type of room it is (e.g., 'baño', 'cocina', 'habitación', 'sala', 'jardín', 'oficina', etc.), and determine the EXACT count of bedrooms and bathrooms present. Además, debes devolver un array JSON llamado desglose que contenga cada espacio detectado con sus medidas aproximadas. Respond ONLY with a valid JSON object strictly in this format: {\"largo\": number, \"ancho\": number, \"tipo\": \"string\", \"habitaciones\": number, \"banos\": number, \"desglose\": [{\"nombre\": \"Sala\", \"largo\": 5, \"ancho\": 4}]}. Si no hay medidas evidentes y no puedes intuirlo, responde {\"largo\": 0, \"ancho\": 0, \"tipo\": \"desconocido\", \"habitaciones\": 0, \"banos\": 0, \"desglose\": []}.",
         },
         {
           role: "user",
@@ -72,6 +72,7 @@ export default async function handler(req, res) {
     const tipo = parsedResult.tipo || "espacio arquitectónico";
     const habitaciones = parsedResult.habitaciones || 1;
     const banos = parsedResult.banos || 1;
+    const desglose = parsedResult.desglose || [];
 
     let renderUrl = null;
     if (largo > 0 || ancho > 0 || tipo !== "desconocido") {
@@ -106,7 +107,8 @@ export default async function handler(req, res) {
       largo, 
       ancho,
       tipo,
-      renderUrl
+      renderUrl,
+      desglose
     });
 
   } catch (error) {

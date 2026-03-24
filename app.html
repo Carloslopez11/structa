@@ -405,11 +405,16 @@
             </div>
         </div>
 
-        <div style="display:flex; gap:15px;">
+        <div style="display:flex; gap:15px;" id="manualDimensions">
             <div style="flex:1"><label>Length (m)</label><input id="length" type="number" step="0.01" placeholder="0">
             </div>
             <div style="flex:1"><label>Width (m)</label><input id="width" type="number" step="0.01" placeholder="0">
             </div>
+        </div>
+        
+        <div id="roomsContainer" style="display:none; margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Desglose por Espacios</label>
+            <div id="roomsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
         </div>
         <label>Price per m² ($)</label> <input id="price" type="number" step="0.01" placeholder="0.00">
 
@@ -436,12 +441,26 @@
                 }
 
                 function doUpdate() {
-                    const l = safeParseNumber(lInput);
-                    const w = safeParseNumber(wInput);
                     const p = safeParseNumber(pInput);
-
-                    const area = l * w;
-                    const total = area * p;
+                    let area = 0;
+                    let total = 0;
+                    
+                    if (window.currentDesglose && window.currentDesglose.length > 0) {
+                        area = window.currentDesglose.reduce((sum, room) => sum + (safeParseNumber({value: room.largo.toString()}) * safeParseNumber({value: room.ancho.toString()})), 0);
+                        total = area * p;
+                        
+                        window.currentDesglose.forEach((room, index) => {
+                            const roomArea = safeParseNumber({value: room.largo.toString()}) * safeParseNumber({value: room.ancho.toString()});
+                            const roomCost = roomArea * p;
+                            const costEl = document.getElementById(`roomCost_${index}`);
+                            if (costEl) costEl.textContent = "$" + roomCost.toFixed(2);
+                        });
+                    } else {
+                        const l = safeParseNumber(lInput);
+                        const w = safeParseNumber(wInput);
+                        area = l * w;
+                        total = area * p;
+                    }
 
                     if (pTotal) pTotal.textContent = "$" + total.toFixed(2);
                     if (pArea) pArea.textContent = area.toFixed(2) + " m²";
@@ -629,7 +648,8 @@
                 work: document.getElementById('work').value,
                 length: l, width: w, price: p,
                 logoBase64,
-                renderUrl: window.currentRenderUrl || null
+                renderUrl: window.currentRenderUrl || null,
+                desglose: window.currentDesglose || null
             };
 
             try {
@@ -765,6 +785,33 @@
                 // Truncate to 2 decimal places or keep valid float format
                 lenInput.value = data.largo;
                 widInput.value = data.ancho;
+                
+                // Update Rooms List if desglose is available
+                if (data.desglose && data.desglose.length > 0) {
+                  window.currentDesglose = data.desglose;
+                  document.getElementById('manualDimensions').style.display = 'none';
+                  const roomsContainer = document.getElementById('roomsContainer');
+                  const roomsList = document.getElementById('roomsList');
+                  roomsList.innerHTML = '';
+                  
+                  data.desglose.forEach((room, index) => {
+                      const roomArea = room.largo * room.ancho;
+                      roomsList.innerHTML += `
+                          <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center;">
+                              <div>
+                                  <div style="font-weight: 600; font-size: 1rem; color: #fff;">${room.nombre}</div>
+                                  <div style="font-size: 0.85rem; color: var(--text-muted);">${room.largo}m x ${room.ancho}m (${roomArea.toFixed(2)} m²)</div>
+                              </div>
+                              <div id="roomCost_${index}" style="font-weight: bold; color: var(--purple); font-size: 1.1rem;">$0.00</div>
+                          </div>
+                      `;
+                  });
+                  roomsContainer.style.display = 'block';
+                } else {
+                  window.currentDesglose = null;
+                  document.getElementById('manualDimensions').style.display = 'flex';
+                  document.getElementById('roomsContainer').style.display = 'none';
+                }
 
                 // Show Render if available
                 if (data.renderUrl) {
