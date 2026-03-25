@@ -373,11 +373,11 @@
 
     <div class="container">
         <!-- Navegación y estado de autenticación -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-            <span style="font-weight:bold; color:var(--text-muted); font-size: 14px;">Logged in as: <span
-                    id="userEmailLabel" style="color:white;">-</span></span>
-            <a href="#" onclick="handleLogout();"
-                style="color:var(--purple); font-size:12px; text-decoration:none;">Log out</a>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <div style="font-weight:600; color:var(--text-muted); font-size: 0.9rem;">
+                Usuario: <span id="userEmailLabel" style="color:white; font-weight:700;">-</span>
+            </div>
+            <button onclick="handleLogout()" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.1);">Cerrar Sesión</button>
         </div>
 
         <h1>Create <span>Premium</span> Quote</h1>
@@ -553,14 +553,14 @@
 
         // --- AUTENTICACIÓN Y EXTRACCIÓN DEL EMAIL (Supabase) ---
         const supabaseUrl = 'https://tadjlpeifkidsghbirlj.supabase.co'; // Replace with your Supabase Project URL
-        const supabaseAnonKey = 'sb_publishable_ieKM-eclueRcHs7pa4K6Bg_TTAymXer'; // Replace with your Supabase Anon Key
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRhZGpscGVpZmtpZHNnaGJpcmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNjg1MDEsImV4cCI6MjA4Nzk0NDUwMX0.laJbEwsKJTYsWy1GbV3LHma5rsixWQH-Th8K9NX_WAc'; // Replace with your Supabase Anon Key
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
         async function checkAuth() {
             const { data: { session }, error } = await supabaseClient.auth.getSession();
             if (!session) {
-                // Si el usuario llega a app.html sin estar logueado, lo regresamos al index
-                window.location.href = "index.html";
+                // Si el usuario llega a app.html sin estar logueado, lo regresamos al login.html
+                window.location.href = "login.html";
             } else {
                 // Si el usuario está validado, guardamos su email en el input oculto y mostramos un saludo
                 document.getElementById('email').value = session.user.email;
@@ -573,13 +573,13 @@
 
         async function handleLogout() {
             await supabaseClient.auth.signOut();
-            window.location.href = "index.html";
+            window.location.href = "login.html";
         }
 
         // Listener para cambios de sesión protectores
         supabaseClient.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_OUT') {
-                window.location.href = "index.html";
+                window.location.href = "login.html";
             }
         });
 
