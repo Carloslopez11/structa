@@ -454,6 +454,151 @@
       font-size: 0.8rem;
     }
 
+    /* --- TESTIMONIALS --- */
+    .testimonials-section {
+      max-width: 1100px;
+      margin: 100px auto;
+      padding: 0 20px;
+    }
+    
+    .testimonials-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    
+    .testimonials-header h2 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .testimonials-header span {
+      background: linear-gradient(135deg, #A78BFA 0%, var(--cyan-glow) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    
+    .testimonial-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--border-glass);
+      border-radius: 20px;
+      padding: 40px 30px;
+      text-align: left;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    .testimonial-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.15);
+      border-color: rgba(139, 92, 246, 0.4);
+    }
+    
+    .stars {
+      color: #FBBF24;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+    
+    .testimonial-text {
+      font-size: 1.05rem;
+      color: var(--text-main);
+      font-style: italic;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    
+    .testimonial-author {
+      font-weight: 700;
+      color: var(--cyan-glow);
+      font-size: 0.95rem;
+    }
+
+    /* --- FAQ SECTION --- */
+    .faq-section {
+      max-width: 800px;
+      margin: 100px auto;
+      padding: 0 20px;
+      text-align: left;
+    }
+    
+    .faq-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    
+    .faq-header h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+    
+    details {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      margin-bottom: 15px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    details[open] {
+      border-color: var(--violet);
+      box-shadow: 0 10px 25px rgba(139, 92, 246, 0.1);
+    }
+    
+    summary {
+      padding: 20px 25px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      list-style: none; /* remove default arrow */
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    summary::-webkit-details-marker {
+      display: none;
+    }
+    
+    summary::after {
+      content: '+';
+      font-size: 1.5rem;
+      color: var(--cyan-glow);
+      font-weight: 400;
+      transition: transform 0.3s ease;
+    }
+    
+    details[open] summary::after {
+      content: '−';
+      transform: rotate(180deg);
+      color: var(--violet);
+    }
+    
+    .faq-content {
+      padding: 0 25px 25px;
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
   </style>
 </head>
 
@@ -536,6 +681,53 @@
       <h3>🖼️ Renders Fotorrealistas</h3>
       <p>Acompaña cada PDF con visualizaciones increíbles en 3D basadas en el plano y personaliza tu presentación con el Selector de Calidad (Estándar, Medio o Lujo).</p>
     </div>
+  </section>
+
+  <section class="testimonials-section">
+    <div class="testimonials-header">
+      <h2>Profesionales que ya cierran más tratos <span>están diciendo:</span></h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div>
+          <div class="stars">★★★★★</div>
+          <div class="testimonial-text">"Antes perdía mis noches haciendo presupuestos en Excel. Ahora los saco desde mi celular en la obra. Increíble."</div>
+        </div>
+        <div class="testimonial-author">— Roberto M., Contratista General</div>
+      </div>
+      <div class="testimonial-card">
+        <div>
+          <div class="stars">★★★★★</div>
+          <div class="testimonial-text">"La calidad del render fotorrealista me ayudó a cerrar una remodelación de $15,000 dólares ayer. El cliente quedó impresionado."</div>
+        </div>
+        <div class="testimonial-author">— Carlos V., Arquitecto Independiente</div>
+      </div>
+      <div class="testimonial-card">
+        <div>
+          <div class="stars">★★★★★</div>
+          <div class="testimonial-text">"Poder poner mi propio logo en el PDF hace que mi pequeña empresa se vea como una constructora gigante."</div>
+        </div>
+        <div class="testimonial-author">— Luis F., Remodelaciones</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section">
+    <div class="faq-header">
+      <h2>Preguntas Frecuentes</h2>
+    </div>
+    <details>
+      <summary>¿Cuánto tiempo real me ahorra Structa por proyecto?</summary>
+      <div class="faq-content">En lugar de pasar horas haciendo cálculos matemáticos en Excel después del trabajo, Structa extrae las medidas y genera el presupuesto completo en menos de 30 segundos. Recupera tus noches.</div>
+    </details>
+    <details>
+      <summary>¿Cómo me ayuda esto a ganar más contratos?</summary>
+      <div class="faq-content">La primera impresión vende. Entregar al instante un PDF fotorrealista con el desglose exacto de las habitaciones y el logo de tu propia empresa te posiciona como un profesional de alto nivel, generando confianza inmediata en el cliente.</div>
+    </details>
+    <details>
+      <summary>¿Puedo cotizar desde la obra o necesito una computadora?</summary>
+      <div class="faq-content">Structa está en la nube. Puedes tomarle una foto al plano con tu celular en medio de la obra, generar el PDF y enviárselo al cliente por WhatsApp antes de siquiera subirte a tu vehículo para volver a casa.</div>
+    </details>
   </section>
 
   <footer>
