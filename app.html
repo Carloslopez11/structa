@@ -58,7 +58,7 @@
             z-index: 10;
         }
 
-        input {
+        input, select {
             width: 100%;
             box-sizing: border-box;
             padding: 16px;
@@ -73,7 +73,17 @@
             transition: 0.3s;
         }
 
-        input:focus {
+        select {
+            appearance: none;
+            cursor: pointer;
+        }
+        
+        select option {
+            background: var(--card);
+            color: white;
+        }
+
+        input:focus, select:focus {
             border-color: var(--purple);
             box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
         }
@@ -382,6 +392,13 @@
         <label>To (Client)</label> <input id="client" placeholder="Client Name">
         <label>Description</label> <input id="work" placeholder="Service description">
 
+        <label>Calidad de Acabados</label> 
+        <select id="quality">
+            <option value="Estándar">Estándar</option>
+            <option value="Medio">Medio</option>
+            <option value="Lujo">Lujo</option>
+        </select>
+
         <label>Planos / Bosquejos (Con IA)</label>
         <div class="ai-upload-zone" id="aiUploadZone" onclick="document.getElementById('aiFileInput').click()">
             <input type="file" id="aiFileInput" accept="image/*" style="display:none;" onchange="handleAIUpload(this)">
@@ -650,11 +667,15 @@
                 logoBase64 = await fileToBase64(logoFile);
             }
 
+            const qualitySelect = document.getElementById('quality');
+            const quality = qualitySelect ? qualitySelect.value : 'Estándar';
+
             const payload = {
                 email,
                 company: document.getElementById('company').value,
                 client,
                 work: document.getElementById('work').value,
+                quality,
                 length: l, width: w, price: p,
                 logoBase64,
                 renderUrl: window.currentRenderUrl || null,
@@ -758,10 +779,13 @@
             zone.style.background = "rgba(124, 58, 237, 0.08)";
             
             try {
+                const qualitySelect = document.getElementById('quality');
+                const quality = qualitySelect ? qualitySelect.value : 'Estándar';
+
                 const response = await fetch('/api/analizar-plano', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ imageBase64: imageSrc })
+                    body: JSON.stringify({ imageBase64: imageSrc, quality: quality })
                 });
 
                 if (!response.ok) {

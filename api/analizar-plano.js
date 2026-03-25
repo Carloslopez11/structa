@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { imageBase64 } = req.body;
+    const { imageBase64, quality } = req.body;
 
     if (!imageBase64) {
       return res.status(400).json({ error: 'No image provided' });
@@ -77,9 +77,16 @@ export default async function handler(req, res) {
     let renderUrl = null;
     if (largo > 0 || ancho > 0 || tipo !== "desconocido") {
       try {
+        let qualityPromptStr = "materiales de construcción estándar, acabados limpios pero básicos";
+        if (quality === "Lujo") {
+          qualityPromptStr = "materiales de altísima gama, pisos de mármol, maderas finas, diseño arquitectónico de lujo y acabados premium";
+        } else if (quality === "Medio") {
+          qualityPromptStr = "buenos materiales, diseño moderno, acabados de calidad";
+        }
+
         const dallePayload = {
           model: "dall-e-3",
-          prompt: `An orthographic top-down, strictly 2D textured floor plan maquette of a single-story residential home (${tipo}). A textured architectural model mirroring the exact wall placements, room dimensions, door and window locations, and furniture arrangement of the uploaded floor plan. Focus as much as possible on structural fidelity. DEBE TENER EXACTAMENTE ${habitaciones} HABITACIONES, ${banos} BAÑOS, UNA SALA, UN COMEDOR Y UNA COCINA. The view must be perfectly straight down (2D orthogonal), with no elevated walls, no second floors, and no 3D perspective. Mantén un estilo espectacular con texturas realistas y cálidas: pisos de madera cálida, texturas de tela en sofás y camas, encimeras de piedra en la cocina y azulejos en los baños, todo visto estrictamente en plano. RESTRICCIÓN CRÍTICA: Prohibido añadir elementos externos, escaleras o patios adicionales que no estén en el plano. CRITICAL: DO NOT include any text, letters, measurements, or numbers in the image. Purely visual textured 2D art. The space represents roughly ${largo}m by ${ancho}m.`,
+          prompt: `An orthographic top-down, strictly 2D textured floor plan maquette of a single-story residential home (${tipo}). A textured architectural model mirroring the exact wall placements, room dimensions, door and window locations, and furniture arrangement of the uploaded floor plan. Focus as much as possible on structural fidelity. DEBE TENER EXACTAMENTE ${habitaciones} HABITACIONES, ${banos} BAÑOS, UNA SALA, UN COMEDOR Y UNA COCINA. The view must be perfectly straight down (2D orthogonal), with no elevated walls, no second floors, and no 3D perspective. Mantén un estilo espectacular con texturas realistas y cálidas: ${qualityPromptStr}, todo visto estrictamente en plano. RESTRICCIÓN CRÍTICA: Prohibido añadir elementos externos, escaleras o patios adicionales que no estén en el plano. CRITICAL: DO NOT include any text, letters, measurements, or numbers in the image. Purely visual textured 2D art. The space represents roughly ${largo}m by ${ancho}m.`,
           n: 1,
           size: "1024x1024",
           quality: "standard"

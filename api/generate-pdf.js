@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
     }
 
     try {
-        const { email, company, client, work, length, width, price, logoBase64, renderUrl, desglose } = req.body;
+        const { email, company, client, work, quality, length, width, price, logoBase64, renderUrl, desglose } = req.body;
 
         if (!email) {
             return res.status(400).json({ error: "Missing email for quota tracking." });
@@ -101,7 +101,11 @@ module.exports = async (req, res) => {
         doc.fontSize(10).font('Helvetica-Bold').fillColor(textMuted).text('DESCRIPTION:', 250, clientTop);
         doc.fontSize(12).font('Helvetica').fillColor(textColor).text(work || "Service provided", 250, clientTop + 15, { width: 295 });
 
-        doc.y = Math.max(doc.y, clientTop + 50);
+        // Calidad de materiales
+        doc.fontSize(10).font('Helvetica-Bold').fillColor(textMuted).text('QUALITY:', 250, clientTop + 35);
+        doc.fontSize(11).font('Helvetica').fillColor(primaryColor).text((quality || "Estándar").toUpperCase(), 250, clientTop + 47);
+
+        doc.y = Math.max(doc.y, clientTop + 65);
         doc.moveDown(3);
 
         const tableTop = doc.y;
