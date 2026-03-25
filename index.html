@@ -1,37 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="UTF-8">
-  <title>Structa Quotes - Professional Tools</title>
+  <title>Structa Quotes - IA para Construcción</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Create professional PDF quotes and invoices in seconds.">
+  <meta name="description" content="Genera presupuestos precisos y renders 3D de alta gama en segundos con nuestra IA.">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Supabase JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    /* --- 1. CONFIGURACIÓN BASE (Premium SaaS Redesign - Midnight Blue & Violet) --- */
+    /* --- CONFIGURACIÓN BASE (Premium SaaS Redesign) --- */
     :root {
-      /* Fondos */
       --bg-midnight: #0A0F24;
       --card-bg: #121A38;
-
-      /* Acentos */
       --violet: #8B5CF6;
       --violet-hover: #7C3AED;
       --cyan-glow: #2DD4BF;
-
-      /* Textos */
       --text-main: #F8FAFC;
       --text-muted: #94A3B8;
-
-      /* Bordes y Sombras */
       --border-glass: rgba(255, 255, 255, 0.08);
       --glass-bg: rgba(18, 26, 56, 0.6);
     }
@@ -44,7 +34,6 @@
       text-align: center;
       line-height: 1.6;
       overflow-x: hidden;
-      /* Background pattern sutil */
       background-image:
         radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.05), transparent 25%),
         radial-gradient(circle at 85% 30%, rgba(45, 212, 191, 0.03), transparent 25%);
@@ -52,52 +41,19 @@
       background-size: cover;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    /* ANIMACIONES */
     @keyframes fadeUp {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes floating {
-      0% {
-        transform: translateY(0px);
-      }
-
-      50% {
-        transform: translateY(-15px);
-      }
-
-      100% {
-        transform: translateY(0px);
-      }
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes pulseGlow {
-
-      0%,
-      100% {
-        opacity: 0.5;
-        transform: scale(1);
-      }
-
-      50% {
-        opacity: 0.8;
-        transform: scale(1.05);
-      }
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
     }
 
-    /* --- 2. NAVEGACIÓN --- */
+    /* --- NAVEGACIÓN --- */
     nav {
       display: flex;
       justify-content: space-between;
@@ -120,9 +76,7 @@
       color: var(--text-main);
     }
 
-    .logo span {
-      color: var(--violet);
-    }
+    .logo span { color: var(--violet); }
 
     #nav-actions a {
       font-size: 0.95rem;
@@ -141,13 +95,17 @@
       color: #A78BFA;
     }
 
-    /* --- 3. HERO SECTION --- */
+    .btn-nav {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-glass) !important;
+    }
+
+    /* --- HERO SECTION --- */
     header {
       padding: 120px 20px 80px;
       position: relative;
     }
 
-    /* Resplandor radial detrás del texto */
     header::before {
       content: '';
       position: absolute;
@@ -162,26 +120,13 @@
       animation: pulseGlow 8s infinite alternate ease-in-out;
     }
 
-    header>* {
+    header > * {
       opacity: 0;
       animation: fadeUp 0.8s ease-out forwards;
     }
-
-    header h1 {
-      animation-delay: 0.1s;
-    }
-
-    header p {
-      animation-delay: 0.2s;
-    }
-
-    header .btn {
-      animation-delay: 0.3s;
-    }
-
-    .hero-img-container {
-      animation-delay: 0.4s;
-    }
+    header h1 { animation-delay: 0.1s; }
+    header p { animation-delay: 0.2s; }
+    header .btn { animation-delay: 0.3s; }
 
     h1 {
       font-size: clamp(2.5rem, 6vw, 4.8rem);
@@ -192,7 +137,6 @@
       color: var(--text-main);
     }
 
-    /* Degradado en la palabra clave */
     h1 span {
       background: linear-gradient(135deg, #A78BFA 0%, var(--cyan-glow) 100%);
       -webkit-background-clip: text;
@@ -209,7 +153,7 @@
       font-weight: 400;
     }
 
-    /* --- 4. BOTONES PRINCIPALES --- */
+    /* --- BOTONES PRINCIPALES --- */
     .btn {
       display: inline-block;
       background: linear-gradient(135deg, var(--violet) 0%, #6D28D9 100%);
@@ -220,22 +164,10 @@
       text-decoration: none;
       font-size: 1.1rem;
       position: relative;
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: all 0.3s ease;
       border: 1px solid rgba(167, 139, 250, 0.3);
       box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
       overflow: hidden;
-    }
-
-    /* Efecto de brillo interior en el botón */
-    .btn::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 50%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s ease;
     }
 
     .btn:hover {
@@ -244,75 +176,10 @@
       border-color: var(--cyan-glow);
     }
 
-    .btn:hover::after {
-      left: 100%;
-    }
-
-    /* --- HERO IMAGE / ROBOT CONTAINER --- */
-    .hero-img-container {
-      position: relative;
-      width: 90%;
-      max-width: 850px;
-      margin: 80px auto 30px;
-      perspective: 1200px;
-    }
-
-    .hero-img {
-      width: 100%;
-      border-radius: 20px;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-      border: 1px solid var(--border-glass);
-      transition: transform 0.4s ease, box-shadow 0.4s ease;
-      transform-style: preserve-3d;
-      will-change: transform;
-      animation: floating 7s ease-in-out infinite;
-    }
-
-    .hero-img.is-hovered {
-      animation-play-state: paused;
-      transition: box-shadow 0.4s ease, border-color 0.4s ease;
-      box-shadow: 0 35px 70px rgba(139, 92, 246, 0.2);
-      border-color: rgba(139, 92, 246, 0.3);
-    }
-
-    /* Burbuja de chat esmerilada (Glassmorphism intenso) */
-    .chat-bubble {
-      position: absolute;
-      top: -40px;
-      right: -30px;
-      background: rgba(30, 41, 59, 0.4);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-top: 1px solid rgba(255, 255, 255, 0.3);
-      border-left: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 16px 28px;
-      border-radius: 24px 24px 0 24px;
-      color: var(--text-main);
-      font-weight: 500;
-      font-size: 1rem;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05);
-      animation: floating 5s ease-in-out infinite alternate;
-      z-index: 10;
-    }
-
-    .chat-bubble::before {
-      content: "✨ Ready to build!";
-    }
-
-    @media (max-width: 768px) {
-      .chat-bubble {
-        right: 10px;
-        top: -40px;
-        font-size: 0.9rem;
-        padding: 12px 20px;
-      }
-    }
-
-    /* --- 5. CARACTERÍSTICAS (Glassmorphism Cards) --- */
+    /* --- CARACTERÍSTICAS (Beneficios) --- */
     .features {
       max-width: 1100px;
-      margin: 100px auto;
+      margin: 80px auto;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 30px;
@@ -326,30 +193,12 @@
       padding: 40px 30px;
       border-radius: 20px;
       border: 1px solid var(--border-glass);
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: all 0.4s ease;
       opacity: 0;
       animation: fadeUp 0.8s ease-out forwards;
+      animation-delay: 0.4s;
       position: relative;
       overflow: hidden;
-    }
-
-    /* Glow effect on hover para las cards */
-    .feature::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      border-radius: 20px;
-      padding: 2px;
-      background: linear-gradient(135deg, var(--violet), var(--cyan-glow));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask-composite: exclude;
-      opacity: 0;
-      transition: opacity 0.4s ease;
     }
 
     .feature:hover {
@@ -358,14 +207,10 @@
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.15);
     }
 
-    .feature:hover::before {
-      opacity: 1;
-    }
-
     .feature h3 {
       color: var(--text-main);
       font-size: 1.4rem;
-      margin-bottom: 12px;
+      margin-bottom: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -374,256 +219,241 @@
     }
 
     .feature p {
-      margin-bottom: 0;
+      margin: 0;
       font-size: 1rem;
       color: var(--text-muted);
+      line-height: 1.6;
     }
 
-    /* --- 6. PRECIOS (SaaS Premium) --- */
-    .pricing-section {
-      padding: 100px 20px;
-      position: relative;
-      background: linear-gradient(to bottom, var(--bg-midnight), #060918);
-    }
-
-    .pricing-header {
-      text-align: center;
-      margin-bottom: 70px;
-    }
-
-    .pricing-header h2 {
-      font-size: 2.8rem;
-      font-weight: 800;
-      margin-bottom: 15px;
-      letter-spacing: -1px;
-    }
-
-    .pricing-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 30px;
-      max-width: 1100px;
-      margin: 0 auto;
-      align-items: center;
-    }
-
-    .price-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border-glass);
-      border-radius: 24px;
-      padding: 45px 35px;
-      position: relative;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      text-align: left;
-    }
-
-    .price-card:hover {
-      transform: translateY(-10px);
-      border-color: rgba(139, 92, 246, 0.5);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(139, 92, 246, 0.1);
-    }
-
-    .price-card h3 {
-      font-size: 1.6rem;
-      color: var(--text-main);
-      margin: 0 0 10px;
-      font-weight: 700;
-    }
-
-    .price-card p.desc {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 30px;
-      min-height: 45px;
-    }
-
-    .price-tag {
-      font-size: 3.5rem;
-      font-weight: 800;
-      margin: 0 0 30px;
-      color: var(--text-main);
-      letter-spacing: -2px;
-    }
-
-    .price-tag span {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      font-weight: 500;
-      letter-spacing: 0;
-    }
-
-    .features-list {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 40px;
-    }
-
-    .features-list li {
-      margin-bottom: 18px;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      font-size: 0.95rem;
-    }
-
-    .features-list li svg {
-      width: 22px;
-      height: 22px;
-      color: var(--cyan-glow);
-      margin-right: 12px;
-      flex-shrink: 0;
-      filter: drop-shadow(0 0 8px rgba(45, 212, 191, 0.4));
-    }
-
-    .price-btn {
-      display: block;
-      text-align: center;
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text-main);
-      padding: 16px 24px;
-      border-radius: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .price-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.3);
-      transform: translateY(-2px);
-    }
-
-    /* Popular Card override */
-    .price-card.popular {
-      background: linear-gradient(160deg, rgba(18, 26, 56, 0.9), rgba(10, 15, 36, 0.9));
-      border: 1px solid var(--violet);
-      transform: scale(1.05);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(139, 92, 246, 0.1);
-    }
-
-    .price-card.popular:hover {
-      transform: scale(1.05) translateY(-10px);
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(139, 92, 246, 0.2), 0 0 20px rgba(139, 92, 246, 0.3);
-      border-color: #A78BFA;
-    }
-
-    .badge {
-      background: linear-gradient(90deg, var(--violet), var(--cyan-glow));
-      color: white;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      position: absolute;
-      top: -16px;
-      left: 50%;
-      transform: translateX(-50%);
-      letter-spacing: 1px;
-      box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
-    }
-
-    .price-card.popular .price-btn {
-      background: linear-gradient(135deg, var(--violet) 0%, #6D28D9 100%);
-      color: white;
-      border: none;
-      box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
-    }
-
-    .price-card.popular .price-btn:hover {
-      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
-      transform: translateY(-3px);
-    }
-
-    @media (max-width: 1024px) {
-      .price-card.popular {
-        transform: scale(1);
-      }
-
-      .price-card.popular:hover {
-        transform: translateY(-10px);
-      }
-    }
-
-    /* --- 7. TESTIMONIOS --- */
-    .testimonials {
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      padding: 80px 20px;
-      border-radius: 24px;
-      margin: 80px auto;
-      max-width: 900px;
-      border: 1px solid var(--border-glass);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .testimonials::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(45, 212, 191, 0.05) 0%, transparent 50%);
-      pointer-events: none;
-    }
-
-    .testimonials h2 {
-      font-size: 2.2rem;
-      margin-top: 0;
-      margin-bottom: 40px;
-      font-weight: 700;
-    }
-
-    .testimonials img {
-      width: 100%;
-      max-width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 20px;
-      border: 3px solid var(--violet);
-      padding: 4px;
-      background: rgba(255, 255, 255, 0.05);
-      position: relative;
-      z-index: 1;
-    }
-
-    .testimonial-text {
-      font-size: 1.25rem;
-      color: var(--text-main);
-      font-weight: 500;
-      line-height: 1.8;
-      max-width: 750px;
-      margin: 0 auto;
-      min-height: 90px;
-      font-style: italic;
-    }
-
-    .testimonial-name {
-      font-weight: 600;
-      color: var(--cyan-glow);
-      margin-top: 25px;
-      font-size: 1.1rem;
-      letter-spacing: 0.5px;
-    }
-
-    /* --- 8. FOOTER --- */
+    /* --- FOOTER --- */
     footer {
-      padding: 80px 20px 40px;
+      padding: 60px 20px 40px;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
       color: var(--text-muted);
       font-size: 0.95rem;
-      background: #060918;
+      margin-top: 40px;
     }
 
-    footer .logo {
-      margin-bottom: 15px;
-      opacity: 0.5;
+    footer .logo { opacity: 0.5; margin-bottom: 10px; }
+    /* --- HERO DEMO --- */
+    .hero-demo-wrapper {
+      margin: 60px auto 0;
+      max-width: 800px;
+      perspective: 1000px;
+      animation: fadeUp 0.8s ease-out forwards;
+      animation-delay: 0.5s;
     }
+
+    .mac-window {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 30px rgba(139, 92, 246, 0.15);
+      transform: rotateX(5deg);
+      transition: transform 0.5s ease;
+    }
+
+    .mac-window:hover {
+      transform: rotateX(0deg);
+    }
+
+    .mac-header {
+      background: rgba(0,0,0,0.3);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    .mac-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mac-dots span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #4B5563;
+    }
+    .mac-dots span:nth-child(1) { background: #EF4444; }
+    .mac-dots span:nth-child(2) { background: #F59E0B; }
+    .mac-dots span:nth-child(3) { background: #10B981; }
+
+    .mac-title {
+      flex: 1;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-left: -40px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .mac-body {
+      height: 350px;
+      padding: 30px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05), transparent);
+    }
+
+    /* Secuencia Animada */
+    .demo-seq {
+      position: absolute;
+      opacity: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      animation: sequencePlay 12s infinite;
+    }
+
+    .demo-seq svg {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+    }
+    .demo-seq.seq-1 svg { color: #A78BFA; }
+    .demo-seq.seq-2 svg { color: var(--cyan-glow); animation: spin 2s linear infinite; }
+    .demo-seq.seq-3 svg { color: #10B981; }
+
+    .demo-seq h4 {
+      margin: 0 0 10px;
+      font-size: 1.5rem;
+      color: var(--text-main);
+    }
+    .demo-seq p {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+    }
+
+    .seq-1 { animation-delay: 0s; }
+    .seq-2 { animation-delay: 4s; }
+    .seq-3 { animation-delay: 8s; }
+
+    @keyframes sequencePlay {
+      0%, 25% { opacity: 0; transform: translateY(20px) scale(0.95); }
+      5%, 20% { opacity: 1; transform: translateY(0) scale(1); }
+      30%, 100% { opacity: 0; transform: translateY(-20px) scale(1.05); }
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* --- FEATURE GRAPHICS --- */
+    .feature-graphic {
+      height: 140px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border-glass);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Graphic 1: Plano Automático */
+    .graphic-blueprint {
+      width: 120px;
+      height: 80px;
+      border: 2px solid var(--violet);
+      position: relative;
+      background: rgba(139, 92, 246, 0.1);
+    }
+    .graphic-blueprint::before {
+      content: '5.2m';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      color: var(--cyan-glow);
+      font-weight: 700;
+    }
+    .graphic-blueprint::after {
+      content: '4.0m';
+      position: absolute;
+      right: -35px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.75rem;
+      color: var(--cyan-glow);
+      font-weight: 700;
+    }
+
+    /* Graphic 2: Desglose */
+    .graphic-bars {
+      width: 80%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .bar-label {
+      width: 50px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-align: right;
+    }
+    .bar-track {
+      flex: 1;
+      height: 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--violet), var(--cyan-glow));
+      border-radius: 6px;
+    }
+
+    /* Graphic 3: Renders */
+    .graphic-compare {
+      display: flex;
+      width: 90%;
+      height: 70%;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-glass);
+    }
+    .comp-half {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: white;
+      position: relative;
+    }
+    .comp-std {
+      background: #374151;
+      border-right: 2px solid var(--bg-midnight);
+    }
+    .comp-lujo {
+      background: linear-gradient(135deg, #1E293B, #0F172A);
+      position: relative;
+    }
+    .comp-lujo::after {
+      content: '✨';
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      font-size: 0.8rem;
+    }
+
   </style>
 </head>
 
@@ -632,279 +462,86 @@
   <nav>
     <div class="logo">STRUCTA<span>.</span></div>
     <div id="nav-actions">
-      <a href="#" onclick="openAuthModal();">Log In / Sign Up</a>
+      <a href="app.html" class="btn-nav">Login / Probar Gratis</a>
     </div>
   </nav>
 
   <header>
-    <h1>Turn quotes into <span>real income</span></h1>
-    <p>Create professional PDF quotes and invoices that help you close jobs 2x faster. No complex software needed.</p>
+    <h1>Presupuestos de Construcción y Renders en 30 Segundos <span>impulsados por IA</span></h1>
+    <p>Los contratistas pueden cotizar planos enteros automáticamente, generar visualizaciones de alta calidad y descargar PDFs con su logo al instante. Despídete de los retrasos.</p>
+    <a href="app.html" class="btn">Comenzar Ahora</a>
 
-    <a href="app.html" class="btn">Start Creating Quotes</a>
-
-    <br>
-
-    <div class="hero-img-container" id="heroContainer">
-      <div class="chat-bubble"></div>
-      <img src="hero.png" class="hero-img" id="heroImage" alt="App Preview">
+    <div class="hero-demo-wrapper">
+      <div class="mac-window">
+        <div class="mac-header">
+           <div class="mac-dots"><span></span><span></span><span></span></div>
+           <div class="mac-title">structa.app</div>
+        </div>
+        <div class="mac-body">
+           <div class="demo-seq seq-1">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+              <h4>1. Sube tu plano</h4>
+              <p>El cliente o tú arrastran el plano al sistema.</p>
+           </div>
+           <div class="demo-seq seq-2">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              <h4>2. Analizando con IA</h4>
+              <p>Extrayendo medidas y simulando ambientes...</p>
+           </div>
+           <div class="demo-seq seq-3">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              <h4>3. Presupuesto Listo</h4>
+              <p>PDF profesional, desglosado y con Renders 3D.</p>
+           </div>
+        </div>
+      </div>
     </div>
   </header>
 
   <section class="features">
     <div class="feature">
-      <h3>⚡ Fast</h3>
-      <p>Create quotes in under 60 seconds directly from your phone or laptop.</p>
+      <div class="feature-graphic">
+         <div class="graphic-blueprint"></div>
+      </div>
+      <h3>📐 Lectura Automática</h3>
+      <p>Sube cualquier plano arquitectónico y nuestra Inteligencia Artificial extraerá automáticamente las medidas y proporciones exactas para evitar fallos humanos.</p>
     </div>
     <div class="feature">
-      <h3>💎 Professional</h3>
-      <p>Client-ready PDF every time. Add your logo and look like a big company.</p>
+      <div class="feature-graphic">
+         <div class="graphic-bars">
+             <div class="bar-row">
+                 <div class="bar-label">Sala</div>
+                 <div class="bar-track"><div class="bar-fill" style="width: 50%;"></div></div>
+             </div>
+             <div class="bar-row">
+                 <div class="bar-label">Cocina</div>
+                 <div class="bar-track"><div class="bar-fill" style="width: 30%;"></div></div>
+             </div>
+             <div class="bar-row">
+                 <div class="bar-label">Baños</div>
+                 <div class="bar-track"><div class="bar-fill" style="width: 20%;"></div></div>
+             </div>
+         </div>
+      </div>
+      <h3>📋 Desglose Dinámico</h3>
+      <p>Divide los costos rápida y automáticamente por habitaciones (Cocina, Baño, Sala), brindando cotizaciones detalladas y transparentes a tus clientes finales.</p>
     </div>
     <div class="feature">
-      <h3>🛡 Simple</h3>
-      <p>No accounts. No complex setup. Just fill, pay, and download.</p>
-    </div>
-  </section>
-
-  <section class="pricing-section" id="pricing">
-    <div class="pricing-header">
-      <h2>Simple, transparent pricing</h2>
-      <p>Designed for service professionals who want to close more jobs without monthly subscriptions.</p>
-    </div>
-
-    <div class="pricing-cards">
-      <!-- Free Plan -->
-      <div class="price-card">
-        <h3>Free</h3>
-        <p class="desc">Take it for a spin.</p>
-        <div class="price-tag">$0 <span>/mo</span></div>
-        <ul class="features-list">
-          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg> 3 quotes per month</li>
-          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg> Standard Template</li>
-          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg> No custom logo</li>
-        </ul>
-        <a href="#" onclick="openAuthModal();" class="price-btn">Start for Free</a>
+      <div class="feature-graphic">
+         <div class="graphic-compare">
+             <div class="comp-half comp-std">Estándar</div>
+             <div class="comp-half comp-lujo">Lujo ✨</div>
+         </div>
       </div>
-
-      <!-- Starter Plan -->
-      <div class="price-card">
-        <h3>Starter</h3>
-        <p class="desc">Perfect for testing out your new professional look.</p>
-        <div class="price-tag">$3.99 <span>/mo</span></div>
-        <ul class="features-list">
-          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg> Unlimited PDF Generation</li>
-          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg> No Watermark</li>
-          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg> No custom logo</li>
-        </ul>
-        <a href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" class="price-btn">Subscribe
-          Starter</a>
-      </div>
-
-      <!-- Pro Plan (Highlighted) -->
-      <div class="price-card popular">
-        <div class="badge">Most Popular</div>
-        <h3>Pro</h3>
-        <p class="desc">For professionals who want to stand out and win big projects.</p>
-        <div class="price-tag">$8.99 <span>/mo</span></div>
-        <ul class="features-list">
-          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg> Unlimited PDF Generation</li>
-          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg> Custom Logo Upload</li>
-          <li><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg> Automatic Area Calculations</li>
-        </ul>
-        <a href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" class="price-btn">Subscribe
-          Pro</a>
-      </div>
+      <h3>🖼️ Renders Fotorrealistas</h3>
+      <p>Acompaña cada PDF con visualizaciones increíbles en 3D basadas en el plano y personaliza tu presentación con el Selector de Calidad (Estándar, Medio o Lujo).</p>
     </div>
-  </section>
-
-  <section class="testimonials">
-    <h2>Trusted by professionals</h2>
-    <img src="testimonials.jpg" alt="Happy Clients">
-
-    <p class="testimonial-text" id="testimonialText"></p>
-    <div class="testimonial-name" id="testimonialName"></div>
   </section>
 
   <footer>
-    <div class="logo" style="margin-bottom:10px;">STRUCTA<span>.</span></div>
-    © 2025 Structa — Tools for professionals who close.
+    <div class="logo">STRUCTA<span>.</span></div>
+    © 2026 Structa — Convierte Planos en Contratos Rápidamente.
   </footer>
 
-  <script>
-    const testimonials = [
-      {
-        text: '"Structa Quotes helped me look more professional instantly. My clients take my estimates seriously and I close more jobs."',
-        name: "Mark — Contractor"
-      },
-      {
-        text: '"I used to send messy quotes. Now everything looks clean and professional. My clients trust me more."',
-        name: "David — Construction Manager"
-      },
-      {
-        text: '"This tool saves me time and helps me win more jobs. Worth every dollar."',
-        name: "Alex — Service Business Owner"
-      }
-    ];
-
-    let index = 0;
-
-    function showTestimonial() {
-      const textEl = document.getElementById("testimonialText");
-      textEl.style.opacity = 0;
-
-      setTimeout(() => {
-        textEl.textContent = testimonials[index].text;
-        document.getElementById("testimonialName").textContent = testimonials[index].name;
-        textEl.style.opacity = 1;
-        index = (index + 1) % testimonials.length;
-      }, 300);
-    }
-
-    document.getElementById("testimonialText").style.transition = "opacity 0.4s ease";
-
-    showTestimonial();
-    setInterval(showTestimonial, 4000);
-
-    const heroContainer = document.getElementById('heroContainer');
-    const heroImage = document.getElementById('heroImage');
-
-    if (heroContainer && heroImage) {
-      heroContainer.addEventListener('mousemove', (e) => {
-        heroImage.classList.add('is-hovered');
-
-        const rect = heroContainer.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const rotateX = ((y - centerY) / centerY) * -5;
-        const rotateY = ((x - centerX) / centerX) * 5;
-
-        heroImage.style.transform = `scale3d(1.02, 1.02, 1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      });
-
-      heroContainer.addEventListener('mouseleave', () => {
-        heroImage.classList.remove('is-hovered');
-        heroImage.style.transform = `scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg)`;
-      });
-    }
-
-    // --- SUPABASE AUTHENTICATION ---
-    const supabaseUrl = 'https://tadjlpeifkidsghbirlj.supabase.co'; // Replace with your Supabase Project URL
-    const supabaseAnonKey = 'sb_publishable_ieKM-eclueRcHs7pa4K6Bg_TTAymXer'; // Replace with your Supabase Anon Key
-    const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-
-    function openAuthModal() {
-      document.getElementById('authModal').style.display = 'flex';
-    }
-
-    function closeAuthModal() {
-      document.getElementById('authModal').style.display = 'none';
-      document.getElementById('authError').style.display = 'none';
-    }
-
-    async function handleAuth(action) {
-      const email = document.getElementById('authEmail').value;
-      const password = document.getElementById('authPassword').value;
-      const errorDiv = document.getElementById('authError');
-
-      if (!email || !password) {
-        errorDiv.textContent = "Please enter email and password";
-        errorDiv.style.display = 'block';
-        return;
-      }
-
-      errorDiv.style.display = 'none';
-      const btn = document.getElementById(action + 'Btn');
-      const originalText = btn.textContent;
-      btn.textContent = "Processing...";
-      btn.disabled = true;
-
-      try {
-        if (action === 'login') {
-          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-          if (error) throw error;
-          window.location.href = "app.html";
-        } else {
-          const { data, error } = await supabaseClient.auth.signUp({ email, password });
-          if (error) throw error;
-          if (data.session) {
-            window.location.href = "app.html";
-          } else {
-            alert("Success! Check your email to verify your account (if email confirmation is required).");
-            closeAuthModal();
-          }
-        }
-      } catch (err) {
-        errorDiv.textContent = err.message;
-        errorDiv.style.display = 'block';
-      } finally {
-        btn.textContent = originalText;
-        btn.disabled = false;
-      }
-    }
-
-    // Check if already logged in to change Nav button to 'Go to App'
-    supabaseClient.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        const navBtn = document.querySelector('#nav-actions a');
-        if (navBtn) {
-          navBtn.textContent = 'Go to App';
-          navBtn.onclick = () => window.location.href = 'app.html';
-        }
-      }
-    });
-
-    // Handle token refresh & auth state transitions natively handled by Supabase session detection
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        window.location.href = "app.html";
-      }
-    });
-  </script>
-
-  <!-- SUPABASE AUTH MODAL -->
-  <div id="authModal"
-    style="display:none; position:fixed; top:0; left:0; width:100%; height:100svh; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(5px); overflow-y:auto; padding:20px; box-sizing:border-box;">
-    <div
-      style="background:var(--card-bg); padding:40px; border-radius:24px; border:1px solid var(--border-glass); text-align:center; max-width:400px; width:100%; margin:auto; box-shadow:0 20px 40px rgba(0,0,0,0.5); display:flex; flex-direction:column;">
-      <h2 style="margin-top:0; margin-bottom: 20px; font-weight:700;">Welcome to Structa</h2>
-      <div id="authError"
-        style="display:none; color:#ef4444; background:rgba(239,68,68,0.1); padding:10px; border-radius:8px; margin-bottom:15px; font-size:0.9rem;">
-      </div>
-      <input id="authEmail" type="email" placeholder="Email address"
-        style="width:100%; padding:14px; margin-bottom:15px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:#060918; color:white; outline:none; transition:0.3s; font-family:inherit;">
-      <input id="authPassword" type="password" placeholder="Password"
-        style="width:100%; padding:14px; margin-bottom:20px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:#060918; color:white; outline:none; transition:0.3s; font-family:inherit;">
-      <button id="loginBtn" onclick="handleAuth('login')" class="btn"
-        style="width:100%; padding:14px; margin-bottom:10px; border:none; cursor:pointer;">Log In</button>
-      <button id="signupBtn" onclick="handleAuth('signup')" class="btn"
-        style="width:100%; padding:14px; background:transparent; border:1px solid var(--violet); color:white; cursor:pointer;">Sign
-        Up</button>
-      <button onclick="closeAuthModal()"
-        style="margin-top:20px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-weight:500; font-family:inherit;">Cancel</button>
-    </div>
-  </div>
-
 </body>
-
 </html>
