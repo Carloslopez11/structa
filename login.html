@@ -249,13 +249,6 @@
       passwordInput.value = '';
     });
 
-    // Función para mostrar mensajes
-    const showMessage = (text, isError = false) => {
-      msgBox.textContent = text;
-      msgBox.className = isError ? 'error' : 'success';
-      msgBox.style.display = 'block';
-    };
-
     // Manejar envío del formulario
     authForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -266,32 +259,35 @@
       // Estado de carga
       submitBtn.disabled = true;
       submitBtn.textContent = isLoginView ? 'Iniciando sesión...' : 'Registrando...';
-      msgBox.style.display = 'none';
 
-      try {
-        if (isLoginView) {
-          // Logica Iniciar Sesión
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-          });
+      if (isLoginView) {
+        // Logica Iniciar Sesión
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
 
-          if (error) throw error;
-          
+        if (error) {
+          alert('Error: ' + error.message);
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Entrar';
+        } else {
           // Redirigir si es exitoso
           window.location.href = 'app.html';
-          
-        } else {
-          // Logica Registrarse
-          const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password
-          });
+        }
+      } else {
+        // Logica Registrarse
+        const { data, error } = await supabase.auth.signUp({
+          email: email,
+          password: password
+        });
 
-          if (error) throw error;
-          
-          showMessage('Cuenta creada exitosamente. Puedes iniciar sesión.', false);
-          
+        if (error) {
+          alert(error.message);
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Registrarse';
+        } else {
+          alert('¡Cuenta creada! Por favor, revisa tu correo electrónico para confirmar tu cuenta antes de iniciar sesión.');
           // Cambiar vista a login automáticamente
           isLoginView = true;
           formSubtitle.textContent = 'Ingresa a tu cuenta';
@@ -299,14 +295,7 @@
           toggleDesc.textContent = '¿No tienes cuenta?';
           toggleBtn.textContent = 'Regístrate';
           passwordInput.value = '';
-        }
-      } catch (err) {
-        showMessage(err.message || 'Ha ocurrido un error inesperado.', true);
-      } finally {
-        // Restaurar estado del botón si no redirigimos
-        if (!isLoginView || (isLoginView && msgBox.style.display === 'block')) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = isLoginView ? 'Entrar' : 'Registrarse';
+          submitBtn.disabled = false;
         }
       }
     });
