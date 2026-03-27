@@ -248,7 +248,7 @@
       recoveryBtn.textContent = 'Enviando...';
 
       const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/update-password.html'
+        redirectTo: 'https://structa-theta.vercel.app/update-password.html'
       });
 
       if (error) {
