@@ -727,6 +727,28 @@
                     document.body.appendChild(a);
                     a.click();
                     window.URL.revokeObjectURL(url);
+
+                    // Guardado Silencioso de Presupuesto en BD
+                    try {
+                        const { data: { user } } = await supabaseClient.auth.getUser();
+                        if (user) {
+                            const totalText = document.getElementById('previewTotal').textContent;
+                            const totalAmount = parseFloat(totalText.replace(/[^0-9.-]+/g, "")) || 0;
+                            const { error: dbError } = await supabaseClient.from('presupuestos').insert([{ 
+                                user_id: user.id, 
+                                cliente: client || 'Cotización Structa', 
+                                total: totalAmount 
+                            }]);
+                            
+                            if (dbError) {
+                                console.error('Error al guardar en BD:', dbError);
+                            } else {
+                                console.log('Presupuesto guardado en la nube exitosamente');
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Error al guardar en BD:', e);
+                    }
                 }
             } catch (err) {
                 console.error(err);
