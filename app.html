@@ -737,10 +737,25 @@
                         if (user) {
                             const totalText = document.getElementById('previewTotal').textContent;
                             const totalAmount = parseFloat(totalText.replace(/[^0-9.-]+/g, "")) || 0;
+                            
+                            // Recolectar estado completo de la calculadora (Fase 4 - Super Memoria)
+                            const estadoPresupuesto = {
+                                company: document.getElementById('company') ? document.getElementById('company').value : '',
+                                client: document.getElementById('client') ? document.getElementById('client').value : '',
+                                work: document.getElementById('work') ? document.getElementById('work').value : '',
+                                quality: document.getElementById('quality') ? document.getElementById('quality').value : 'Estándar',
+                                length: document.getElementById('length') ? document.getElementById('length').value : '',
+                                width: document.getElementById('width') ? document.getElementById('width').value : '',
+                                price: document.getElementById('price') ? document.getElementById('price').value : '',
+                                desglose: window.currentDesglose || null,
+                                renderUrl: window.currentRenderUrl || null
+                            };
+
                             const { error: dbError } = await supabaseClient.from('presupuestos').insert([{ 
                                 user_id: user.id, 
                                 cliente: client || 'Cotización Structa', 
-                                total: totalAmount 
+                                total: totalAmount,
+                                datos_completos: estadoPresupuesto
                             }]);
                             
                             if (dbError) {
@@ -1020,16 +1035,108 @@
                             <div style="font-weight:600; color:white; font-size:1.05rem;">${item.cliente || 'Cotización Structa'}</div>
                             <div style="color:var(--text-muted); font-size:0.85rem;">${formattedDate}</div>
                         </div>
-                        <div style="font-weight:bold; color:var(--purple); font-size:1.2rem;">
-                            $${item.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                            <div style="font-weight:bold; color:var(--purple); font-size:1.2rem;">
+                                $${item.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </div>
+                            <button class="btn-abrir-historial" style="background: linear-gradient(135deg, #7c3aed, #5b21b6); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);">Abrir Presupuesto</button>
                         </div>
                     `;
+                    
+                    // Asignar el evento dinámicamente
+                    const btnAbrir = card.querySelector('.btn-abrir-historial');
+                    btnAbrir.onclick = () => {
+                        if (item.datos_completos) {
+                            cargarPresupuestoEnCalculadora(item.datos_completos);
+                        } else {
+                            if (typeof speak === 'function') speak("Este presupuesto no tiene memoria extendida.", 4000);
+                        }
+                    };
+                    
                     lista.appendChild(card);
                 });
 
             } catch (err) {
                 console.error("Error al cargar historial:", err);
                 lista.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">Error al cargar el historial. Inténtalo de nuevo.</div>';
+            }
+        }
+
+        // --- SUPER MEMORIA: RECARGAR PRESUPUESTO EN CALCULADORA ---
+        function cargarPresupuestoEnCalculadora(datos) {
+            if (!datos) return;
+            cerrarHistorial();
+            
+            // Rellenar inputs simples
+            if (datos.company !== undefined && document.getElementById('company')) document.getElementById('company').value = datos.company;
+            if (datos.client !== undefined && document.getElementById('client')) document.getElementById('client').value = datos.client;
+            if (datos.work !== undefined && document.getElementById('work')) document.getElementById('work').value = datos.work;
+            if (datos.quality !== undefined && document.getElementById('quality')) document.getElementById('quality').value = datos.quality;
+            if (datos.length !== undefined && document.getElementById('length')) document.getElementById('length').value = datos.length;
+            if (datos.width !== undefined && document.getElementById('width')) document.getElementById('width').value = datos.width;
+            if (datos.price !== undefined && document.getElementById('price')) document.getElementById('price').value = datos.price;
+
+            // Manejar Desglose (Habitaciones) si usó IA
+            if (datos.desglose && datos.desglose.length > 0) {
+                window.currentDesglose = datos.desglose;
+                if (document.getElementById('manualDimensions')) document.getElementById('manualDimensions').style.display = 'none';
+                if (document.getElementById('globalPriceContainer')) document.getElementById('globalPriceContainer').style.display = 'none';
+                
+                const roomsContainer = document.getElementById('roomsContainer');
+                const roomsList = document.getElementById('roomsList');
+                if (roomsContainer && roomsList) {
+                    roomsList.innerHTML = '';
+                    
+                    datos.desglose.forEach((room, index) => {
+                        const roomArea = room.largo * room.ancho;
+                        const rp = room.precio || datos.price || 0;
+                        roomsList.innerHTML += `
+                            <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                                <div style="flex: 1; min-width: 150px;">
+                                    <div style="font-weight: 600; font-size: 1rem; color: #fff;">${room.nombre}</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-muted);">${room.largo}m x ${room.ancho}m (${roomArea.toFixed(2)} m²)</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="display: flex; flex-direction: column; width: 90px;">
+                                        <label style="font-size: 0.65rem; margin-bottom: 2px;">Precio m² ($)</label>
+                                        <input type="number" id="roomPriceInput_${index}" value="${rp}" step="0.01" style="margin: 0; padding: 8px; font-size: 0.9rem;" oninput="if(window.fireUpdate) window.fireUpdate()">
+                                    </div>
+                                    <div id="roomCost_${index}" style="font-weight: bold; color: var(--purple); font-size: 1.1rem; min-width: 80px; text-align: right;">$0.00</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    roomsContainer.style.display = 'block';
+                }
+            } else {
+                window.currentDesglose = null;
+                if (document.getElementById('manualDimensions')) document.getElementById('manualDimensions').style.display = 'flex';
+                if (document.getElementById('globalPriceContainer')) document.getElementById('globalPriceContainer').style.display = 'block';
+                if (document.getElementById('roomsContainer')) document.getElementById('roomsContainer').style.display = 'none';
+            }
+
+            // Manejar Render Visual
+            if (datos.renderUrl) {
+                const renderContainer = document.getElementById('renderProjectContainer');
+                const renderImage = document.getElementById('renderImage');
+                if (renderContainer && renderImage) {
+                    renderImage.src = datos.renderUrl;
+                    document.getElementById('renderLargo').textContent = datos.length || 0;
+                    document.getElementById('renderAncho').textContent = datos.width || 0;
+                    window.currentRenderUrl = datos.renderUrl;
+                    renderContainer.style.display = 'block';
+                }
+            } else {
+                if (document.getElementById('renderProjectContainer')) document.getElementById('renderProjectContainer').style.display = 'none';
+                window.currentRenderUrl = null;
+            }
+
+            // Disparar actualizaciones de cálculos
+            if (typeof window.fireUpdate === 'function') {
+                window.fireUpdate();
+            }
+            if (typeof speak === "function") {
+                speak("¡Memoria activada! Presupuesto cargado y listo para editar.", 5000);
             }
         }
     </script>
