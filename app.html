@@ -557,7 +557,10 @@
 
         <div id="errorBox" class="error-msg"></div>
 
-        <button class="btn-pay" id="generateBtn" onclick="generateInvoice()">Generate PDF Invoice</button>
+        <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;">
+            <button class="btn-action" id="generateRenderBtn" onclick="generarRenderMateriales()" style="width: 100%; padding: 18px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4); text-transform: uppercase; transition: transform 0.2s, box-shadow 0.2s; display: none;">🎨 Generar Render 3D</button>
+            <button class="btn-pay" id="generateBtn" onclick="generateInvoice()" style="margin-bottom: 0;">Generate PDF Invoice</button>
+        </div>
     </div>
 
     <!-- UI DEL ROBOT -->
@@ -635,6 +638,65 @@
             }
         });
 
+
+        // --- RENDER 3D DESDE MATERIALES ---
+        async function generarRenderMateriales() {
+            if (!window.currentMateriales || window.currentMateriales.length === 0) {
+                alert("Primero debes subir un plano para extraer los materiales.");
+                return;
+            }
+
+            const btn = document.getElementById('generateRenderBtn');
+            btn.textContent = "Generando Render...";
+            btn.disabled = true;
+            
+            const qualitySelect = document.getElementById('quality');
+            const quality = qualitySelect ? qualitySelect.value : 'Estándar';
+
+            const materialsString = window.currentMateriales.map(m => m.item).join(', ');
+
+            // Scroll al visor de proyecto y mostrar cargando
+            const renderContainer = document.getElementById('renderProjectContainer');
+            const renderImage = document.getElementById('renderImage');
+            if (renderContainer) {
+                renderContainer.style.display = 'block';
+                renderContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+            if (renderImage) {
+                renderImage.src = 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExdW5pOTQ2dWlpamJza2J4ZHBkMWxjMnN2cGtxZGN2MDhlNWg0ZnkwZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7bu3XilJ5BOiSGic/giphy.gif';
+            }
+
+            if (typeof speak === "function") speak("Creando la visualización fotorealista del espacio. ¡Esto puede tardar unos segundos!", 7000);
+
+            try {
+                const response = await fetch('/api/generar-render', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ materialsString, quality })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Error en la conexión con DALL-E 3");
+                }
+
+                const data = await response.json();
+                
+                if (data.renderUrl) {
+                    window.currentRenderUrl = data.renderUrl;
+                    if (renderImage) renderImage.src = data.renderUrl;
+                    if (typeof speak === "function") speak("¡Render espectacular completado!", 5000);
+                } else {
+                    throw new Error("No se devolvió un link de imagen.");
+                }
+            } catch (error) {
+                console.error("Render Generation Error:", error);
+                alert("Falló la generación del render: " + error.message);
+                if (renderImage) renderImage.src = '';
+            } finally {
+                btn.textContent = "🎨 Generar Render 3D";
+                btn.disabled = false;
+            }
+        }
 
         // --- SOLICITUD AL BACKEND Y DESCARGA DEL PDF ---
         async function generateInvoice() {
@@ -1107,6 +1169,9 @@
                 });
                 materialsContainer.style.display = 'block';
                 
+                const btnRender = document.getElementById('generateRenderBtn');
+                if (btnRender) btnRender.style.display = 'block';
+                
                 if (window.fireUpdate) window.fireUpdate();
                 
                 if (typeof speak === "function") {
@@ -1371,10 +1436,14 @@
                         `;
                     });
                     materialsContainer.style.display = 'block';
+                    const btnRender = document.getElementById('generateRenderBtn');
+                    if (btnRender) btnRender.style.display = 'block';
                 }
             } else {
                 window.currentMateriales = null;
                 if (document.getElementById('materialsContainer')) document.getElementById('materialsContainer').style.display = 'none';
+                const btnRender = document.getElementById('generateRenderBtn');
+                if (btnRender) btnRender.style.display = 'none';
             }
 
             // Disparar actualizaciones de cálculos

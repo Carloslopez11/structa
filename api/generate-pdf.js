@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
     }
 
     try {
-        const { email, company, client, work, quality, length, width, price, logoBase64, renderUrl, desglose } = req.body;
+        const { email, company, client, work, quality, length, width, price, logoBase64, renderUrl, desglose, materiales } = req.body;
 
         if (!email) {
             return res.status(400).json({ error: "Missing email for quota tracking." });
@@ -160,10 +160,64 @@ module.exports = async (req, res) => {
             currentY += 20;
         }
 
-        const afterItemY = currentY;
+        let afterItemY = currentY + 15;
+        
+        // --- INICIO TABLA MATERIALES EXTRAIDOS ---
+        if (materiales && materiales.length > 0) {
+            if (afterItemY > 650) {
+                doc.addPage();
+                afterItemY = 50;
+            }
+
+            doc.moveTo(50, afterItemY).lineTo(545, afterItemY).lineWidth(0.5).strokeColor('#e5e7eb').stroke();
+            afterItemY += 20;
+
+            doc.fontSize(12).font('Helvetica-Bold').fillColor(primaryColor).text('DETAILED MATERIALS BREAKDOWN', 50, afterItemY);
+            afterItemY += 20;
+
+            doc.rect(50, afterItemY, 495, 20).fill('#f3f4f6');
+            
+            doc.fontSize(10).font('Helvetica-Bold').fillColor('#374151');
+            doc.text('ITEM', 60, afterItemY + 6, { width: 180 });
+            doc.text('QUANTITY', 250, afterItemY + 6, { width: 80, align: 'right' });
+            doc.text('UNIT PRICE', 340, afterItemY + 6, { width: 90, align: 'right' });
+            doc.text('SUBTOTAL', 440, afterItemY + 6, { width: 95, align: 'right' });
+            
+            afterItemY += 30;
+            doc.fontSize(10).font('Helvetica').fillColor(textColor);
+
+            for (const mat of materiales) {
+                if (afterItemY > 750) {
+                    doc.addPage();
+                    afterItemY = 50;
+                }
+                const itemName = (mat.item || '').replace(/[\r\n]+/g, ' ').trim() || 'Item';
+                const qtyStr = `${mat.cantidad || 0} ${mat.unidad || ''}`;
+                
+                const pUnit = parseFloat(mat.precio_unitario) || 0;
+                const matSubtotal = (parseFloat(mat.cantidad) || 0) * pUnit;
+
+                actualTotalPrice += matSubtotal;
+
+                doc.font('Helvetica-Bold').text(itemName, 60, afterItemY, { width: 180 });
+                doc.font('Helvetica').fillColor(textColor);
+                doc.text(qtyStr, 250, afterItemY, { width: 80, align: 'right' });
+                doc.text(formatCurrency(pUnit), 340, afterItemY, { width: 90, align: 'right' });
+                doc.text(formatCurrency(matSubtotal), 440, afterItemY, { width: 95, align: 'right' });
+
+                afterItemY += 25;
+            }
+        }
+        // --- FIN TABLA MATERIALES EXTRAIDOS ---
+
         doc.moveTo(50, afterItemY).lineTo(545, afterItemY).lineWidth(0.5).strokeColor('#e5e7eb').stroke();
 
         doc.y = afterItemY + 30;
+        if (doc.y > 650) {
+            doc.addPage();
+            doc.y = 50;
+        }
+
         doc.fontSize(10).font('Helvetica').fillColor(textMuted).text('Subtotal:', 290, doc.y, { width: 120, align: 'right' });
         doc.fillColor(textColor).text(formatCurrency(actualTotalPrice), 420, doc.y, { width: 115, align: 'right' });
         doc.moveDown(1);
