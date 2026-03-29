@@ -8,10 +8,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { materialsString, quality } = req.body;
+    const { spatialDescription, quality } = req.body;
 
-    if (!materialsString) {
-      return res.status(400).json({ error: 'No materials provided' });
+    if (!spatialDescription) {
+      return res.status(400).json({ error: 'No spatial layout description provided' });
     }
 
     if (!process.env.OPENAI_API_KEY) {
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
       qualityPromptStr = "buenos materiales, diseño moderno, acabados de calidad";
     }
 
-    const prompt = `A highly photorealistic 3D architectural render interior design showcasing a functional and logically arranged space equipped precisely with the following elements: ${materialsString}. Make it a cohesive, beautiful room setup rather than isolated objects. Style: ${qualityPromptStr}. Professional architectural photography lighting, ultra-realistic textures.`;
+    const prompt = `Create a photorealistic architectural visualization of an interior room. Ensure the composition, perspective, and placement of all elements follow strictly this engineering plan layout description: ${spatialDescription}. Apply the following style solely for material textures and lighting, not for element placement: ${qualityPromptStr}.`;
 
     const dallePayload = {
       model: "dall-e-3",

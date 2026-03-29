@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       messages: [
         {
           role: "system",
-          content: 'Eres un Ingeniero Civil experto analizando un plano arquitectónico. Tu única tarea es LEER los textos, etiquetas y mobiliario específico (ej. Sanitário PCD, barras de apoyo, lavabos, puertas) indicados en el documento. NO deduzcas materiales de obra gris genéricos (ladrillos, cemento, arena) a menos que estén explícitamente escritos. Devuelve un JSON estricto: {"materiales": [{"item": "nombre exacto según plano", "cantidad": numero, "unidad": "pz/m2"}]}. No incluyas texto adicional.',
+          content: 'Eres un Ingeniero Civil experto analizando un plano arquitectónico. Tu primera tarea es LEER los textos, etiquetas y mobiliario específico indicados. Tu segunda tarea es generar una "Descripción Espacial" detallada de la distribución del plano. NO deduzcas materiales de obra gris genéricos (ladrillos, cemento, arena) a menos que estén explícitamente escritos. Analyze the plan image. In the JSON output, include a key "spatial_description" that provides a detailed, narrative composition instruction for an interior room based strictly on the labeled elements in the plan. Describe the relative positions of everything (e.g., "The toilet (PCD) is placed in the far-right corner..."). Devuelve un JSON estricto: {"materiales": [{"item": "nombre", "cantidad": numero, "unidad": "pz/m2"}], "spatial_description": "narrative string"}',
         },
         {
           role: "user",
@@ -82,8 +82,9 @@ export default async function handler(req, res) {
     }
     
     const materiales = parsedResult.materiales || [];
+    const spatial_description = parsedResult.spatial_description || "Interior room with provided materials.";
 
-    return res.status(200).json({ materiales });
+    return res.status(200).json({ materiales, spatial_description });
 
   } catch (error) {
     console.error("Error analyzing blueprint PDF/Image:", error);

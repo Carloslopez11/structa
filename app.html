@@ -641,8 +641,8 @@
 
         // --- RENDER 3D DESDE MATERIALES ---
         async function generarRenderMateriales() {
-            if (!window.currentMateriales || window.currentMateriales.length === 0) {
-                alert("Primero debes subir un plano para extraer los materiales.");
+            if (!window.currentSpatialDescription) {
+                alert("Primero debes subir un plano para mapear la distribución espacial.");
                 return;
             }
 
@@ -653,7 +653,7 @@
             const qualitySelect = document.getElementById('quality');
             const quality = qualitySelect ? qualitySelect.value : 'Estándar';
 
-            const materialsString = window.currentMateriales.map(m => m.item).join(', ');
+            const spatialDescription = window.currentSpatialDescription;
 
             // Scroll al visor de proyecto y mostrar cargando
             const renderContainer = document.getElementById('renderProjectContainer');
@@ -672,7 +672,7 @@
                 const response = await fetch('/api/generar-render', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ materialsString, quality })
+                    body: JSON.stringify({ spatialDescription, quality })
                 });
 
                 if (!response.ok) {
@@ -781,7 +781,8 @@
                 logoBase64,
                 renderUrl: window.currentRenderUrl || null,
                 desglose: window.currentDesglose || null,
-                materiales: window.currentMateriales || null
+                materiales: window.currentMateriales || null,
+                spatial_description: window.currentSpatialDescription || null
             };
 
             try {
@@ -1086,7 +1087,7 @@
                     if (!imageBase64) throw new Error("Could not process file. Base64 is null.");
                     
                     const loadingText = document.getElementById('pdfLoadingText');
-                    if (loadingText) loadingText.textContent = "Paso 2: Conectando con el cerebro de OpenAI...";
+                    if (loadingText) loadingText.textContent = "Paso 1: IA mapeando distribución espacial del plano...";
                     
                     await simularAnalisisPDF(imageBase64);
 
@@ -1146,6 +1147,7 @@
                 
                 // Set materials
                 window.currentMateriales = data.materiales;
+                window.currentSpatialDescription = data.spatial_description;
                 const materialsContainer = document.getElementById('materialsContainer');
                 const materialsList = document.getElementById('materialsList');
                 materialsList.innerHTML = '';
@@ -1413,6 +1415,7 @@
             // Restaurar Materiales Dinámicos
             if (datos.materiales && datos.materiales.length > 0) {
                 window.currentMateriales = datos.materiales;
+                window.currentSpatialDescription = datos.spatial_description || null;
                 const materialsContainer = document.getElementById('materialsContainer');
                 const materialsList = document.getElementById('materialsList');
                 if (materialsContainer && materialsList) {
