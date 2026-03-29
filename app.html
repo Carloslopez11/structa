@@ -986,7 +986,7 @@
                 
                 content.innerHTML = `
                     <div class="ai-loading-spinner" style="border-top-color: #f59e0b;"></div>
-                    <p style="color: #f59e0b; font-weight: 600;">IA analizando estructuras y materiales...</p>
+                    <p id="pdfLoadingText" style="color: #f59e0b; font-weight: 600;">Paso 1: Convirtiendo PDF a imagen...</p>
                 `;
                 zone.style.borderColor = "#f59e0b";
                 zone.style.background = "rgba(245, 158, 11, 0.08)";
@@ -994,6 +994,9 @@
                 try {
                     let imageBase64 = null;
                     if (file.type === 'application/pdf') {
+                        if (!window['pdfjs-dist/build/pdf']) {
+                            throw new Error("Error: No se pudo cargar el motor de lectura PDF");
+                        }
                         const arrayBuffer = await file.arrayBuffer();
                         const pdfjsLib = window['pdfjs-dist/build/pdf'];
                         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -1018,13 +1021,18 @@
                         });
                     }
 
-                    if (!imageBase64) throw new Error("Could not process file");
+                    if (!imageBase64) throw new Error("Could not process file. Base64 is null.");
+                    
+                    const loadingText = document.getElementById('pdfLoadingText');
+                    if (loadingText) loadingText.textContent = "Paso 2: Conectando con el cerebro de OpenAI...";
+                    
                     await simularAnalisisPDF(imageBase64);
 
                 } catch (e) {
                     console.error("PDF/Image processing error", e);
+                    alert("Falló la subida visual:\n" + e.message);
                     content.innerHTML = `
-                        <p style="color: #ef4444; font-weight: 600;">Error al procesar el archivo. Sube un PDF o Imagen válido.</p>
+                        <p style="color: #ef4444; font-weight: 600;">Error: ${e.message}</p>
                     `;
                     zone.style.borderColor = "#ef4444";
                 }
@@ -1043,15 +1051,24 @@
                 });
 
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('API backend error:', errorText);
-                    throw new Error("Error en IA");
+                    let errorMessage = "Error en IA con estado HTTP: " + response.status;
+                    try {
+                        const errData = await response.json();
+                        if (response.status === 401) errorMessage = "Código 401: Llave API de OpenAI inválida o faltante.";
+                        else if (response.status === 429) errorMessage = "Código 429: Límite de cuota en OpenAI excedido.";
+                        else if (response.status === 500) errorMessage = "Código 500: Fallo interno en OpenAI o nuestro backend.";
+                        if (errData.error) errorMessage += " (" + errData.error + ")";
+                    } catch(e) {}
+                    throw new Error(errorMessage);
                 }
+
+                const loadingText = document.getElementById('pdfLoadingText');
+                if (loadingText) loadingText.textContent = "Paso 3: Construyendo lista de materiales...";
 
                 const data = await response.json();
                 
                 if (!data.materiales || data.materiales.length === 0) {
-                    throw new Error("No se detectaron materiales en el plano.");
+                    throw new Error("Respuesta procesada exitosamente, pero OpenAI no devolvió materiales legibles.");
                 }
                 
                 // Success
@@ -1072,21 +1089,21 @@
                 materialsList.innerHTML = '';
                 
                 data.materiales.forEach((mat, index) => {
-                    materialsList.innerHTML += \`
+                    materialsList.innerHTML += `
                         <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                             <div style="flex: 1; min-width: 150px;">
-                                <div style="font-weight: 600; font-size: 1rem; color: #fff;">\${mat.item}</div>
-                                <div style="font-size: 0.85rem; color: var(--text-muted);">\${mat.cantidad} \${mat.unidad}</div>
+                                <div style="font-weight: 600; font-size: 1rem; color: #fff;">${mat.item}</div>
+                                <div style="font-size: 0.85rem; color: var(--text-muted);">${mat.cantidad} ${mat.unidad}</div>
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <div style="display: flex; flex-direction: column; width: 90px;">
                                     <label style="font-size: 0.65rem; margin-bottom: 2px;">Costo Un. ($)</label>
-                                    <input type="number" id="matPriceInput_\${index}" value="0" step="0.01" style="margin: 0; padding: 8px; font-size: 0.9rem;" oninput="if(window.fireUpdate) window.fireUpdate()">
+                                    <input type="number" id="matPriceInput_${index}" value="0" step="0.01" style="margin: 0; padding: 8px; font-size: 0.9rem;" oninput="if(window.fireUpdate) window.fireUpdate()">
                                 </div>
-                                <div id="matCost_\${index}" style="font-weight: bold; color: #f59e0b; font-size: 1.1rem; min-width: 80px; text-align: right;">$0.00</div>
+                                <div id="matCost_${index}" style="font-weight: bold; color: #f59e0b; font-size: 1.1rem; min-width: 80px; text-align: right;">$0.00</div>
                             </div>
                         </div>
-                    \`;
+                    `;
                 });
                 materialsContainer.style.display = 'block';
                 
@@ -1097,10 +1114,11 @@
                 }
             } catch (error) {
                 console.error("AI Materials Error:", error);
+                alert("Falló el análisis de materiales:\n" + error.message);
                 // Error State
-                content.innerHTML = \`
-                    <p style="color: #ef4444; font-weight: 600;">\${error.message || "No pude extraer materiales. Intenta con un PDF más claro."}</p>
-                \`;
+                content.innerHTML = `
+                    <p style="color: #ef4444; font-weight: 600;">${error.message}</p>
+                `;
                 zone.style.borderColor = "#ef4444";
                 zone.style.background = "rgba(239, 68, 68, 0.05)";
             }
@@ -1336,21 +1354,21 @@
                     materialsList.innerHTML = '';
                     datos.materiales.forEach((mat, index) => {
                         const pu = mat.precio_unitario || 0;
-                        materialsList.innerHTML += \`
+                        materialsList.innerHTML += `
                             <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                                 <div style="flex: 1; min-width: 150px;">
-                                    <div style="font-weight: 600; font-size: 1rem; color: #fff;">\${mat.item}</div>
-                                    <div style="font-size: 0.85rem; color: var(--text-muted);">\${mat.cantidad} \${mat.unidad}</div>
+                                    <div style="font-weight: 600; font-size: 1rem; color: #fff;">${mat.item}</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-muted);">${mat.cantidad} ${mat.unidad}</div>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     <div style="display: flex; flex-direction: column; width: 90px;">
                                         <label style="font-size: 0.65rem; margin-bottom: 2px;">Costo Un. ($)</label>
-                                        <input type="number" id="matPriceInput_\${index}" value="\${pu}" step="0.01" style="margin: 0; padding: 8px; font-size: 0.9rem;" oninput="if(window.fireUpdate) window.fireUpdate()">
+                                        <input type="number" id="matPriceInput_${index}" value="${pu}" step="0.01" style="margin: 0; padding: 8px; font-size: 0.9rem;" oninput="if(window.fireUpdate) window.fireUpdate()">
                                     </div>
-                                    <div id="matCost_\${index}" style="font-weight: bold; color: #f59e0b; font-size: 1.1rem; min-width: 80px; text-align: right;">$0.00</div>
+                                    <div id="matCost_${index}" style="font-weight: bold; color: #f59e0b; font-size: 1.1rem; min-width: 80px; text-align: right;">$0.00</div>
                                 </div>
                             </div>
-                        \`;
+                        `;
                     });
                     materialsContainer.style.display = 'block';
                 }

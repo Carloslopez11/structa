@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 
     if (!process.env.OPENAI_API_KEY) {
       console.error('OPENAI_API_KEY config missing');
-      return res.status(500).json({ error: 'Server AI config missing' });
+      return res.status(401).json({ error: 'Falta la API Key de OpenAI en las variables de entorno' });
     }
 
     // Prepare OpenAI Payload
@@ -60,7 +60,14 @@ export default async function handler(req, res) {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("OpenAI API error response:", errorText);
-      return res.status(response.status).json({ error: "Failed to process image through AI." });
+      
+      let errorMsg = "Falló el procesamiento de IA";
+      try {
+          const parsed = JSON.parse(errorText);
+          if (parsed.error && parsed.error.message) errorMsg = parsed.error.message;
+      } catch (e) {}
+
+      return res.status(response.status).json({ error: errorMsg });
     }
 
     const data = await response.json();
@@ -80,6 +87,6 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error("Error analyzing blueprint PDF/Image:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: error.message || "Internal Server Error" });
   }
 }
