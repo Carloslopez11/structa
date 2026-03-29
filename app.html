@@ -403,17 +403,7 @@
             <option value="Lujo">Lujo</option>
         </select>
 
-        <label>Planos / Bosquejos (Con IA)</label>
-        <div class="ai-upload-zone" id="aiUploadZone" onclick="document.getElementById('aiFileInput').click()">
-            <input type="file" id="aiFileInput" accept="image/*" style="display:none;" onchange="handleAIUpload(this)">
-            <div class="ai-upload-content" id="aiUploadContent">
-                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--purple); margin-bottom: 12px; filter: drop-shadow(0 2px 5px rgba(124,58,237,0.3));">
-                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                </svg>
-                <p>Sube tu plano o bosquejo y la IA extraerá las medidas</p>
-            </div>
-        </div>
+
 
         <label>Extraer Materiales desde PDF/Imagen (Avanzado)</label>
         <div class="ai-upload-zone" id="pdfUploadZone" onclick="document.getElementById('pdfFileInput').click()" style="border-color: #f59e0b; background: rgba(245, 158, 11, 0.05);">
