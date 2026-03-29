@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       messages: [
         {
           role: "system",
-          content: 'Eres un Ingeniero Civil experto. Analiza este plano arquitectónico. Extrae una lista detallada de todos los materiales, medidas (m2, metros lineales) y accesorios necesarios para la construcción/remodelación visible. Devuelve EXCLUSIVAMENTE un objeto JSON válido con la estructura: {"materiales": [{"item": "nombre", "cantidad": numero, "unidad": "m2/unidad"}]}. No incluyas texto adicional.',
+          content: 'Eres un Ingeniero Civil experto analizando un plano arquitectónico. Tu única tarea es LEER los textos, etiquetas y mobiliario específico (ej. Sanitário PCD, barras de apoyo, lavabos, puertas) indicados en el documento. NO deduzcas materiales de obra gris genéricos (ladrillos, cemento, arena) a menos que estén explícitamente escritos. Devuelve un JSON estricto: {"materiales": [{"item": "nombre exacto según plano", "cantidad": numero, "unidad": "pz/m2"}]}. No incluyas texto adicional.',
         },
         {
           role: "user",
