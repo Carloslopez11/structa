@@ -662,7 +662,7 @@
                 const response = await fetch('/api/generar-render', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ spatialDescription, quality })
+                    body: JSON.stringify({ spatialDescription, quality, projectContext: window.currentProjectContext })
                 });
 
                 if (!response.ok) {
@@ -772,7 +772,8 @@
                 renderUrl: window.currentRenderUrl || null,
                 desglose: window.currentDesglose || null,
                 materiales: window.currentMateriales || null,
-                spatial_description: window.currentSpatialDescription || null
+                spatial_description: window.currentSpatialDescription || null,
+                project_context: window.currentProjectContext || null
             };
 
             try {
@@ -1138,6 +1139,7 @@
                 // Set materials
                 window.currentMateriales = data.materiales;
                 window.currentSpatialDescription = data.spatial_description;
+                window.currentProjectContext = data.project_context;
                 const materialsContainer = document.getElementById('materialsContainer');
                 const materialsList = document.getElementById('materialsList');
                 materialsList.innerHTML = '';
@@ -1414,6 +1416,7 @@
             if (datos.materiales && datos.materiales.length > 0) {
                 window.currentMateriales = datos.materiales;
                 window.currentSpatialDescription = datos.spatial_description || null;
+                window.currentProjectContext = datos.project_context || null;
                 const materialsContainer = document.getElementById('materialsContainer');
                 const materialsList = document.getElementById('materialsList');
                 if (materialsContainer && materialsList) {

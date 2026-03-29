@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       messages: [
         {
           role: "system",
-          content: 'Eres un Ingeniero Civil experto analizando un plano arquitectónico. Tu primera tarea es extraer los textos, etiquetas y mobiliario específico sin deducir materiales de obra gris a menos que estén escritos. Tu segunda tarea es mapear la ubicación exacta de cada pieza en un JSON estructurado de coordenadas. Devuelve EXCLUSIVAMENTE un único Objeto JSON con DOS propiedades requeridas: "materiales" (Array de objetos, ej. [{"item": "Sanitário PCD", "cantidad": 1, "unidad": "pz"}]) y "spatial_description" (Array de objetos con distribución espacial, ej. [{"objeto": "Sanitário PCD", "ubicacion": "centro_inferior"}, {"objeto": "Barra de apoyo", "ubicacion": "pared_izquierda_junto_sanitario"}]).',
+          content: 'Eres un Ingeniero Civil experto analizando un plano arquitectónico. Tu primera tarea es extraer los textos, etiquetas y mobiliario específico sin deducir materiales de obra gris a menos que estén escritos. Tu segunda tarea es mapear la ubicación exacta de cada pieza en un JSON estructurado de coordenadas. Tu tercera tarea es deducir el tipo de habitación y su contexto arquitectónico (ej. "Baño público PCD", "Cocina de restaurante", "Oficina moderna"). Devuelve EXCLUSIVAMENTE un único Objeto JSON con TRES propiedades requeridas: "materiales" (Array de objetos, ej. [{"item": "Sanitário PCD", "cantidad": 1, "unidad": "pz"}]), "spatial_description" (Array de objetos con distribución espacial, ej. [{"objeto": "Sanitário PCD", "ubicacion": "centro_inferior"}]) y "project_context" (String con el tipo de espacio).',
         },
         {
           role: "user",
@@ -83,8 +83,9 @@ export default async function handler(req, res) {
     
     const materiales = parsedResult.materiales || [];
     const spatial_description = parsedResult.spatial_description || [];
+    const project_context = parsedResult.project_context || "Habitación genérica";
 
-    return res.status(200).json({ materiales, spatial_description });
+    return res.status(200).json({ materiales, spatial_description, project_context });
 
   } catch (error) {
     console.error("Error analyzing blueprint PDF/Image:", error);

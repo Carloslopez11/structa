@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { spatialDescription, quality } = req.body;
+    const { spatialDescription, quality, projectContext } = req.body;
 
     if (!spatialDescription) {
       return res.status(400).json({ error: 'No spatial layout description provided' });
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
       qualityPromptStr = "buenos materiales, diseño moderno, acabados de calidad";
     }
 
-    const prompt = `Create a top-down, non-photorealistic architectural blueprint sketch in simplified geometric 3D. Use grey concrete blocks, no decoration, no realistic lighting. Always include text labels for the main elements. STRICTLY follow this coordinate layout to build the geometry: ${JSON.stringify(spatialDescription)}`;
+    const prompt = `Highly detailed, photorealistic interior architectural 3D rendering. Ultra high-definition, cinematic lighting, professional architectural photography. ROOM TYPE & CONTEXT: The room to be visualized is exactly a: "${projectContext || 'Interior architectural space'}". STRICT SPATIAL LAYOUT: Build the room geometry strictly following this exact coordinate layout: ${JSON.stringify(spatialDescription)}. The placement of objects cannot be altered. APPLY SURFACE MATERIALS AND STYLE: Apply this style strictly as surface textures, materials, and lighting: "${qualityPromptStr}". Ensure the space feels premium, cohesive, and realistically proportioned. Do not add random furniture. Ensure walls, floors, and ceilings reflect the chosen material quality perfectly.`;
 
     const dallePayload = {
       model: "dall-e-3",
