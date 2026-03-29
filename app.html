@@ -559,20 +559,19 @@
         const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRhZGpscGVpZmtpZHNnaGJpcmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNjg1MDEsImV4cCI6MjA4Nzk0NDUwMX0.laJbEwsKJTYsWy1GbV3LHma5rsixWQH-Th8K9NX_WAc'; // Replace with your Supabase Anon Key
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-        async function checkAuth() {
-            const { data: { session }, error } = await supabaseClient.auth.getSession();
-            if (!session) {
-                // Si el usuario llega a app.html sin estar logueado, lo regresamos al login.html
-                window.location.href = "login.html";
-            } else {
-                // Si el usuario está validado, guardamos su email en el input oculto y mostramos un saludo
-                document.getElementById('email').value = session.user.email;
-                document.getElementById('userEmailLabel').textContent = session.user.email;
-                setTimeout(() => speak(`Welcome back! Let's create your quote.`, 6000), 1000);
+        // --- GUARDIÁN DE RUTA ESTRICTO (Auditoría Nivel 1) ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) { 
+                window.location.href = 'login.html'; 
+                return; 
             }
-        }
-
-        checkAuth();
+            
+            // Si el usuario está validado de forma segura, inicializamos la UI:
+            document.getElementById('email').value = session.user.email;
+            document.getElementById('userEmailLabel').textContent = session.user.email;
+            setTimeout(() => speak(`Welcome back! Let's create your quote.`, 6000), 1000);
+        });
 
         async function handleLogout() {
             await supabaseClient.auth.signOut();
