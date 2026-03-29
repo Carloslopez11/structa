@@ -828,6 +828,14 @@
                         speak("Success! Your quote has been downloaded. Go close that job!", 5000);
                     }
 
+                    // --- FASE 3: MOSTRAR BOTONES DE COMPARTIR INMEDIATAMENTE ---
+                    // Forzar mostrar botones INMEDIATAMENTE tras la generación local ANTES de .click()
+                    const socialDiv = document.getElementById('socialShareContainer');
+                    if (socialDiv) {
+                        socialDiv.classList.remove('hidden');
+                        socialDiv.style.display = 'flex';
+                    }
+
                     // Descargamos directamente el archivo binario enviado por PDFKit.
                     const blob = await response.blob();
                     const localUrl = window.URL.createObjectURL(blob);
@@ -838,9 +846,15 @@
                     a.download = pdfFilename;
                     document.body.appendChild(a);
                     a.click();
-                    window.URL.revokeObjectURL(localUrl);
+                    
+                    // Delay revocation for mobile compatibility
+                    setTimeout(() => {
+                        window.URL.revokeObjectURL(localUrl);
+                        if (a.parentNode) a.parentNode.removeChild(a);
+                    }, 500);
 
-                    // --- FASE 3: SUBIDA DEL PDF A SUPABASE STORAGE Y BOTONES PARA COMPARTIR ---
+                    // --- SUBIDA DEL PDF A SUPABASE STORAGE ---
+
                     try {
                         const { data: uploadData, error: uploadError } = await supabaseClient.storage
                             .from('presupuestos')
@@ -855,10 +869,6 @@
                                 .getPublicUrl(`public/${pdfFilename}`);
                             
                             window.currentPdfPublicUrl = publicUrl;
-                            
-                            // Mostrar botones de compartir
-                            const socialDiv = document.getElementById('socialShareContainer');
-                            if(socialDiv) socialDiv.style.display = 'flex';
                         } else {
                             console.error("Storage Upload Error:", uploadError);
                         }
