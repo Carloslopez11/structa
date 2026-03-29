@@ -18,14 +18,18 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Falta la API Key de OpenAI en las variables de entorno' });
     }
 
-    let qualityPromptStr = "materiales de construcción estándar, acabados limpios pero básicos";
-    if (quality === "Lujo") {
-      qualityPromptStr = "materiales de altísima gama, pisos de mármol, maderas finas, diseño arquitectónico de lujo y acabados premium";
-    } else if (quality === "Medio") {
-      qualityPromptStr = "buenos materiales, diseño moderno, acabados de calidad";
+    let qualityPromptStr = 'Visual Style: Clean architectural clay maquette. Monochromatic matte white and light grey. No textures. Pure technical look.';
+    if (quality === 'Lujo') {
+      qualityPromptStr = 'Visual Style: Ultra-luxury interior design. High-end polished marble walls, premium dark hardwood or luxury tile floor. The toilet and sink are premium ceramic. Grab bars are brushed gold or brass. Warm, elegant LED ambient lighting.';
+    } else if (quality === 'Medio') {
+      qualityPromptStr = 'Visual Style: Realistic standard interior. Basic white ceramic toilet and sink, standard white tile floor, plain painted walls, bright daylight lighting.';
     }
 
-    const prompt = `Create a technical, high-definition isometric architectural clay model render of a ${projectContext || 'interior space'} on a clean white background. Render a concrete floor slab and clean matte clay walls. Use professional studio lighting. STRICTLY build the room geometry based on this coordinate layout: ${JSON.stringify(spatialDescription)}. Ensure all objects from the material list (toilet, sink, door, and MANDATORY grab bars if context is PCD) are placed exactly at the coordinates. Do not leave components out. Do not allow objects to float without a visible floor or wall base. MANDATORY TEXT LABELS AND DIMENSIONS (Portuguese): Overlap explicit dimension lines (e.g., "1.50m x 2.20m") and technical labels ("Raio de giro: 0.80m", "Inodoro PCD", "Barras de apoio") directly onto the clay model based on the extracted JSON spatial data. FINAL CONSTRAINT: DO NOT hallucinate new objects, DO NOT reposition existing ones.`;
+    const architecturalBase = `Create a high-definition isometric 3D architectural cutaway of a ${projectContext || 'interior space'}. The room MUST have a solid floor slab and two visible walls. STRICT GEOMETRY: ${JSON.stringify(spatialDescription)}. Do NOT hallucinate extra doors or toilets. Strictly ONE of each item.`;
+    const grabBarsPrecision = `CRITICAL: If the list includes grab bars (barras de apoyo), they MUST be metallic and attached directly to the wall immediately next to and behind the toilet. Do not scatter them like towel racks.`;
+    const textsConstraint = `Keep text labels minimal and highly legible. Only write explicit dimensions like "0.80m" and "PCD".`;
+
+    const prompt = `${architecturalBase} ${grabBarsPrecision} ${qualityPromptStr} ${textsConstraint}`;
 
     const dallePayload = {
       model: "dall-e-3",
