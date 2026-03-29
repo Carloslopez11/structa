@@ -547,9 +547,16 @@
 
         <div id="errorBox" class="error-msg"></div>
 
-        <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;">
-            <button class="btn-action" id="generateRenderBtn" onclick="generarRenderMateriales()" style="width: 100%; padding: 18px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4); text-transform: uppercase; transition: transform 0.2s, box-shadow 0.2s; display: none;">🎨 Generar Render 3D</button>
+            <button class="btn-action" id="generateRenderBtn" onclick="generarRenderMateriales()" style="width: 100%; padding: 18px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4); text-transform: uppercase; transition: transform 0.2s, box-shadow 0.2s; display: none;">🎨 Generar Boceto Conceptual Premium</button>
             <button class="btn-pay" id="generateBtn" onclick="generateInvoice()" style="margin-bottom: 0;">Generate PDF Invoice</button>
+            <div id="socialShareContainer" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
+                <button onclick="shareWhatsApp()" style="background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Compartir por WhatsApp
+                </button>
+                <button onclick="shareEmail()" style="background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    ✉️ Enviar por Correo
+                </button>
+            </div>
         </div>
     </div>
 
@@ -683,7 +690,7 @@
                 alert("Falló la generación del render: " + error.message);
                 if (renderImage) renderImage.src = '';
             } finally {
-                btn.textContent = "🎨 Generar Render 3D";
+                btn.textContent = "🎨 Generar Boceto Conceptual Premium";
                 btn.disabled = false;
             }
         }
@@ -700,7 +707,16 @@
             const errorBox = document.getElementById('errorBox');
             errorBox.style.display = 'none';
 
-            // Validar campos faltantes eliminados por solicitud (cero fricción)
+            const totalText = document.getElementById('previewTotal').textContent;
+            const totalAmount = parseFloat(totalText.replace(/[^0-9.-]+/g, "")) || 0;
+
+            if (totalAmount === 0 || !l || !w) {
+                if (typeof speak === 'function') speak("Por favor ingrese las medidas del proyecto.", 6000);
+                errorBox.innerHTML = `El Total no puede ser $0 y las medidas de Largo y Ancho son obligatorias.`;
+                errorBox.style.display = 'block';
+                return;
+            }
+
             if (!email) {
                 speak("Please log in again.", 4000);
                 return;
@@ -814,13 +830,41 @@
 
                     // Descargamos directamente el archivo binario enviado por PDFKit.
                     const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
+                    const localUrl = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `Quote_${client.replace(/\s+/g, '_')}.pdf`;
+                    a.href = localUrl;
+                    const cleanClient = client ? client.replace(/\s+/g, '_') : 'Cliente';
+                    const pdfFilename = `Boceto_${cleanClient}_${Date.now()}.pdf`;
+                    a.download = pdfFilename;
                     document.body.appendChild(a);
                     a.click();
-                    window.URL.revokeObjectURL(url);
+                    window.URL.revokeObjectURL(localUrl);
+
+                    // --- FASE 3: SUBIDA DEL PDF A SUPABASE STORAGE Y BOTONES PARA COMPARTIR ---
+                    try {
+                        const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                            .from('presupuestos')
+                            .upload(`public/${pdfFilename}`, blob, {
+                                contentType: 'application/pdf',
+                                upsert: false
+                            });
+                            
+                        if (!uploadError) {
+                            const { data: { publicUrl } } = supabaseClient.storage
+                                .from('presupuestos')
+                                .getPublicUrl(`public/${pdfFilename}`);
+                            
+                            window.currentPdfPublicUrl = publicUrl;
+                            
+                            // Mostrar botones de compartir
+                            const socialDiv = document.getElementById('socialShareContainer');
+                            if(socialDiv) socialDiv.style.display = 'flex';
+                        } else {
+                            console.error("Storage Upload Error:", uploadError);
+                        }
+                    } catch (e) {
+                         console.error("Excepción en Storage:", e);
+                    }
 
                     // Guardado Silencioso de Presupuesto en BD
                     try {
@@ -1457,6 +1501,19 @@
             if (typeof speak === "function") {
                 speak("¡Memoria activada! Presupuesto cargado y listo para editar.", 5000);
             }
+        }
+
+        function shareWhatsApp() {
+            if(!window.currentPdfPublicUrl) return alert("La nube aún está subiendo el archivo o hubo un error.");
+            const msg = `Hola, adjunto el presupuesto detallado y el boceto conceptual premium de su proyecto. Puede verlo aquí: ${window.currentPdfPublicUrl}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function shareEmail() {
+            if(!window.currentPdfPublicUrl) return alert("La nube aún está subiendo el archivo o hubo un error.");
+            const subject = "Boceto Conceptual Premium y Presupuesto Profesional";
+            const body = `Hola,\n\nAdjunto el presupuesto detallado y el boceto conceptual premium de su proyecto.\n\nPuede verlo directamente aquí: ${window.currentPdfPublicUrl}\n\nQuedo atento.`;
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
     </script>
 
