@@ -25,7 +25,7 @@ export default async function handler(req, res) {
       qualityPromptStr = "buenos materiales, diseño moderno, acabados de calidad";
     }
 
-    const prompt = `Isometric clay architectural render. STRICT SPATIAL LAYOUT: ${spatialDescription}. The physical geometry and placement of these objects CANNOT be altered. APPLY SURFACE MATERIALS ONLY: Use the style options "${qualityPromptStr}" strictly as surface textures, colors, and lighting. Do not change the shape, architecture, or placement of the furniture.`;
+    const prompt = `Create a technical, isometric view based STRICTLY on this spatial coordinate layout: ${JSON.stringify(spatialDescription)}. Place objects exactly where the layout defines. Add grab bars to the toilet as specified. APPLY STYLE OPTION ON TOP: ${qualityPromptStr}. DO NOT ADD ANY NEW ELEMENTS. DO NOT REPOSITION EXISTING ELEMENTS.`;
 
     const dallePayload = {
       model: "dall-e-3",
