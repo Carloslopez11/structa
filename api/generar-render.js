@@ -25,7 +25,7 @@ export default async function handler(req, res) {
       qualityPromptStr = "buenos materiales, diseño moderno, acabados de calidad";
     }
 
-    const prompt = `Create a technical, professional, high-definition isometric architectural clay model render. Background: pure, clean white. Material: matte light-grey/white clay without texture. STRICTLY follow this coordinate layout to build the geometry: ${JSON.stringify(spatialDescription)}. Ensure clean walls defining the space. Include all objects from the list (toilet, sink, door, grab bars) placed exactly at the coordinates. MANDATORY TEXT LABELS AND DIMENSIONS (Portuguese): Render explicit text labels and dimension lines directly on the image based on the spatial description: (e.g., '1.50m x 2.20m', 'Inodoro PCD', 'Barras de apoio', 'Raio de giro: 0.80m'). The result must be a single, cohesive, professional polished maquette like Captura 18.`;
+    const prompt = `Create a top-down, non-photorealistic architectural blueprint sketch in simplified geometric 3D. Use grey concrete blocks, no decoration, no realistic lighting. Always include text labels for the main elements. STRICTLY follow this coordinate layout to build the geometry: ${JSON.stringify(spatialDescription)}`;
 
     const dallePayload = {
       model: "dall-e-3",
