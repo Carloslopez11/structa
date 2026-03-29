@@ -25,7 +25,7 @@ export default async function handler(req, res) {
       qualityPromptStr = "buenos materiales, diseño moderno, acabados de calidad";
     }
 
-    const prompt = `Create a photorealistic architectural visualization of an interior room. Ensure the composition, perspective, and placement of all elements follow strictly this engineering plan layout description: ${spatialDescription}. Apply the following style solely for material textures and lighting, not for element placement: ${qualityPromptStr}.`;
+    const prompt = `Isometric clay architectural render. STRICT SPATIAL LAYOUT: ${spatialDescription}. The physical geometry and placement of these objects CANNOT be altered. APPLY SURFACE MATERIALS ONLY: Use the style options "${qualityPromptStr}" strictly as surface textures, colors, and lighting. Do not change the shape, architecture, or placement of the furniture.`;
 
     const dallePayload = {
       model: "dall-e-3",
