@@ -1301,10 +1301,18 @@
                     card.style.alignItems = 'center';
                     card.style.transition = '0.3s';
                     
+                    let thumbnailHtml = '';
+                    if (item.datos_completos && item.datos_completos.renderUrl) {
+                        thumbnailHtml = `<img src="${item.datos_completos.renderUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(124, 58, 237, 0.4); margin-right: 15px;">`;
+                    }
+                    
                     card.innerHTML = `
-                        <div style="display:flex; flex-direction:column; gap:4px; text-align: left;">
-                            <div style="font-weight:600; color:white; font-size:1.05rem;">${item.cliente || 'Cotización Structa'}</div>
-                            <div style="color:var(--text-muted); font-size:0.85rem;">${formattedDate}</div>
+                        <div style="display:flex; align-items:center;">
+                            ${thumbnailHtml}
+                            <div style="display:flex; flex-direction:column; gap:4px; text-align: left;">
+                                <div style="font-weight:600; color:white; font-size:1.05rem;">${item.cliente || 'Cotización Structa'}</div>
+                                <div style="color:var(--text-muted); font-size:0.85rem;">${formattedDate}</div>
+                            </div>
                         </div>
                         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
                             <div style="font-weight:bold; color:var(--purple); font-size:1.2rem;">
