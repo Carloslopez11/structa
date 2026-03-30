@@ -124,17 +124,34 @@
       opacity: 0;
       animation: fadeUp 0.8s ease-out forwards;
     }
+    
+    .badge {
+      display: inline-block;
+      padding: 8px 18px;
+      background: rgba(45, 212, 191, 0.1);
+      border: 1px solid rgba(45, 212, 191, 0.3);
+      border-radius: 30px;
+      color: var(--cyan-glow);
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 25px;
+      animation-delay: 0.05s;
+    }
+
     header h1 { animation-delay: 0.1s; }
     header p { animation-delay: 0.2s; }
     header .btn { animation-delay: 0.3s; }
 
     h1 {
-      font-size: clamp(2.5rem, 6vw, 4.8rem);
+      font-size: clamp(2.5rem, 6vw, 4.2rem);
       font-weight: 800;
-      letter-spacing: -1.5px;
-      margin-bottom: 1.2rem;
-      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 1.5rem;
+      line-height: 1.15;
       color: var(--text-main);
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     h1 span {
@@ -147,10 +164,11 @@
 
     p {
       color: var(--text-muted);
-      max-width: 650px;
+      max-width: 680px;
       margin: 0 auto 40px;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 400;
+      line-height: 1.7;
     }
 
     /* --- BOTONES PRINCIPALES --- */
@@ -162,7 +180,7 @@
       border-radius: 12px;
       font-weight: 600;
       text-decoration: none;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       position: relative;
       transition: all 0.3s ease;
       border: 1px solid rgba(167, 139, 250, 0.3);
@@ -172,14 +190,69 @@
 
     .btn:hover {
       transform: translateY(-4px);
-      box-shadow: 0 15px 35px rgba(139, 92, 246, 0.5), 0 0 15px rgba(45, 212, 191, 0.3);
+      box-shadow: 0 15px 35px rgba(139, 92, 246, 0.5), 0 0 20px rgba(45, 212, 191, 0.4);
       border-color: var(--cyan-glow);
+    }
+    
+    .btn-large {
+      padding: 22px 50px;
+      font-size: 1.25rem;
+      border-radius: 14px;
+    }
+
+    /* --- PROBLEMA (Agitar Dolor) --- */
+    .problem-section {
+      max-width: 850px;
+      margin: 80px auto;
+      padding: 60px 30px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(239, 68, 68, 0.15); /* Reddish tint for pain */
+      border-radius: 20px;
+      text-align: center;
+      opacity: 0;
+      animation: fadeUp 0.8s ease-out forwards;
+      animation-delay: 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .problem-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #F87171, #EF4444);
+    }
+
+    .problem-section h2 {
+      font-size: clamp(2rem, 5vw, 2.5rem);
+      font-weight: 800;
+      margin-bottom: 25px;
+      color: var(--text-main);
+      line-height: 1.25;
+    }
+
+    .problem-section h2 span {
+      background: linear-gradient(135deg, #FEF08A 0%, #F59E0B 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .problem-section p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.8;
+      max-width: 100%;
     }
 
     /* --- CARACTERÍSTICAS (Beneficios) --- */
     .features {
       max-width: 1100px;
-      margin: 80px auto;
+      margin: 100px auto;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 30px;
@@ -196,7 +269,7 @@
       transition: all 0.4s ease;
       opacity: 0;
       animation: fadeUp 0.8s ease-out forwards;
-      animation-delay: 0.4s;
+      animation-delay: 0.5s;
       position: relative;
       overflow: hidden;
     }
@@ -205,36 +278,28 @@
       transform: translateY(-8px);
       background: rgba(22, 32, 68, 0.8);
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.15);
+      border-color: rgba(139, 92, 246, 0.3);
     }
 
     .feature h3 {
       color: var(--text-main);
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       margin-bottom: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
       font-weight: 700;
+      line-height: 1.3;
     }
 
     .feature p {
       margin: 0;
-      font-size: 1rem;
+      font-size: 1.05rem;
       color: var(--text-muted);
       line-height: 1.6;
     }
 
-    /* --- FOOTER --- */
-    footer {
-      padding: 60px 20px 40px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-top: 40px;
-    }
-
-    footer .logo { opacity: 0.5; margin-bottom: 10px; }
     /* --- HERO DEMO --- */
     .hero-demo-wrapper {
       margin: 60px auto 0;
@@ -359,7 +424,7 @@
       position: relative;
     }
 
-    /* Graphic 1: Plano Automático */
+    /* Graphic 1 */
     .graphic-blueprint {
       width: 120px;
       height: 80px;
@@ -388,7 +453,7 @@
       font-weight: 700;
     }
 
-    /* Graphic 2: Desglose */
+    /* Graphic 2 */
     .graphic-bars {
       width: 80%;
       display: flex;
@@ -419,7 +484,7 @@
       border-radius: 6px;
     }
 
-    /* Graphic 3: Renders */
+    /* Graphic 3 */
     .graphic-compare {
       display: flex;
       width: 90%;
@@ -447,11 +512,12 @@
       position: relative;
     }
     .comp-lujo::after {
-      content: '✨';
+      content: 'WhatsApp ↗';
       position: absolute;
       top: 5px;
       right: 5px;
-      font-size: 0.8rem;
+      font-size: 0.65rem;
+      color: #10B981;
     }
 
     /* --- TESTIMONIALS --- */
@@ -599,6 +665,60 @@
       line-height: 1.7;
     }
 
+    /* --- FINAL CTA SECTION --- */
+    .cta-section {
+      background: linear-gradient(180deg, var(--bg-midnight) 0%, rgba(139, 92, 246, 0.1) 50%, var(--bg-midnight) 100%);
+      border-top: 1px solid var(--border-glass);
+      margin: 120px 0 0;
+      padding: 100px 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(45, 212, 191, 0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .cta-section-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--text-main);
+      line-height: 1.1;
+      letter-spacing: -1px;
+    }
+
+    .cta-section p {
+      font-size: 1.35rem;
+      color: var(--text-muted);
+      max-width: 650px;
+      margin: 0 auto 40px;
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      padding: 60px 20px 40px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      background-color: var(--bg-midnight);
+    }
+
+    footer .logo { opacity: 0.5; margin-bottom: 10px; }
+
   </style>
 </head>
 
@@ -613,9 +733,10 @@
   </nav>
 
   <header>
-    <h1>Presupuestos de Construcción y Renders en 30 Segundos <span>impulsados por IA</span></h1>
-    <p>Los contratistas pueden cotizar planos enteros automáticamente, generar visualizaciones de alta calidad y descargar PDFs con su logo al instante. Despídete de los retrasos.</p>
-    <a href="register.html" class="btn">Comenzar Ahora</a>
+    <div class="badge">🚀 La ventaja injusta de los contratistas modernos.</div>
+    <h1>Deja de perder proyectos por culpa de presupuestos <span>aburridos en Excel.</span></h1>
+    <p>Pasa de un simple plano 2D a un Render Arquitectónico 3D y un presupuesto PDF impecable en menos de 5 minutos. Envíalo por WhatsApp antes de que tu competencia termine de sacar la calculadora.</p>
+    <a href="register.html" class="btn">🔥 Crear mi primera propuesta gratis</a>
 
     <div class="hero-demo-wrapper">
       <div class="mac-window">
@@ -644,13 +765,18 @@
     </div>
   </header>
 
+  <section class="problem-section">
+    <h2>El cliente moderno no entiende de planos. <br><span>Entiende de resultados.</span></h2>
+    <p>¿Cuántas horas no pagadas pasas armando cotizaciones para que el cliente termine eligiendo a otro "porque se veía más profesional"? Structa nivela el campo de juego. Te damos las herramientas de una firma de arquitectura de primer nivel, en la palma de tu mano.</p>
+  </section>
+
   <section class="features">
     <div class="feature">
       <div class="feature-graphic">
          <div class="graphic-blueprint"></div>
       </div>
-      <h3>⚙️ Cálculo de Precisión</h3>
-      <p>Ingresa las medidas de tu proyecto y nuestro motor matemático calculará al instante los costos exactos. Protege tu margen de ganancia y evita fallos humanos en tus presupuestos.</p>
+      <h3>✨ El Efecto "WOW" Instantáneo</h3>
+      <p>Sube tu plano. Nuestra IA estricta lo transforma en un diseño 3D hiperrealista respetando cada espacio. Que tu cliente vea su sueño hecho realidad antes de pagar el anticipo.</p>
     </div>
     <div class="feature">
       <div class="feature-graphic">
@@ -669,18 +795,18 @@
              </div>
          </div>
       </div>
-      <h3>📋 Desglose Dinámico</h3>
-      <p>Divide los costos rápida y automáticamente por habitaciones (Cocina, Baño, Sala). Brinda cotizaciones detalladas, transparentes y profesionales que enamoran a tus clientes.</p>
+      <h3>💼 Cotizaciones que Exigen Respeto</h3>
+      <p>Calcula tus costos al centavo. Structa empaqueta tus números en un PDF elegante y profesional almacenado de forma segura en la nube.</p>
     </div>
     <div class="feature">
       <div class="feature-graphic">
          <div class="graphic-compare">
-             <div class="comp-half comp-std">Estándar</div>
-             <div class="comp-half comp-lujo">Lujo ✨</div>
+             <div class="comp-half comp-std">Presupuesto</div>
+             <div class="comp-half comp-lujo">Link Final ↗</div>
          </div>
       </div>
-      <h3>🖼️ Renders Fotorrealistas con IA</h3>
-      <p>Acompaña cada PDF con visualizaciones increíbles en 3D generadas al instante basadas en tus dimensiones. Personaliza tu presentación con el Selector de Calidad (Estándar o Lujo) y cierra más tratos.</p>
+      <h3>📲 Cierre Fulminante por WhatsApp</h3>
+      <p>El tiempo mata las ventas. Dispara el enlace de tu propuesta final directamente al teléfono de tu cliente con un solo clic. Sé el primero y gana la obra.</p>
     </div>
   </section>
 
@@ -729,6 +855,14 @@
       <summary>¿Puedo cotizar desde la obra o necesito una computadora?</summary>
       <div class="faq-content">Structa está en la nube. Puedes tomarle una foto al plano con tu celular en medio de la obra, generar el PDF y enviárselo al cliente por WhatsApp antes de siquiera subirte a tu vehículo para volver a casa.</div>
     </details>
+  </section>
+
+  <section class="cta-section">
+    <div class="cta-section-content">
+      <h2>Cobra lo que tu trabajo realmente vale.</h2>
+      <p>Únete a los profesionales que ya están cerrando tratos más grandes, más rápido y con menos esfuerzo.</p>
+      <a href="register.html" class="btn btn-large">Comenzar ahora</a>
+    </div>
   </section>
 
   <footer>
