@@ -53,6 +53,46 @@
       50% { opacity: 0.8; transform: scale(1.05); }
     }
 
+    /* --- NUEVAS ANIMACIONES UI/UX --- */
+    @keyframes animatedGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes problemPulseGlow {
+      0%, 100% { box-shadow: 0 0 15px rgba(139, 92, 246, 0); border-color: rgba(139, 92, 246, 0.2); }
+      50% { box-shadow: 0 0 35px rgba(45, 212, 191, 0.25); border-color: rgba(45, 212, 191, 0.6); }
+    }
+
+    @keyframes pulseBtn {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
+      70% { transform: scale(1.03); box-shadow: 0 0 0 15px rgba(139, 92, 246, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+    }
+
+    .text-gradient-animated {
+      background: linear-gradient(270deg, #F59E0B, #8B5CF6, #2DD4BF, #F59E0B);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: animatedGradient 4s ease infinite;
+      display: inline-block;
+    }
+
+    /* Scroll Reveal */
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.5, 0, 0, 1), transform 0.8s cubic-bezier(0.5, 0, 0, 1);
+    }
+    
+    .reveal-up.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* --- NAVEGACIÓN --- */
     nav {
       display: flex;
@@ -188,9 +228,14 @@
       overflow: hidden;
     }
 
+    .btn-pulse {
+      animation: pulseBtn 2.5s infinite;
+    }
+
     .btn:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 15px 35px rgba(139, 92, 246, 0.5), 0 0 20px rgba(45, 212, 191, 0.4);
+      animation-play-state: paused;
+      transform: translateY(-4px) !important;
+      box-shadow: 0 15px 35px rgba(139, 92, 246, 0.5), 0 0 20px rgba(45, 212, 191, 0.4) !important;
       border-color: var(--cyan-glow);
     }
     
@@ -208,22 +253,13 @@
       background: var(--glass-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(239, 68, 68, 0.15); /* Reddish tint for pain */
+      border: 1px solid rgba(139, 92, 246, 0.2); 
       border-radius: 20px;
       text-align: center;
       opacity: 0;
-      animation: fadeUp 0.8s ease-out forwards;
+      animation: fadeUp 0.8s ease-out forwards, problemPulseGlow 3s infinite alternate;
       animation-delay: 0.4s;
       position: relative;
-      overflow: hidden;
-    }
-    
-    .problem-section::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #F87171, #EF4444);
     }
 
     .problem-section h2 {
@@ -232,13 +268,6 @@
       margin-bottom: 25px;
       color: var(--text-main);
       line-height: 1.25;
-    }
-
-    .problem-section h2 span {
-      background: linear-gradient(135deg, #FEF08A 0%, #F59E0B 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
 
     .problem-section p {
@@ -267,15 +296,12 @@
       border-radius: 20px;
       border: 1px solid var(--border-glass);
       transition: all 0.4s ease;
-      opacity: 0;
-      animation: fadeUp 0.8s ease-out forwards;
-      animation-delay: 0.5s;
       position: relative;
       overflow: hidden;
     }
 
     .feature:hover {
-      transform: translateY(-8px);
+      transform: translateY(-8px) !important; /* Override reveal-up.active transform */
       background: rgba(22, 32, 68, 0.8);
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.15);
       border-color: rgba(139, 92, 246, 0.3);
@@ -566,7 +592,7 @@
     }
     
     .testimonial-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-5px) !important; /* Override active reveal transform */
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.15);
       border-color: rgba(139, 92, 246, 0.4);
     }
@@ -736,7 +762,7 @@
     <div class="badge">🚀 La ventaja injusta de los contratistas modernos.</div>
     <h1>Deja de perder proyectos por culpa de presupuestos <span>aburridos en Excel.</span></h1>
     <p>Pasa de un simple plano 2D a un Render Arquitectónico 3D y un presupuesto PDF impecable en menos de 5 minutos. Envíalo por WhatsApp antes de que tu competencia termine de sacar la calculadora.</p>
-    <a href="register.html" class="btn">🔥 Crear mi primera propuesta gratis</a>
+    <a href="register.html" class="btn btn-pulse">🔥 Crear mi primera propuesta gratis</a>
 
     <div class="hero-demo-wrapper">
       <div class="mac-window">
@@ -766,19 +792,19 @@
   </header>
 
   <section class="problem-section">
-    <h2>El cliente moderno no entiende de planos. <br><span>Entiende de resultados.</span></h2>
+    <h2>El cliente moderno no entiende de planos. <br><span class="text-gradient-animated">Entiende de resultados.</span></h2>
     <p>¿Cuántas horas no pagadas pasas armando cotizaciones para que el cliente termine eligiendo a otro "porque se veía más profesional"? Structa nivela el campo de juego. Te damos las herramientas de una firma de arquitectura de primer nivel, en la palma de tu mano.</p>
   </section>
 
   <section class="features">
-    <div class="feature">
+    <div class="feature reveal-up" style="transition-delay: 0.1s;">
       <div class="feature-graphic">
          <div class="graphic-blueprint"></div>
       </div>
       <h3>✨ El Efecto "WOW" Instantáneo</h3>
       <p>Sube tu plano. Nuestra IA estricta lo transforma en un diseño 3D hiperrealista respetando cada espacio. Que tu cliente vea su sueño hecho realidad antes de pagar el anticipo.</p>
     </div>
-    <div class="feature">
+    <div class="feature reveal-up" style="transition-delay: 0.3s;">
       <div class="feature-graphic">
          <div class="graphic-bars">
              <div class="bar-row">
@@ -798,7 +824,7 @@
       <h3>💼 Cotizaciones que Exigen Respeto</h3>
       <p>Calcula tus costos al centavo. Structa empaqueta tus números en un PDF elegante y profesional almacenado de forma segura en la nube.</p>
     </div>
-    <div class="feature">
+    <div class="feature reveal-up" style="transition-delay: 0.5s;">
       <div class="feature-graphic">
          <div class="graphic-compare">
              <div class="comp-half comp-std">Presupuesto</div>
@@ -811,25 +837,25 @@
   </section>
 
   <section class="testimonials-section">
-    <div class="testimonials-header">
+    <div class="testimonials-header reveal-up">
       <h2>Profesionales que ya cierran más tratos <span>están diciendo:</span></h2>
     </div>
     <div class="testimonials-grid">
-      <div class="testimonial-card">
+      <div class="testimonial-card reveal-up" style="transition-delay: 0.1s;">
         <div>
           <div class="stars">★★★★★</div>
           <div class="testimonial-text">"Antes perdía mis noches haciendo presupuestos en Excel. Ahora los saco desde mi celular en la obra. Increíble."</div>
         </div>
         <div class="testimonial-author">— Roberto M., Contratista General</div>
       </div>
-      <div class="testimonial-card">
+      <div class="testimonial-card reveal-up" style="transition-delay: 0.3s;">
         <div>
           <div class="stars">★★★★★</div>
           <div class="testimonial-text">"La calidad del render fotorrealista me ayudó a cerrar una remodelación de $15,000 dólares ayer. El cliente quedó impresionado."</div>
         </div>
         <div class="testimonial-author">— Carlos V., Arquitecto Independiente</div>
       </div>
-      <div class="testimonial-card">
+      <div class="testimonial-card reveal-up" style="transition-delay: 0.5s;">
         <div>
           <div class="stars">★★★★★</div>
           <div class="testimonial-text">"Poder poner mi propio logo en el PDF hace que mi pequeña empresa se vea como una constructora gigante."</div>
@@ -840,28 +866,28 @@
   </section>
 
   <section class="faq-section">
-    <div class="faq-header">
+    <div class="faq-header reveal-up">
       <h2>Preguntas Frecuentes</h2>
     </div>
-    <details>
+    <details class="reveal-up" style="transition-delay: 0.1s;">
       <summary>¿Cuánto tiempo real me ahorra Structa por proyecto?</summary>
       <div class="faq-content">En lugar de pasar horas haciendo cálculos matemáticos en Excel después del trabajo, Structa extrae las medidas y genera el presupuesto completo en menos de 30 segundos. Recupera tus noches.</div>
     </details>
-    <details>
+    <details class="reveal-up" style="transition-delay: 0.2s;">
       <summary>¿Cómo me ayuda esto a ganar más contratos?</summary>
       <div class="faq-content">La primera impresión vende. Entregar al instante un PDF fotorrealista con el desglose exacto de las habitaciones y el logo de tu propia empresa te posiciona como un profesional de alto nivel, generando confianza inmediata en el cliente.</div>
     </details>
-    <details>
+    <details class="reveal-up" style="transition-delay: 0.3s;">
       <summary>¿Puedo cotizar desde la obra o necesito una computadora?</summary>
       <div class="faq-content">Structa está en la nube. Puedes tomarle una foto al plano con tu celular en medio de la obra, generar el PDF y enviárselo al cliente por WhatsApp antes de siquiera subirte a tu vehículo para volver a casa.</div>
     </details>
   </section>
 
   <section class="cta-section">
-    <div class="cta-section-content">
+    <div class="cta-section-content reveal-up">
       <h2>Cobra lo que tu trabajo realmente vale.</h2>
       <p>Únete a los profesionales que ya están cerrando tratos más grandes, más rápido y con menos esfuerzo.</p>
-      <a href="register.html" class="btn btn-large">Comenzar ahora</a>
+      <a href="register.html" class="btn btn-large btn-pulse">Comenzar ahora</a>
     </div>
   </section>
 
@@ -870,5 +896,26 @@
     © 2026 Structa — Convierte Planos en Contratos Rápidamente.
   </footer>
 
+  <!-- SCROLL REVEAL SCRIPT -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const reveals = document.querySelectorAll(".reveal-up");
+      
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        root: null,
+        rootMargin: "0px 0px -50px 0px", // Tiggers slightly before reaching bottom
+        threshold: 0.1
+      });
+
+      reveals.forEach(el => observer.observe(el));
+    });
+  </script>
 </body>
 </html>
