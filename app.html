@@ -860,7 +860,7 @@
                             .from('presupuestos')
                             .upload(`public/${pdfFilename}`, blob, {
                                 contentType: 'application/pdf',
-                                upsert: false
+                                upsert: true
                             });
                             
                         if (!uploadError) {
@@ -870,10 +870,10 @@
                             
                             window.currentPdfPublicUrl = publicUrl;
                         } else {
-                            console.error("Storage Upload Error:", uploadError);
+                            console.error("ERROR REAL DE SUPABASE: ", uploadError.message || uploadError);
                         }
                     } catch (e) {
-                         console.error("Excepción en Storage:", e);
+                         console.error("ERROR REAL DE SUPABASE: ", e.message || e);
                     }
 
                     // Guardado Silencioso de Presupuesto en BD
