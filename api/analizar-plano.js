@@ -84,13 +84,7 @@ export default async function handler(req, res) {
           qualityPromptStr = "buenos materiales, diseño moderno, acabados de calidad";
         }
 
-        const baseImagePrompt = `Transforma este plano de planta 2D exacto en un render arquitectónico 3D isométrico premium.
-REGLAS CRÍTICAS Y ABSOLUTAS DE CUMPLIMIENTO OBLIGATORIO:
-FIDELIDAD ESTRUCTURAL: Eres un inspector estricto. Construye las paredes interiores y exteriores EXACTAMENTE donde las líneas del plano lo indican. No elimines ninguna pared cerrada ni crees espacios abiertos si el plano muestra habitaciones separadas.
-CERO INVENTOS: PROHIBIDO añadir muebles, personas, plantas o decoración que no estén dibujados explícitamente en el plano.
-ESPACIOS VACÍOS: Si una zona (como una Planta Abierta) no tiene muebles dibujados, déjala 100% VACÍA, con un piso pulido y limpio.
-CANTIDADES EXACTAS: Si el plano muestra 1 solo inodoro, renderiza 1 solo inodoro. Si muestra 1 mesa, renderiza 1 mesa.
-ESTILO VISUAL: Acabado hiperrealista, iluminación de estudio profesional, texturas de alta calidad (madera, concreto, vidrio). El objetivo es una presentación formal para un cliente.`;
+        const baseImagePrompt = `Actúa como un diseñador de interiores premium y arquitecto. Transforma este plano 2D en un render 3D isométrico de lujo en alta definición. Tienes libertad creativa para proponer una distribución de mobiliario elegante, iluminación de estudio y texturas de alta gama para enamorar al cliente (este es un Boceto de Inspiración). SIN EMBARGO, debes mantener la lógica arquitectónica básica: NO elimines paredes estructurales, los baños DEBEN estar siempre en recintos cerrados con paredes completas, y respeta la distribución general de las habitaciones.`;
 
         const contextStr = `Mapeo estructural obligatorio detectado en la imagen: Espacio de tipo ${tipo}. Habitaciones totales exactas: ${habitaciones}. Baños totales exactos: ${banos}. Dimensiones del proyecto: ${largo}m x ${ancho}m. Acabados solicitados por nivel de calidad: ${qualityPromptStr}.`;
         
