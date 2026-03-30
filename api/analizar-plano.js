@@ -84,12 +84,22 @@ export default async function handler(req, res) {
           qualityPromptStr = "buenos materiales, diseño moderno, acabados de calidad";
         }
 
+        const baseImagePrompt = `Transforma este plano de planta 2D exacto en un render arquitectónico 3D isométrico premium.
+REGLAS CRÍTICAS Y ABSOLUTAS DE CUMPLIMIENTO OBLIGATORIO:
+FIDELIDAD ESTRUCTURAL: Eres un inspector estricto. Construye las paredes interiores y exteriores EXACTAMENTE donde las líneas del plano lo indican. No elimines ninguna pared cerrada ni crees espacios abiertos si el plano muestra habitaciones separadas.
+CERO INVENTOS: PROHIBIDO añadir muebles, personas, plantas o decoración que no estén dibujados explícitamente en el plano.
+ESPACIOS VACÍOS: Si una zona (como una Planta Abierta) no tiene muebles dibujados, déjala 100% VACÍA, con un piso pulido y limpio.
+CANTIDADES EXACTAS: Si el plano muestra 1 solo inodoro, renderiza 1 solo inodoro. Si muestra 1 mesa, renderiza 1 mesa.
+ESTILO VISUAL: Acabado hiperrealista, iluminación de estudio profesional, texturas de alta calidad (madera, concreto, vidrio). El objetivo es una presentación formal para un cliente.`;
+
+        const contextStr = `Mapeo estructural obligatorio detectado en la imagen: Espacio de tipo ${tipo}. Habitaciones totales exactas: ${habitaciones}. Baños totales exactos: ${banos}. Dimensiones del proyecto: ${largo}m x ${ancho}m. Acabados solicitados por nivel de calidad: ${qualityPromptStr}.`;
+        
         const dallePayload = {
           model: "dall-e-3",
-          prompt: `An orthographic top-down, strictly 2D textured floor plan maquette of a single-story residential home (${tipo}). A textured architectural model mirroring the exact wall placements, room dimensions, door and window locations, and furniture arrangement of the uploaded floor plan. Focus as much as possible on structural fidelity. DEBE TENER EXACTAMENTE ${habitaciones} HABITACIONES, ${banos} BAÑOS, UNA SALA, UN COMEDOR Y UNA COCINA. The view must be perfectly straight down (2D orthogonal), with no elevated walls, no second floors, and no 3D perspective. Mantén un estilo espectacular con texturas realistas y cálidas: ${qualityPromptStr}, todo visto estrictamente en plano. RESTRICCIÓN CRÍTICA: Prohibido añadir elementos externos, escaleras o patios adicionales que no estén en el plano. CRITICAL: DO NOT include any text, letters, measurements, or numbers in the image. Purely visual textured 2D art. The space represents roughly ${largo}m by ${ancho}m.`,
+          prompt: `${baseImagePrompt}\n\n${contextStr}`,
           n: 1,
           size: "1024x1024",
-          quality: "standard"
+          quality: "hd"
         };
         const dalleResponse = await fetch("https://api.openai.com/v1/images/generations", {
           method: "POST",
