@@ -871,9 +871,15 @@
                             window.currentPdfPublicUrl = publicUrl;
                         } else {
                             console.error("ERROR REAL DE SUPABASE: ", uploadError.message || uploadError);
+                            errorBox.innerHTML = `<strong>Error de Supabase (Upload):</strong> ${uploadError.message || JSON.stringify(uploadError)}`;
+                            errorBox.style.display = 'block';
+                            setTimeout(() => { errorBox.style.display = 'none'; }, 20000);
                         }
                     } catch (e) {
                          console.error("ERROR REAL DE SUPABASE: ", e.message || e);
+                         errorBox.innerHTML = `<strong>Excepción de Supabase (Try/Catch):</strong> ${e.message || JSON.stringify(e)}`;
+                         errorBox.style.display = 'block';
+                         setTimeout(() => { errorBox.style.display = 'none'; }, 20000);
                     }
 
                     // Guardado Silencioso de Presupuesto en BD

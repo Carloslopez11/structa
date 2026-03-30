@@ -25,11 +25,12 @@ export default async function handler(req, res) {
       qualityPromptStr = 'Visual Style: Realistic standard interior. Basic white ceramic toilet and sink, standard white tile floor, plain painted walls, bright daylight lighting.';
     }
 
-    const architecturalBase = `Create a high-definition isometric 3D architectural cutaway of a ${projectContext || 'interior space'}. The room MUST have a solid floor slab and two visible walls. STRICT GEOMETRY: ${JSON.stringify(spatialDescription)}. Do NOT hallucinate extra doors or toilets. Strictly ONE of each item.`;
+    const negativeConstraints = `CRITICAL RULE: NEVER hallucinate or add any furniture, decorations, doors, or windows that are not explicitly provided in the input JSON. If a space is empty in the input, leave it completely empty. Maintain a hyper-realistic, strict architectural visualization style. Professional and clean.`;
+    const architecturalBase = `Create a high-definition isometric 3D architectural cutaway of a ${projectContext || 'interior space'}. The room MUST have a solid floor slab and two visible walls. STRICT GEOMETRY: ${JSON.stringify(spatialDescription)}. Strictly ONLY use provided items.`;
     const grabBarsPrecision = `CRITICAL: If the list includes grab bars (barras de apoyo), they MUST be metallic and attached directly to the wall immediately next to and behind the toilet. Do not scatter them like towel racks.`;
     const textsConstraint = `Keep text labels minimal and highly legible. Only write explicit dimensions like "0.80m" and "PCD".`;
 
-    const prompt = `${architecturalBase} ${grabBarsPrecision} ${qualityPromptStr} ${textsConstraint}`;
+    const prompt = `${architecturalBase} ${negativeConstraints} ${grabBarsPrecision} ${qualityPromptStr} ${textsConstraint}`;
 
     const dallePayload = {
       model: "dall-e-3",
