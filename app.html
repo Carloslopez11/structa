@@ -368,44 +368,41 @@
 <body>
 
     <div class="copywriting-header">
-        <h2>Genera presupuestos precisos en segundos.</h2>
-        <p>Sube de nivel tu negocio, cierra más ventas y olvídate del papeleo manual.</p>
+        <h2 data-i18n="app_h2">Generate accurate quotes in seconds.</h2>
+        <p data-i18n="app_p">Level up your business, close more deals, and skip the manual paperwork.</p>
     </div>
 
     <div class="container">
         <!-- Navegación y estado de autenticación -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
             <div style="font-weight:600; color:var(--text-muted); font-size: 0.9rem;">
-                Usuario: <span id="userEmailLabel" style="color:white; font-weight:700;">-</span>
+                <span data-i18n="app_user_label">User:</span> <span id="userEmailLabel" style="color:white; font-weight:700;">-</span>
             </div>
             <div style="display:flex; gap:10px;">
-                <button onclick="abrirHistorial()" style="background: rgba(124, 58, 237, 0.1); color: #a78bfa; border: 1px solid rgba(124, 58, 237, 0.3); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.1);">Ver mi Historial</button>
-                <button onclick="handleLogout()" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.1);">Cerrar Sesión</button>
+                <button onclick="abrirHistorial()" style="background: rgba(124, 58, 237, 0.1); color: #a78bfa; border: 1px solid rgba(124, 58, 237, 0.3); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.1);" data-i18n="btn_view_history">View my History</button>
+                <button onclick="handleLogout()" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.1);" data-i18n="btn_logout">Log Out</button>
             </div>
         </div>
 
-        <h1>Create <span>Premium</span> Quote</h1>
+        <h1 data-i18n="app_h1_quote">Create <span>Premium</span> Quote</h1>
 
-        <!-- Formulario (Hidden input para guardar el email verificado de Netlify) -->
         <input id="email" type="hidden">
 
-        <label>Company Logo (Pro Plan Only)</label>
+        <label data-i18n="label_logo">Company Logo (Pro Plan Only)</label>
         <input type="file" id="logoUpload" accept="image/*">
 
-        <label>From (Company)</label> <input id="company" placeholder="Structa Inc.">
-        <label>To (Client)</label> <input id="client" placeholder="Client Name">
-        <label>Description</label> <input id="work" placeholder="Service description">
+        <label data-i18n="label_company">From (Company)</label> <input id="company" placeholder="Structa Inc." data-i18n-placeholder="ph_company">
+        <label data-i18n="label_client">To (Client)</label> <input id="client" placeholder="Client Name" data-i18n-placeholder="ph_client">
+        <label data-i18n="label_work">Description</label> <input id="work" placeholder="Service description" data-i18n-placeholder="ph_work">
 
-        <label>Calidad de Acabados</label> 
+        <label data-i18n="label_quality">Finish Quality</label> 
         <select id="quality">
-            <option value="Estándar">Estándar</option>
-            <option value="Medio">Medio</option>
-            <option value="Lujo">Lujo</option>
+            <option value="Estándar" data-i18n="opt_std">Standard</option>
+            <option value="Medio" data-i18n="opt_med">Medium</option>
+            <option value="Lujo" data-i18n="opt_lux">Luxury</option>
         </select>
 
-
-
-        <label>Extraer Materiales desde PDF/Imagen (Avanzado)</label>
+        <label data-i18n="label_pdf_upload">Extract Materials from PDF/Image (Advanced)</label>
         <div class="ai-upload-zone" id="pdfUploadZone" onclick="document.getElementById('pdfFileInput').click()" style="border-color: #f59e0b; background: rgba(245, 158, 11, 0.05);">
             <input type="file" id="pdfFileInput" accept="application/pdf,image/*" style="display:none;" onchange="handlePDFUpload(this)">
             <div class="ai-upload-content" id="pdfUploadContent">
@@ -416,47 +413,47 @@
                     <line x1="16" y1="17" x2="8" y2="17"></line>
                     <polyline points="10 9 9 9 8 9"></polyline>
                 </svg>
-                <p>Sube tu plano en PDF (Lista de Materiales)</p>
+                <p data-i18n="upload_pdf_drop">Upload your blueprint PDF (Materials List)</p>
             </div>
         </div>
 
         <div id="renderProjectContainer" style="display: none; margin-bottom: 20px; animation: fadeUp 0.8s ease-out forwards; animation-delay: 0.1s;">
-            <label style="display: block; margin-bottom: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Visualización del Proyecto</label>
+            <label style="display: block; margin-bottom: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;" data-i18n="label_proj_visual">Project Visualization</label>
             <div style="background: rgba(124, 58, 237, 0.05); border: 1px solid rgba(124, 58, 237, 0.4); border-radius: 16px; padding: 15px; text-align: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                <img id="renderImage" src="" alt="Render arquitectónico" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); object-fit: cover; display: block;" />
+                <img id="renderImage" src="" alt="Architectural Render" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); object-fit: cover; display: block;" />
                 <div style="margin-top: 15px; display: flex; justify-content: space-around; font-size: 0.95rem; font-weight: 600; color: #fff;">
-                    <div>Largo: <span id="renderLargo" style="color: var(--purple);">0</span> m</div>
-                    <div>Ancho: <span id="renderAncho" style="color: var(--purple);">0</span> m</div>
+                    <div><span data-i18n="lbl_len">Length:</span> <span id="renderLargo" style="color: var(--purple);">0</span> m</div>
+                    <div><span data-i18n="lbl_wid">Width:</span> <span id="renderAncho" style="color: var(--purple);">0</span> m</div>
                 </div>
                 <div style="margin-top: 15px; padding: 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; font-size: 0.8rem; color: var(--text-muted); text-align: left; line-height: 1.5; display: flex; gap: 8px; align-items: flex-start;">
                     <span style="font-size: 1rem; line-height: 1.2;">💡</span>
-                    <span><strong>Nota Técnica:</strong> Los bocetos 3D se generan utilizando una vista arquitectónica de corte transversal (eliminando estratégicamente paredes frontales y techos). Esto garantiza la visibilidad total de los espacios interiores cerrados (como baños y oficinas privadas) en la presentación para tu cliente.</span>
+                    <span><strong data-i18n="lbl_tech_note">Technical Note:</strong> <span data-i18n="txt_tech_note">3D sketches are generated using an architectural cross-section view (strategically removing front walls and ceilings). This guarantees full visibility of enclosed interior spaces (like bathrooms and private offices) for your client presentation.</span></span>
                 </div>
             </div>
         </div>
 
         <div style="display:flex; gap:15px;" id="manualDimensions">
-            <div style="flex:1"><label>Length (m)</label><input id="length" type="number" step="0.01" placeholder="0">
+            <div style="flex:1"><label data-i18n="lbl_input_len">Length (m)</label><input id="length" type="number" step="0.01" placeholder="0">
             </div>
-            <div style="flex:1"><label>Width (m)</label><input id="width" type="number" step="0.01" placeholder="0">
+            <div style="flex:1"><label data-i18n="lbl_input_wid">Width (m)</label><input id="width" type="number" step="0.01" placeholder="0">
             </div>
         </div>
         
         <div id="roomsContainer" style="display:none; margin-bottom: 20px;">
-            <label style="display: block; margin-bottom: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Desglose por Espacios</label>
+            <label style="display: block; margin-bottom: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;" data-i18n="lbl_room_breakdown">Room Breakdown</label>
             <div id="roomsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
         </div>
         
         <div id="materialsContainer" style="display:none; margin-bottom: 20px;">
-            <label style="display: block; margin-bottom: 10px; font-weight: 700; color: #f59e0b; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Materiales y Accesorios Extraídos</label>
+            <label style="display: block; margin-bottom: 10px; font-weight: 700; color: #f59e0b; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;" data-i18n="lbl_materials_ext">Extracted Materials & Fixtures</label>
             <div id="materialsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
         </div>
         <div id="globalPriceContainer">
-            <label>Price per m² ($)</label> <input id="price" type="number" step="0.01" placeholder="0.00">
+            <label data-i18n="lbl_price_m2">Price per m² ($)</label> <input id="price" type="number" step="0.01" placeholder="0.00">
         </div>
 
         <div class="preview-box" id="previewContainer">
-            <div style="font-size:12px;color:var(--text-muted)">ESTIMATED TOTAL</div>
+            <div style="font-size:12px;color:var(--text-muted)" data-i18n="lbl_est_total">ESTIMATED TOTAL</div>
             <div class="total-amount" id="previewTotal">$0.00</div>
             <div style="font-size:12px;color:var(--text-muted)" id="previewArea">0 m²</div>
         </div>
@@ -551,23 +548,21 @@
 
         <div id="errorBox" class="error-msg"></div>
 
-            <button class="btn-action" id="generateRenderBtn" onclick="generarRenderMateriales()" style="width: 100%; padding: 18px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4); text-transform: uppercase; transition: transform 0.2s, box-shadow 0.2s; display: none;">🎨 Generar Boceto Conceptual Premium</button>
-            <button class="btn-pay" id="generateBtn" onclick="generateInvoice()" style="margin-bottom: 0;">Generate PDF Invoice</button>
+            <button class="btn-action" id="generateRenderBtn" onclick="generarRenderMateriales()" style="width: 100%; padding: 18px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4); text-transform: uppercase; transition: transform 0.2s, box-shadow 0.2s; display: none;" data-i18n="btn_gen_render">🎨 Generate Premium Inspiration Sketch</button>
+            <button class="btn-pay" id="generateBtn" onclick="generateInvoice()" style="margin-bottom: 0;" data-i18n="btn_gen_pdf">Generate PDF Invoice</button>
             <div id="socialShareContainer" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
-                <button onclick="shareWhatsApp()" style="background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Compartir por WhatsApp
+                <button onclick="shareWhatsApp()" style="background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;" data-i18n="btn_share_wa">
+                    <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Share via WhatsApp
                 </button>
-                <button onclick="shareEmail()" style="background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    ✉️ Enviar por Correo
+                <button onclick="shareEmail()" style="background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;" data-i18n="btn_share_email">
+                    ✉️ Send via Email
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- UI DEL ROBOT -->
     <div class="robot-container">
-        <div class="robot-bubble" id="robotMessage">Hello! I'm Structy. I'm here to help you create your first
-            professional quote!</div>
+        <div class="robot-bubble" id="robotMessage">Welcome to Structa! 🚀 Upload your 2D floor plan below and let's create a Premium Inspiration Sketch to wow your client.</div>
         <div class="robot-icon" onclick="pokeRobot()">
             <div class="robot-eyes">
                 <div class="robot-eye"></div>
@@ -582,7 +577,7 @@
         let currentTimeout;
 
         function speak(text, duration = 5000) {
-            robotMessage.textContent = text;
+            robotMessage.innerHTML = text;
             robotMessage.classList.add('visible');
             if (currentTimeout) clearTimeout(currentTimeout);
             currentTimeout = setTimeout(() => {
@@ -611,7 +606,7 @@
             // Si el usuario está validado de forma segura, inicializamos la UI:
             document.getElementById('email').value = session.user.email;
             document.getElementById('userEmailLabel').textContent = session.user.email;
-            setTimeout(() => speak(`Welcome back! Let's create your quote.`, 6000), 1000);
+            setTimeout(() => speak(`Welcome to Structa! 🚀 Upload your 2D floor plan below and let's create a Premium Inspiration Sketch to wow your client.`, 8000), 1000);
         });
 
         async function handleLogout() {
@@ -643,12 +638,12 @@
         // --- RENDER 3D DESDE MATERIALES ---
         async function generarRenderMateriales() {
             if (!window.currentSpatialDescription) {
-                alert("Primero debes subir un plano para mapear la distribución espacial.");
+                alert("You must upload a blueprint first to map the spatial layout.");
                 return;
             }
 
             const btn = document.getElementById('generateRenderBtn');
-            btn.textContent = "Generando Render...";
+            btn.textContent = "Generating Sketch...";
             btn.disabled = true;
             
             const qualitySelect = document.getElementById('quality');
@@ -667,7 +662,19 @@
                 renderImage.src = 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExdW5pOTQ2dWlpamJza2J4ZHBkMWxjMnN2cGtxZGN2MDhlNWg0ZnkwZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7bu3XilJ5BOiSGic/giphy.gif';
             }
 
-            if (typeof speak === "function") speak("Creando el Boceto de Inspiración Premium 3D. ¡Esto puede tardar unos segundos!", 7000);
+            const processingTexts = [
+                "Analyzing architectural layout...",
+                "Applying premium textures and lighting...",
+                "Finalizing your Inspiration Sketch..."
+            ];
+            let ptIndex = 0;
+            if (typeof speak === "function") {
+                speak(processingTexts[0], 4000);
+                window.renderInterval = setInterval(() => {
+                    ptIndex = (ptIndex + 1) % processingTexts.length;
+                    speak(processingTexts[ptIndex], 4000);
+                }, 3500);
+            }
 
             try {
                 const response = await fetch('/api/generar-render', {
@@ -685,16 +692,20 @@
                 if (data.renderUrl) {
                     window.currentRenderUrl = data.renderUrl;
                     if (renderImage) renderImage.src = data.renderUrl;
-                    if (typeof speak === "function") speak("¡Render espectacular completado!", 5000);
+                    if (window.renderInterval) clearInterval(window.renderInterval);
+                    if (typeof speak === "function") {
+                        speak(`Boom! 💥 Sketch ready. Send it via WhatsApp and close the deal! (<a href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" style="color:var(--purple);font-weight:bold;text-decoration:underline;pointer-events:auto;">Upgrade to Pro</a> for unlimited renders).`, 8000);
+                    }
                 } else {
-                    throw new Error("No se devolvió un link de imagen.");
+                    throw new Error("No image link was returned.");
                 }
             } catch (error) {
+                if (window.renderInterval) clearInterval(window.renderInterval);
                 console.error("Render Generation Error:", error);
-                alert("Falló la generación del render: " + error.message);
+                alert("Failed to generate sketch: " + error.message);
                 if (renderImage) renderImage.src = '';
             } finally {
-                btn.textContent = "🎨 Generar Boceto Conceptual Premium";
+                btn.textContent = "🎨 Generate Premium Inspiration Sketch";
                 btn.disabled = false;
             }
         }
@@ -715,8 +726,8 @@
             const totalAmount = parseFloat(totalText.replace(/[^0-9.-]+/g, "")) || 0;
 
             if (totalAmount === 0 || !l || !w) {
-                if (typeof speak === 'function') speak("Por favor ingrese las medidas del proyecto.", 6000);
-                errorBox.innerHTML = `El Total no puede ser $0 y las medidas de Largo y Ancho son obligatorias.`;
+                if (typeof speak === 'function') speak("Please enter the project dimensions.", 6000);
+                errorBox.innerHTML = `The Total cannot be $0 and the Length and Width dimensions are required.`;
                 errorBox.style.display = 'block';
                 return;
             }
@@ -944,7 +955,7 @@
                     paymentPollTimer = null;
                     closePaywall();
                     document.getElementById('errorBox').style.display = 'none';
-                    speak("¡Felicidades! Ahora eres usuario PRO. Generando tu cotización sin límites...", 6000);
+                    speak("Congratulations! You are now a PRO user. Generating your quote without limits...", 6000);
                     setTimeout(() => generateInvoice(), 1000);
                 }
             }, 3000);
@@ -969,7 +980,7 @@
             content.innerHTML = `
                 <img src="${imageSrc}" class="ai-preview-img">
                 <div class="ai-loading-spinner"></div>
-                <p style="color: var(--purple); font-weight: 600;">Extrayendo medidas y generando render 3D hiperrealista...</p>
+                <p style="color: var(--purple); font-weight: 600;" data-i18n="ai_loading_render">Extracting measurements and generating Premium 3D Sketch...</p>
             `;
             zone.style.borderColor = "var(--purple)";
             zone.style.background = "rgba(124, 58, 237, 0.08)";
@@ -1001,7 +1012,7 @@
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
-                    <p style="color: #10b981; font-weight: 600; font-size: 1.05rem;">¡Análisis y renderizado completados con éxito!</p>
+                    <p style="color: #10b981; font-weight: 600; font-size: 1.05rem;" data-i18n="ai_success_render">Analysis and sketch rendering completed successfully!</p>
                 `;
                 zone.style.borderColor = "#10b981";
                 zone.style.background = "rgba(16, 185, 129, 0.08)";
@@ -1073,7 +1084,7 @@
                 widInput.dispatchEvent(new Event('input'));
                 
                 if (typeof speak === "function") {
-                    speak("¡Excelente! He analizado el plano y generado una visualización 3D. El cálculo se ha actualizado.", 6000);
+                    speak("Excellent! I analyzed the blueprint and mapped the layout. The estimate has been updated.", 6000);
                 }
             } catch (error) {
                 console.error("AI Analysis Error:", error);
@@ -1085,13 +1096,13 @@
                         <line x1="12" y1="8" x2="12" y2="12"></line>
                         <line x1="12" y1="16" x2="12.01" y2="16"></line>
                     </svg>
-                    <p style="color: #ef4444; font-weight: 600;">No pude detectar los números. Por favor, sube una imagen más clara.</p>
+                    <p style="color: #ef4444; font-weight: 600;" data-i18n="ai_err_num">I couldn't detect any dimensions. Please upload a clearer image.</p>
                 `;
                 zone.style.borderColor = "#ef4444";
                 zone.style.background = "rgba(239, 68, 68, 0.05)";
                 
                 if (typeof speak === "function") {
-                    speak("Mmm... La imagen no es del todo clara para extraer medidas automáticamente. ¿Intentamos con otra?", 7000);
+                    speak("Hmm... The image isn't clear enough for me to extract measurements automatically. Let's try another one.", 7000);
                 }
             }
         }
@@ -1104,7 +1115,7 @@
                 
                 content.innerHTML = `
                     <div class="ai-loading-spinner" style="border-top-color: #f59e0b;"></div>
-                    <p id="pdfLoadingText" style="color: #f59e0b; font-weight: 600;">Paso 1: Convirtiendo PDF a imagen...</p>
+                    <p id="pdfLoadingText" style="color: #f59e0b; font-weight: 600;" data-i18n="pdf_load_1">Step 1: Converting PDF to image...</p>
                 `;
                 zone.style.borderColor = "#f59e0b";
                 zone.style.background = "rgba(245, 158, 11, 0.08)";
@@ -1142,7 +1153,7 @@
                     if (!imageBase64) throw new Error("Could not process file. Base64 is null.");
                     
                     const loadingText = document.getElementById('pdfLoadingText');
-                    if (loadingText) loadingText.textContent = "Paso 1: IA mapeando distribución espacial del plano...";
+                    if (loadingText) loadingText.textContent = "Step 2: AI mapping the spatial layout...";
                     
                     await simularAnalisisPDF(imageBase64);
 
@@ -1181,7 +1192,7 @@
                 }
 
                 const loadingText = document.getElementById('pdfLoadingText');
-                if (loadingText) loadingText.textContent = "Paso 3: Construyendo lista de materiales...";
+                if (loadingText) loadingText.textContent = "Step 3: Building materials list...";
 
                 const data = await response.json();
                 
@@ -1195,7 +1206,7 @@
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
-                    <p style="color: #f59e0b; font-weight: 600; font-size: 1.05rem;">¡Extracción de materiales completada!</p>
+                    <p style="color: #f59e0b; font-weight: 600; font-size: 1.05rem;" data-i18n="pdf_success_mat">Material extraction completed!</p>
                 `;
                 zone.style.borderColor = "#f59e0b";
                 zone.style.background = "rgba(245, 158, 11, 0.08)";
@@ -1233,7 +1244,7 @@
                 if (window.fireUpdate) window.fireUpdate();
                 
                 if (typeof speak === "function") {
-                    speak("He extraído la lista de materiales del plano. ¡Añade tu margen de coste y listos!", 6000);
+                    speak("I've extracted the materials list from the blueprint. Add your pricing and you're set!", 6000);
                 }
             } catch (error) {
                 console.error("AI Materials Error:", error);
@@ -1329,12 +1340,12 @@
 
         async function cargarHistorial() {
             const lista = document.getElementById('lista-historial');
-            lista.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">Cargando historial...</div>';
+            lista.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;" data-i18n="hist_loading">Loading history...</div>';
 
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 if (!user) {
-                    lista.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">Error: No estás logueado.</div>';
+                    lista.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;" data-i18n="hist_err_login">Error: You are not logged in.</div>';
                     return;
                 }
 
@@ -1347,7 +1358,7 @@
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-                    lista.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:30px; background:rgba(255,255,255,0.02); border-radius:12px; border:1px solid rgba(255,255,255,0.05);">Aún no tienes presupuestos guardados.</div>';
+                    lista.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:30px; background:rgba(255,255,255,0.02); border-radius:12px; border:1px solid rgba(255,255,255,0.05);" data-i18n="hist_empty">You do not have any saved quotes yet.</div>';
                     return;
                 }
 
@@ -1376,7 +1387,7 @@
                         <div style="display:flex; align-items:center;">
                             ${thumbnailHtml}
                             <div style="display:flex; flex-direction:column; gap:4px; text-align: left;">
-                                <div style="font-weight:600; color:white; font-size:1.05rem;">${item.cliente || 'Cotización Structa'}</div>
+                                <div style="font-weight:600; color:white; font-size:1.05rem;">${item.cliente || 'Structa Quote'}</div>
                                 <div style="color:var(--text-muted); font-size:0.85rem;">${formattedDate}</div>
                             </div>
                         </div>
@@ -1384,7 +1395,7 @@
                             <div style="font-weight:bold; color:var(--purple); font-size:1.2rem;">
                                 $${item.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </div>
-                            <button class="btn-abrir-historial" style="background: linear-gradient(135deg, #7c3aed, #5b21b6); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);">Abrir Presupuesto</button>
+                            <button class="btn-abrir-historial" style="background: linear-gradient(135deg, #7c3aed, #5b21b6); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);" data-i18n="hist_btn_open">Open Quote</button>
                         </div>
                     `;
                     
@@ -1394,7 +1405,7 @@
                         if (item.datos_completos) {
                             cargarPresupuestoEnCalculadora(item.datos_completos);
                         } else {
-                            if (typeof speak === 'function') speak("Este presupuesto no tiene memoria extendida.", 4000);
+                            if (typeof speak === 'function') speak("This quote does not have extended memory.", 4000);
                         }
                     };
                     
@@ -1403,7 +1414,7 @@
 
             } catch (err) {
                 console.error("Error al cargar historial:", err);
-                lista.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">Error al cargar el historial. Inténtalo de nuevo.</div>';
+                lista.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;" data-i18n="hist_err_load">Error loading history. Please try again.</div>';
             }
         }
 
@@ -1519,20 +1530,20 @@
                 window.fireUpdate();
             }
             if (typeof speak === "function") {
-                speak("¡Memoria activada! Presupuesto cargado y listo para editar.", 5000);
+                speak("Memory activated! Quote loaded and ready to edit.", 5000);
             }
         }
 
         function shareWhatsApp() {
-            if(!window.currentPdfPublicUrl) return alert("La nube aún está subiendo el archivo o hubo un error.");
-            const msg = `Hola, adjunto el presupuesto detallado y el boceto conceptual premium de su proyecto. Puede verlo aquí: ${window.currentPdfPublicUrl}`;
+            if(!window.currentPdfPublicUrl) return alert("The cloud is still uploading the file or an error occurred.");
+            const msg = `Hello, attached is the detailed quote and premium inspiration sketch for your project. You can view it here: ${window.currentPdfPublicUrl}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         function shareEmail() {
-            if(!window.currentPdfPublicUrl) return alert("La nube aún está subiendo el archivo o hubo un error.");
-            const subject = "Boceto Conceptual Premium y Presupuesto Profesional";
-            const body = `Hola,\n\nAdjunto el presupuesto detallado y el boceto conceptual premium de su proyecto.\n\nPuede verlo directamente aquí: ${window.currentPdfPublicUrl}\n\nQuedo atento.`;
+            if(!window.currentPdfPublicUrl) return alert("The cloud is still uploading the file or an error occurred.");
+            const subject = "Premium Inspiration Sketch & Professional Quote";
+            const body = `Hello,\n\nAttached is the detailed quote and premium inspiration sketch for your project.\n\nYou can view it directly here: ${window.currentPdfPublicUrl}\n\nI look forward to discussing it with you.`;
             window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
     </script>
@@ -1540,10 +1551,10 @@
     <!-- PAYWALL ROJO -->
     <div id="paywall" style="display:none; position:fixed; top:0; left:0; width:100%; height:100svh; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); padding: 20px; box-sizing: border-box; overflow-y:auto;">
         <div style="background:rgba(185, 28, 28, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding:40px 25px; border-radius:32px; border:1px solid rgba(252, 165, 165, 0.3); text-align:center; max-width:400px; width:100%; margin:auto; box-shadow:0 30px 60px rgba(239,68,68,0.3), inset 0 1px 0 rgba(255,255,255,0.1); box-sizing: border-box; display:flex; flex-direction:column;">
-            <h2 style="margin-top:0; margin-bottom: 15px; font-weight:800; font-size:2rem; color:white; letter-spacing: -0.5px;">LÍMITE ALCANZADO</h2>
-            <p style="color:#fecaca; margin-bottom:35px; font-size:1.1rem; line-height:1.6; font-weight: 400;">Has alcanzado tu límite de 3 cotizaciones gratis de este mes. Para continuar exportando y desbloquear todo, por favor actualízate a Pro.</p>
-            <a id="stripeLink" href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" style="display:block; width:100%; padding:22px 15px; margin-bottom:20px; background:linear-gradient(135deg, #ef4444, #b91c1c); color:white; border:none; border-radius:18px; font-size:1.2rem; font-weight:bold; cursor:pointer; text-decoration:none; box-sizing: border-box; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5), inset 0 1px 0 rgba(255,255,255,0.2);">¡Mejorar a Plan PRO ahora!</a>
-            <button onclick="closePaywall()" style="background:transparent; border:none; color:#fca5a5; cursor:pointer; font-size:1rem; font-weight:600; font-family:inherit; text-decoration:underline;">Quizás más tarde</button>
+            <h2 style="margin-top:0; margin-bottom: 15px; font-weight:800; font-size:2rem; color:white; letter-spacing: -0.5px;" data-i18n="pay_h2">LIMIT REACHED</h2>
+            <p style="color:#fecaca; margin-bottom:35px; font-size:1.1rem; line-height:1.6; font-weight: 400;" data-i18n="pay_p">You have reached your limit of 3 free quotes this month. To continue exporting and unlock everything, please upgrade to Pro.</p>
+            <a id="stripeLink" href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" style="display:block; width:100%; padding:22px 15px; margin-bottom:20px; background:linear-gradient(135deg, #ef4444, #b91c1c); color:white; border:none; border-radius:18px; font-size:1.2rem; font-weight:bold; cursor:pointer; text-decoration:none; box-sizing: border-box; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5), inset 0 1px 0 rgba(255,255,255,0.2);" data-i18n="pay_btn">Upgrade to PRO plan now!</a>
+            <button onclick="closePaywall()" style="background:transparent; border:none; color:#fca5a5; cursor:pointer; font-size:1rem; font-weight:600; font-family:inherit; text-decoration:underline;" data-i18n="pay_close">Maybe later</button>
         </div>
     </div>
 
@@ -1551,7 +1562,7 @@
     <div id="historialModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100svh; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); padding: 20px; box-sizing: border-box;">
         <div style="background:rgba(26, 26, 46, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding:30px 25px; border-radius:24px; border:1px solid rgba(255, 255, 255, 0.1); max-width:500px; width:100%; max-height: 80vh; display:flex; flex-direction:column; box-shadow:0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); box-sizing: border-box; position: relative;">
             <button onclick="cerrarHistorial()" style="position:absolute; top:20px; right:20px; background:transparent; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer; line-height:1; transition:0.3s; z-index:2;">&times;</button>
-            <h2 style="margin-top:0; margin-bottom: 20px; font-weight:800; font-size:1.5rem; color:white; text-align: left;">Tus Presupuestos Guardados</h2>
+            <h2 style="margin-top:0; margin-bottom: 20px; font-weight:800; font-size:1.5rem; color:white; text-align: left;" data-i18n="hist_modal_h2">Your Saved Quotes</h2>
             <div id="lista-historial" style="overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px; padding-right:5px;">
                 <!-- Lista inyectada por JS -->
             </div>
