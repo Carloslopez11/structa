@@ -45,7 +45,7 @@ const handler = async (req, res) => {
 
       // Connect to Supabase using env variables
       const supabaseUrl = process.env.SUPABASE_URL;
-      const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+      const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
       
       const supabase = createClient(supabaseUrl, supabaseKey);
 
