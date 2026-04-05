@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title data-i18n="doc_title_privacy">Privacidad y Términos - Structa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- CONFIGURACIÓN BASE --- */
+    :root {
+      --bg-midnight: #0A0F24;
+      --card-bg: #121A38;
+      --violet: #8B5CF6;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --glass-bg: rgba(18, 26, 56, 0.6);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-midnight);
+      color: var(--text-main);
+      line-height: 1.8;
+      background-image:
+        radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.05), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(45, 212, 191, 0.03), transparent 25%);
+      background-attachment: fixed;
+      background-size: cover;
+    }
+
+    * { box-sizing: border-box; }
+
+    /* --- NAVEGACIÓN --- */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 5%;
+      background: rgba(10, 15, 36, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      text-decoration: none;
+    }
+    .logo span { color: var(--violet); }
+
+    .nav-back {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      border: 1px solid var(--border-glass);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-back:hover {
+      background: rgba(139, 92, 246, 0.1);
+      border-color: rgba(139, 92, 246, 0.3);
+      color: #A78BFA;
+    }
+
+    /* --- CONTENIDO LEGAL --- */
+    .legal-container {
+      max-width: 800px;
+      margin: 80px auto;
+      padding: 50px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-glass);
+      border-radius: 20px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    @media (max-width: 600px) {
+      .legal-container {
+        padding: 30px 20px;
+        margin: 40px 15px;
+        border-radius: 16px;
+      }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-top: 0;
+      margin-bottom: 40px;
+      text-align: center;
+      background: linear-gradient(135deg, #F8FAFC 0%, var(--text-muted) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: var(--violet);
+      margin-top: 40px;
+      margin-bottom: 15px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border-glass);
+      padding-bottom: 10px;
+    }
+
+    p, li {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 15px;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin-bottom: 25px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      padding: 40px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      text-align: center;
+      background-color: var(--bg-midnight);
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">STRUCTA<span>.</span></a>
+    <a href="index.html" class="nav-back">Volver al inicio</a>
+  </nav>
+
+  <main class="legal-container">
+    <h1>Políticas y Términos Legales</h1>
+    <p>Última actualización: Abril de 2026. Al utilizar la plataforma Structa, usted acepta cumplir y estar sujeto a las siguientes políticas y términos de servicio.</p>
+
+    <h2>Política de Privacidad</h2>
+    <p>En Structa priorizamos la seguridad de sus datos. La información recopilada se utiliza exclusivamente para el funcionamiento y mejora de nuestro servicio:</p>
+    <ul>
+      <li><strong>Datos de Cuenta:</strong> Recolectamos su dirección de correo electrónico únicamente con el fin de vincularla a su cuenta en la plataforma y gestionar su acceso y límites de uso.</li>
+      <li><strong>Datos de Proyecto:</strong> Los planos, especificaciones y dimensiones ingresadas son procesadas temporalmente para la generación de cotizaciones y maquetas 3D (Renders).</li>
+      <li><strong>Procesamiento de Pagos:</strong> No almacenamos ni tenemos acceso a información de sus tarjetas de crédito. Todas las transacciones son procesadas a través de <strong style="color: white;">Stripe</strong>, líder mundial en infraestructura de pagos seguros y encriptados.</li>
+    </ul>
+
+    <h2>Términos de Servicio</h2>
+    <p>Structa es una suite tecnológica diseñada para facilitar la eficiencia en los procesos de cierre de ventas, cotizaciones en campo y diseño visual para la construcción. Al usar esta herramienta, usted reconoce y acepta que:</p>
+    <ul>
+      <li><strong>Limitación de Responsabilidad:</strong> Structa funciona estrictamente como una herramienta de apoyo digital y estimación.</li>
+      <li><strong>Precisión Humana Requerida:</strong> El usuario final (profesional o contratista) es 100% responsable de revisar y validar matemáticamente la precisión de los montos económicos, desglose de materiales y cualquier cálculo o medida reflejada en los documentos o PDF generados por la Inteligencia Artificial.</li>
+      <li><strong>Validez Arquitectónica:</strong> Los renders y/o 'Inspiration Sketches' generados son reconstrucciones interpretativas visuales con el objetivo de encantar al cliente, no sustituyen firmas de cálculo estructural ni planos arquitectónicos legales listos para obra.</li>
+    </ul>
+
+    <h2>Política de Reembolso</h2>
+    <p>Confiamos plenamente en el valor de nuestra plataforma y por ello establecemos una política transparente para su tranquilidad económica:</p>
+    <ul>
+      <li>Ofrecemos un <strong>período de reembolso de 7 días</strong> posteriores al pago correspondiente a cualquiera de nuestras suscripciones (Pro o Business).</li>
+      <li>Para ser elegible para la devolución íntegra durante dicho período, la cuenta no debe haber generado ninguna cotización ni utilizado de forma activa los servicios de renderizado de la suscripción de pago. En caso contrario, se considerará el servicio como consumido y se facturará el ciclo vigente sin derecho a reembolso, pudiendo cancelar en cualquier momento la renovación del mes siguiente.</li>
+    </ul>
+
+    <p style="margin-top: 40px; font-size: 0.95rem;">Si tiene alguna duda adicional sobre nuestra gestión de datos o términos comerciales, no dude en contactar a nuestro equipo de soporte.</p>
+  </main>
+
+  <footer>
+    <div class="logo" style="opacity: 0.5; margin-bottom: 10px;">STRUCTA<span>.</span></div>
+    <span data-i18n="footer_copy">© 2026 Structa — Turn Blueprints into Contracts, Fast.</span>
+  </footer>
+
+</body>
+
+</html>
