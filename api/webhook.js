@@ -1,8 +1,8 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require('@supabase/supabase-js');
 
-// Configuración de Vercel para desactivar el bodyParser por defecto
-// Esto es requerido para que Stripe pueda verificar la firma de seguridad con el body original (raw).
+// Vercel config to disable default body parser
+// This is required so Stripe can verify the security signature with the raw body.
 const config = {
   api: {
     bodyParser: false,
@@ -11,10 +11,10 @@ const config = {
 
 const handler = async (req, res) => {
   if (req.method !== 'POST') {
-    return res.status(405).send('Method Not Allowed');
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  // Leer el body crudo (raw body) de la petición usando un stream
+  // Read the raw body from the request stream
   const chunks = [];
   for await (const chunk of req) {
     chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
@@ -29,43 +29,54 @@ const handler = async (req, res) => {
   try {
     event = stripe.webhooks.constructEvent(rawBody, sig, endpointSecret);
   } catch (err) {
-    console.error(`Webhook Error: ${err.message}`);
+    console.error(`Webhook signature verification failed: ${err.message}`);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // Comprobar si fue una nueva suscripción exitosa o pago procesado
-  if (event.type === 'checkout.session.completed' || event.type === 'invoice.payment_succeeded') {
-    let email = '';
+  // Listen specifically for checkout.session.completed
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    
+    // Extract customer email
+    const email = session.customer_details?.email || session.customer_email;
 
-    if (event.type === 'checkout.session.completed') {
-      email = event.data.object.customer_details?.email;
-    } else {
-      email = event.data.object.customer_email;
-    }
-
-    console.log(`Pago recibido de: ${email}. Actualizando a PRO...`);
-
-    // Configuramos la llave para acualizar Supabase
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    // Actualizamos is_pro = true para el cliente que acaba de pagar
     if (email) {
-      const { error: upsertError } = await supabase
-        .from('usage')
-        // Le damos PRO, y por si acaso reseteamos count a 0 aunque el límite de PRO sea infinito
-        .upsert({ email: email, is_pro: true, count: 0 });
+      console.log(`Payment received from: ${email}. Updating status to PRO...`);
 
-      if (upsertError) {
-        console.error("Error al actualizar Supabase en el Webhook:", upsertError);
+      // Connect to Supabase using env variables
+      const supabaseUrl = process.env.SUPABASE_URL;
+      const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+      
+      const supabase = createClient(supabaseUrl, supabaseKey);
+
+      // Update the user table (using 'usage' as it seems to be the active table for user state)
+      // Changing status to PRO and resetting render counter
+      const { error: updateError } = await supabase
+        .from('usage')
+        .upsert({ 
+          email: email, 
+          is_pro: true, 
+          count: 0 
+        }, { onConflict: 'email' });
+
+      if (updateError) {
+        console.error("Error updating Supabase:", updateError);
+        // We still return 200 to Stripe so it doesn't retry the webhook constantly,
+        // or we could return 500 depending on the desired retry logic.
+        // Returning 200 as requested by the user: "Devuelve un status 200"
       } else {
-        console.log(`Usuario ${email} actualizado a PRO con éxito.`);
+        console.log(`User ${email} successfully updated to PRO.`);
       }
+    } else {
+      console.warn('checkout.session.completed event received, but no email was found.');
     }
+  } else {
+    // Unhandled event type
+    console.log(`Unhandled event type: ${event.type}`);
   }
 
-  res.status(200).send('Webhook process completed');
+  // Return a 200 response to acknowledge receipt of the event
+  res.status(200).json({ received: true });
 };
 
 module.exports = handler;
