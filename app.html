@@ -742,7 +742,7 @@
                     if (renderImage) renderImage.src = data.renderUrl;
                     if (window.renderInterval) clearInterval(window.renderInterval);
                     if (typeof speak === "function") {
-                        speak(`Boom! 💥 Sketch ready. Send it via WhatsApp and close the deal! (<a href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" style="color:var(--purple);font-weight:bold;text-decoration:underline;pointer-events:auto;">Upgrade to Pro</a> for unlimited renders).`, 8000);
+                        speak(`Boom! 💥 Sketch ready. Send it via WhatsApp and close the deal! (<a href="https://buy.stripe.com/5kQ6oH4ad6vI01q6Xk1ck05" target="_blank" style="color:var(--purple);font-weight:bold;text-decoration:underline;pointer-events:auto;">Upgrade to Pro</a> for unlimited renders).`, 8000);
                     }
                 } else {
                     throw new Error("No image link was returned.");
@@ -813,7 +813,7 @@
                 // Añadir prefilled_email al link para que Stripe asocie el pago al mismo correo del usuario logueado
                 const stripeLink = document.getElementById('stripeLink');
                 if (stripeLink) {
-                    stripeLink.href = `https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00?prefilled_email=${encodeURIComponent(email)}`;
+                    stripeLink.href = `https://buy.stripe.com/5kQ6oH4ad6vI01q6Xk1ck05?prefilled_email=${encodeURIComponent(email)}`;
                 }
                 startPaymentPolling(email);
                 return;
