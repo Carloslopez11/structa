@@ -1020,5 +1020,27 @@
       reveals.forEach(el => observer.observe(el));
     });
   </script>
+  <!-- COOKIE BANNER -->
+  <div id="cookie-banner" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px; background: rgba(18, 26, 56, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px 25px; z-index: 9999; box-shadow: 0 25px 50px rgba(0,0,0,0.5); flex-direction: column; gap: 15px; align-items: center; text-align: center;">
+    <p style="margin: 0; font-size: 0.9rem; color: #94A3B8; line-height: 1.5;">
+      Utilizamos cookies esenciales para garantizar el correcto funcionamiento de la plataforma y procesar pagos de forma segura. Al continuar navegando, aceptas nuestra <a href="politicas.html" style="color: #8B5CF6; text-decoration: underline; font-weight: 600;">Política de Privacidad</a>.
+    </p>
+    <button id="accept-cookies" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: white; border: none; padding: 10px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);">
+      Entendido
+    </button>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const banner = document.getElementById("cookie-banner");
+      if (!localStorage.getItem("cookies_accepted")) {
+        banner.style.display = "flex";
+        document.getElementById("accept-cookies").addEventListener("click", function() {
+          localStorage.setItem("cookies_accepted", "true");
+          banner.style.display = "none";
+        });
+      }
+    });
+  </script>
 </body>
 </html>
