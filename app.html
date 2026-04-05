@@ -59,7 +59,8 @@
             z-index: 10;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             box-sizing: border-box;
             padding: 16px;
@@ -78,13 +79,14 @@
             appearance: none;
             cursor: pointer;
         }
-        
+
         select option {
             background: var(--card);
             color: white;
         }
 
-        input:focus, select:focus {
+        input:focus,
+        select:focus {
             border-color: var(--purple);
             box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
         }
@@ -132,7 +134,7 @@
             cursor: pointer;
             font-size: 1.15rem;
             margin-top: 20px;
-            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -175,7 +177,7 @@
             color: var(--text-muted);
             font-weight: 500;
         }
-        
+
         .ai-loading-spinner {
             width: 30px;
             height: 30px;
@@ -187,7 +189,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .ai-preview-img {
@@ -195,10 +199,10 @@
             max-height: 120px;
             border-radius: 8px;
             margin-bottom: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             object-fit: contain;
         }
-        
+
         .ai-success-icon {
             color: #10b981;
             margin-bottom: 10px;
@@ -349,15 +353,19 @@
                 border-radius: 20px;
                 margin: 20px auto 100px;
             }
+
             .copywriting-header h2 {
                 font-size: 1.8rem;
             }
+
             .copywriting-header p {
                 font-size: 1rem;
             }
+
             body {
                 padding: 15px;
             }
+
             .btn-pay {
                 padding: 18px;
             }
@@ -374,13 +382,19 @@
 
     <div class="container">
         <!-- Navegación y estado de autenticación -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <div
+            style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
             <div style="font-weight:600; color:var(--text-muted); font-size: 0.9rem;">
-                <span data-i18n="app_user_label">User:</span> <span id="userEmailLabel" style="color:white; font-weight:700;">-</span>
+                <span data-i18n="app_user_label">User:</span> <span id="userEmailLabel"
+                    style="color:white; font-weight:700;">-</span>
             </div>
             <div style="display:flex; gap:10px;">
-                <button onclick="abrirHistorial()" style="background: rgba(124, 58, 237, 0.1); color: #a78bfa; border: 1px solid rgba(124, 58, 237, 0.3); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.1);" data-i18n="btn_view_history">View my History</button>
-                <button onclick="handleLogout()" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.1);" data-i18n="btn_logout">Log Out</button>
+                <button onclick="abrirHistorial()"
+                    style="background: rgba(124, 58, 237, 0.1); color: #a78bfa; border: 1px solid rgba(124, 58, 237, 0.3); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.1);"
+                    data-i18n="btn_view_history">View my History</button>
+                <button onclick="handleLogout()"
+                    style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.1);"
+                    data-i18n="btn_logout">Log Out</button>
             </div>
         </div>
 
@@ -391,11 +405,14 @@
         <label data-i18n="label_logo">Company Logo (Pro Plan Only)</label>
         <input type="file" id="logoUpload" accept="image/*">
 
-        <label data-i18n="label_company">From (Company)</label> <input id="company" placeholder="Structa Inc." data-i18n-placeholder="ph_company">
-        <label data-i18n="label_client">To (Client)</label> <input id="client" placeholder="Client Name" data-i18n-placeholder="ph_client">
-        <label data-i18n="label_work">Description</label> <input id="work" placeholder="Service description" data-i18n-placeholder="ph_work">
+        <label data-i18n="label_company">From (Company)</label> <input id="company" placeholder="Structa Inc."
+            data-i18n-placeholder="ph_company">
+        <label data-i18n="label_client">To (Client)</label> <input id="client" placeholder="Client Name"
+            data-i18n-placeholder="ph_client">
+        <label data-i18n="label_work">Description</label> <input id="work" placeholder="Service description"
+            data-i18n-placeholder="ph_work">
 
-        <label data-i18n="label_quality">Finish Quality</label> 
+        <label data-i18n="label_quality">Finish Quality</label>
         <select id="quality">
             <option value="Estándar" data-i18n="opt_std">Standard</option>
             <option value="Medio" data-i18n="opt_med">Medium</option>
@@ -403,10 +420,14 @@
         </select>
 
         <label data-i18n="label_pdf_upload">Extract Materials from PDF/Image (Advanced)</label>
-        <div class="ai-upload-zone" id="pdfUploadZone" onclick="document.getElementById('pdfFileInput').click()" style="border-color: #f59e0b; background: rgba(245, 158, 11, 0.05);">
-            <input type="file" id="pdfFileInput" accept="application/pdf,image/*" style="display:none;" onchange="handlePDFUpload(this)">
+        <div class="ai-upload-zone" id="pdfUploadZone" onclick="document.getElementById('pdfFileInput').click()"
+            style="border-color: #f59e0b; background: rgba(245, 158, 11, 0.05);">
+            <input type="file" id="pdfFileInput" accept="application/pdf,image/*" style="display:none;"
+                onchange="handlePDFUpload(this)">
             <div class="ai-upload-content" id="pdfUploadContent">
-                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px; filter: drop-shadow(0 2px 5px rgba(245, 158, 11, 0.3));">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                    stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="margin-bottom: 12px; filter: drop-shadow(0 2px 5px rgba(245, 158, 11, 0.3));">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
                     <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -417,39 +438,58 @@
             </div>
         </div>
 
-        <div id="renderProjectContainer" style="display: none; margin-bottom: 20px; animation: fadeUp 0.8s ease-out forwards; animation-delay: 0.1s;">
-            <label style="display: block; margin-bottom: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;" data-i18n="label_proj_visual">Project Visualization</label>
-            <div style="background: rgba(124, 58, 237, 0.05); border: 1px solid rgba(124, 58, 237, 0.4); border-radius: 16px; padding: 15px; text-align: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                <img id="renderImage" src="" alt="Architectural Render" style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); object-fit: cover; display: block;" />
-                <div style="margin-top: 15px; display: flex; justify-content: space-around; font-size: 0.95rem; font-weight: 600; color: #fff;">
-                    <div><span data-i18n="lbl_len">Length:</span> <span id="renderLargo" style="color: var(--purple);">0</span> m</div>
-                    <div><span data-i18n="lbl_wid">Width:</span> <span id="renderAncho" style="color: var(--purple);">0</span> m</div>
+        <div id="renderProjectContainer"
+            style="display: none; margin-bottom: 20px; animation: fadeUp 0.8s ease-out forwards; animation-delay: 0.1s;">
+            <label
+                style="display: block; margin-bottom: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;"
+                data-i18n="label_proj_visual">Project Visualization</label>
+            <div
+                style="background: rgba(124, 58, 237, 0.05); border: 1px solid rgba(124, 58, 237, 0.4); border-radius: 16px; padding: 15px; text-align: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <img id="renderImage" src="" alt="Architectural Render"
+                    style="width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); object-fit: cover; display: block;" />
+                <div
+                    style="margin-top: 15px; display: flex; justify-content: space-around; font-size: 0.95rem; font-weight: 600; color: #fff;">
+                    <div><span data-i18n="lbl_len">Length:</span> <span id="renderLargo"
+                            style="color: var(--purple);">0</span> m</div>
+                    <div><span data-i18n="lbl_wid">Width:</span> <span id="renderAncho"
+                            style="color: var(--purple);">0</span> m</div>
                 </div>
-                <div style="margin-top: 15px; padding: 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; font-size: 0.8rem; color: var(--text-muted); text-align: left; line-height: 1.5; display: flex; gap: 8px; align-items: flex-start;">
+                <div
+                    style="margin-top: 15px; padding: 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; font-size: 0.8rem; color: var(--text-muted); text-align: left; line-height: 1.5; display: flex; gap: 8px; align-items: flex-start;">
                     <span style="font-size: 1rem; line-height: 1.2;">💡</span>
-                    <span><strong data-i18n="lbl_tech_note">Technical Note:</strong> <span data-i18n="txt_tech_note">3D sketches are generated using an architectural cross-section view (strategically removing front walls and ceilings). This guarantees full visibility of enclosed interior spaces (like bathrooms and private offices) for your client presentation.</span></span>
+                    <span><strong data-i18n="lbl_tech_note">Technical Note:</strong> <span data-i18n="txt_tech_note">3D
+                            sketches are generated using an architectural cross-section view (strategically removing
+                            front walls and ceilings). This guarantees full visibility of enclosed interior spaces (like
+                            bathrooms and private offices) for your client presentation.</span></span>
                 </div>
             </div>
         </div>
 
         <div style="display:flex; gap:15px;" id="manualDimensions">
-            <div style="flex:1"><label data-i18n="lbl_input_len">Length (m)</label><input id="length" type="number" step="0.01" placeholder="0">
+            <div style="flex:1"><label data-i18n="lbl_input_len">Length (m)</label><input id="length" type="number"
+                    step="0.01" placeholder="0">
             </div>
-            <div style="flex:1"><label data-i18n="lbl_input_wid">Width (m)</label><input id="width" type="number" step="0.01" placeholder="0">
+            <div style="flex:1"><label data-i18n="lbl_input_wid">Width (m)</label><input id="width" type="number"
+                    step="0.01" placeholder="0">
             </div>
         </div>
-        
+
         <div id="roomsContainer" style="display:none; margin-bottom: 20px;">
-            <label style="display: block; margin-bottom: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;" data-i18n="lbl_room_breakdown">Room Breakdown</label>
+            <label
+                style="display: block; margin-bottom: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;"
+                data-i18n="lbl_room_breakdown">Room Breakdown</label>
             <div id="roomsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
         </div>
-        
+
         <div id="materialsContainer" style="display:none; margin-bottom: 20px;">
-            <label style="display: block; margin-bottom: 10px; font-weight: 700; color: #f59e0b; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;" data-i18n="lbl_materials_ext">Extracted Materials & Fixtures</label>
+            <label
+                style="display: block; margin-bottom: 10px; font-weight: 700; color: #f59e0b; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;"
+                data-i18n="lbl_materials_ext">Extracted Materials & Fixtures</label>
             <div id="materialsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
         </div>
         <div id="globalPriceContainer">
-            <label data-i18n="lbl_price_m2">Price per m² ($)</label> <input id="price" type="number" step="0.01" placeholder="0.00">
+            <label data-i18n="lbl_price_m2">Price per m² ($)</label> <input id="price" type="number" step="0.01"
+                placeholder="0.00">
         </div>
 
         <div class="preview-box" id="previewContainer">
@@ -478,20 +518,20 @@
                     const p = safeParseNumber(pInput);
                     let area = 0;
                     let total = 0;
-                    
+
                     if (window.currentDesglose && window.currentDesglose.length > 0) {
-                        area = window.currentDesglose.reduce((sum, room) => sum + (safeParseNumber({value: room.largo.toString()}) * safeParseNumber({value: room.ancho.toString()})), 0);
-                        
+                        area = window.currentDesglose.reduce((sum, room) => sum + (safeParseNumber({ value: room.largo.toString() }) * safeParseNumber({ value: room.ancho.toString() })), 0);
+
                         let computedTotal = 0;
                         window.currentDesglose.forEach((room, index) => {
-                            const roomArea = safeParseNumber({value: room.largo.toString()}) * safeParseNumber({value: room.ancho.toString()});
+                            const roomArea = safeParseNumber({ value: room.largo.toString() }) * safeParseNumber({ value: room.ancho.toString() });
                             const roomPriceInput = document.getElementById(`roomPriceInput_${index}`);
                             const roomPrice = roomPriceInput ? safeParseNumber(roomPriceInput) : p;
                             room.precio = roomPrice; // Guardamos el precio del input en este objeto o el global como fallback
-                            
+
                             const roomCost = roomArea * roomPrice;
                             computedTotal += roomCost;
-                            
+
                             const costEl = document.getElementById(`roomCost_${index}`);
                             if (costEl) costEl.textContent = "$" + roomCost.toFixed(2);
                         });
@@ -509,10 +549,10 @@
                             const matPriceInput = document.getElementById(`matPriceInput_${index}`);
                             const matPrice = matPriceInput ? safeParseNumber(matPriceInput) : 0;
                             mat.precio_unitario = matPrice;
-                            
+
                             const matCost = mat.cantidad * matPrice;
                             materialsTotal += matCost;
-                            
+
                             const costEl = document.getElementById(`matCost_${index}`);
                             if (costEl) costEl.textContent = "$" + matCost.toFixed(2);
                         });
@@ -541,28 +581,36 @@
                 if (lInput) { lInput.addEventListener('input', doUpdate); lInput.addEventListener('change', doUpdate); }
                 if (wInput) { wInput.addEventListener('input', doUpdate); wInput.addEventListener('change', doUpdate); }
                 if (pInput) { pInput.addEventListener('input', doUpdate); pInput.addEventListener('change', doUpdate); }
-                
+
                 window.fireUpdate = doUpdate;
             })();
         </script>
 
         <div id="errorBox" class="error-msg"></div>
 
-            <button class="btn-action" id="generateRenderBtn" onclick="generarRenderMateriales()" style="width: 100%; padding: 18px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4); text-transform: uppercase; transition: transform 0.2s, box-shadow 0.2s; display: none;" data-i18n="btn_gen_render">🎨 Generate Premium Inspiration Sketch</button>
-            <button class="btn-pay" id="generateBtn" onclick="generateInvoice()" style="margin-bottom: 0;" data-i18n="btn_gen_pdf">Generate PDF Invoice</button>
-            <div id="socialShareContainer" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
-                <button onclick="shareWhatsApp()" style="background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;" data-i18n="btn_share_wa">
-                    <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Share via WhatsApp
-                </button>
-                <button onclick="shareEmail()" style="background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;" data-i18n="btn_share_email">
-                    ✉️ Send via Email
-                </button>
-            </div>
+        <button class="btn-action" id="generateRenderBtn" onclick="generarRenderMateriales()"
+            style="width: 100%; padding: 18px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4); text-transform: uppercase; transition: transform 0.2s, box-shadow 0.2s; display: none;"
+            data-i18n="btn_gen_render">🎨 Generate Premium Inspiration Sketch</button>
+        <button class="btn-pay" id="generateBtn" onclick="generateInvoice()" style="margin-bottom: 0;"
+            data-i18n="btn_gen_pdf">Generate PDF Invoice</button>
+        <div id="socialShareContainer" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
+            <button onclick="shareWhatsApp()"
+                style="background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"
+                data-i18n="btn_share_wa">
+                <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Share via WhatsApp
+            </button>
+            <button onclick="shareEmail()"
+                style="background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"
+                data-i18n="btn_share_email">
+                ✉️ Send via Email
+            </button>
         </div>
+    </div>
     </div>
 
     <div class="robot-container">
-        <div class="robot-bubble" id="robotMessage">Welcome to Structa! 🚀 Upload your 2D floor plan below and let's create a Premium Inspiration Sketch to wow your client.</div>
+        <div class="robot-bubble" id="robotMessage">Welcome to Structa! 🚀 Upload your 2D floor plan below and let's
+            create a Premium Inspiration Sketch to wow your client.</div>
         <div class="robot-icon" onclick="pokeRobot()">
             <div class="robot-eyes">
                 <div class="robot-eye"></div>
@@ -598,11 +646,11 @@
         // --- GUARDIÁN DE RUTA ESTRICTO (Auditoría Nivel 1) ---
         document.addEventListener('DOMContentLoaded', async () => {
             const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) { 
-                window.location.href = 'login.html'; 
-                return; 
+            if (!session) {
+                window.location.href = 'login.html';
+                return;
             }
-            
+
             // Si el usuario está validado de forma segura, inicializamos la UI:
             document.getElementById('email').value = session.user.email;
             document.getElementById('userEmailLabel').textContent = session.user.email;
@@ -645,7 +693,7 @@
             const btn = document.getElementById('generateRenderBtn');
             btn.textContent = "Generating Sketch...";
             btn.disabled = true;
-            
+
             const qualitySelect = document.getElementById('quality');
             const quality = qualitySelect ? qualitySelect.value : 'Estándar';
 
@@ -688,7 +736,7 @@
                 }
 
                 const data = await response.json();
-                
+
                 if (data.renderUrl) {
                     window.currentRenderUrl = data.renderUrl;
                     if (renderImage) renderImage.src = data.renderUrl;
@@ -861,7 +909,7 @@
                     a.download = pdfFilename;
                     document.body.appendChild(a);
                     a.click();
-                    
+
                     // Delay revocation for mobile compatibility
                     setTimeout(() => {
                         window.URL.revokeObjectURL(localUrl);
@@ -877,12 +925,12 @@
                                 contentType: 'application/pdf',
                                 upsert: false
                             });
-                            
+
                         if (!uploadError) {
                             const { data: { publicUrl } } = supabaseClient.storage
                                 .from('presupuestos')
                                 .getPublicUrl(`public/${pdfFilename}`);
-                            
+
                             window.currentPdfPublicUrl = publicUrl;
                         } else {
                             console.error("ERROR REAL DE SUPABASE: ", uploadError.message || uploadError);
@@ -891,10 +939,10 @@
                             setTimeout(() => { errorBox.style.display = 'none'; }, 20000);
                         }
                     } catch (e) {
-                         console.error("ERROR REAL DE SUPABASE: ", e.message || e);
-                         errorBox.innerHTML = `<strong>Excepción de Supabase (Try/Catch):</strong> ${e.message || JSON.stringify(e)}`;
-                         errorBox.style.display = 'block';
-                         setTimeout(() => { errorBox.style.display = 'none'; }, 20000);
+                        console.error("ERROR REAL DE SUPABASE: ", e.message || e);
+                        errorBox.innerHTML = `<strong>Excepción de Supabase (Try/Catch):</strong> ${e.message || JSON.stringify(e)}`;
+                        errorBox.style.display = 'block';
+                        setTimeout(() => { errorBox.style.display = 'none'; }, 20000);
                     }
 
                     // Guardado Silencioso de Presupuesto en BD
@@ -903,7 +951,7 @@
                         if (user) {
                             const totalText = document.getElementById('previewTotal').textContent;
                             const totalAmount = parseFloat(totalText.replace(/[^0-9.-]+/g, "")) || 0;
-                            
+
                             // Recolectar estado completo de la calculadora (Fase 4 - Super Memoria)
                             const estadoPresupuesto = {
                                 company: document.getElementById('company') ? document.getElementById('company').value : '',
@@ -918,13 +966,13 @@
                                 materiales: window.currentMateriales || null
                             };
 
-                            const { error: dbError } = await supabaseClient.from('presupuestos').insert([{ 
-                                user_id: user.id, 
-                                cliente: client || 'Cotización Structa', 
+                            const { error: dbError } = await supabaseClient.from('presupuestos').insert([{
+                                user_id: user.id,
+                                cliente: client || 'Cotización Structa',
                                 total: totalAmount,
                                 datos_completos: estadoPresupuesto
                             }]);
-                            
+
                             if (dbError) {
                                 console.error('Error al guardar en BD:', dbError);
                             } else {
@@ -965,7 +1013,7 @@
         function handleAIUpload(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     simularAnalisisIA(e.target.result);
                 }
                 reader.readAsDataURL(input.files[0]);
@@ -975,7 +1023,7 @@
         async function simularAnalisisIA(imageSrc) {
             const zone = document.getElementById('aiUploadZone');
             const content = document.getElementById('aiUploadContent');
-            
+
             // Loading State
             content.innerHTML = `
                 <img src="${imageSrc}" class="ai-preview-img">
@@ -984,7 +1032,7 @@
             `;
             zone.style.borderColor = "var(--purple)";
             zone.style.background = "rgba(124, 58, 237, 0.08)";
-            
+
             try {
                 const qualitySelect = document.getElementById('quality');
                 const quality = qualitySelect ? qualitySelect.value : 'Estándar';
@@ -1000,11 +1048,11 @@
                 }
 
                 const data = await response.json();
-                
+
                 if (!data || (data.largo === 0 && data.ancho === 0)) {
                     throw new Error("No se detectaron dimensiones inteligibles en la imagen.");
                 }
-                
+
                 // Success State
                 content.innerHTML = `
                     <img src="${imageSrc}" class="ai-preview-img">
@@ -1017,31 +1065,31 @@
                 zone.style.borderColor = "#10b981";
                 zone.style.background = "rgba(16, 185, 129, 0.08)";
                 zone.style.boxShadow = "0 0 25px rgba(16, 185, 129, 0.25)";
-                
+
                 // Set inputs
                 const lenInput = document.getElementById('length');
                 const widInput = document.getElementById('width');
-                
+
                 // Truncate to 2 decimal places or keep valid float format
                 lenInput.value = data.largo;
                 widInput.value = data.ancho;
-                
+
                 // Update Rooms List if desglose is available
                 if (data.desglose && data.desglose.length > 0) {
-                  window.currentDesglose = data.desglose;
-                  document.getElementById('manualDimensions').style.display = 'none';
-                  const globalPriceCont = document.getElementById('globalPriceContainer');
-                  if (globalPriceCont) globalPriceCont.style.display = 'none';
-                  
-                  const roomsContainer = document.getElementById('roomsContainer');
-                  const roomsList = document.getElementById('roomsList');
-                  roomsList.innerHTML = '';
-                  
-                  const currentGlobalPrice = document.getElementById('price').value || 0;
-                  
-                  data.desglose.forEach((room, index) => {
-                      const roomArea = room.largo * room.ancho;
-                      roomsList.innerHTML += `
+                    window.currentDesglose = data.desglose;
+                    document.getElementById('manualDimensions').style.display = 'none';
+                    const globalPriceCont = document.getElementById('globalPriceContainer');
+                    if (globalPriceCont) globalPriceCont.style.display = 'none';
+
+                    const roomsContainer = document.getElementById('roomsContainer');
+                    const roomsList = document.getElementById('roomsList');
+                    roomsList.innerHTML = '';
+
+                    const currentGlobalPrice = document.getElementById('price').value || 0;
+
+                    data.desglose.forEach((room, index) => {
+                        const roomArea = room.largo * room.ancho;
+                        roomsList.innerHTML += `
                           <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                               <div style="flex: 1; min-width: 150px;">
                                   <div style="font-weight: 600; font-size: 1rem; color: #fff;">${room.nombre}</div>
@@ -1056,14 +1104,14 @@
                               </div>
                           </div>
                       `;
-                  });
-                  roomsContainer.style.display = 'block';
+                    });
+                    roomsContainer.style.display = 'block';
                 } else {
-                  window.currentDesglose = null;
-                  document.getElementById('manualDimensions').style.display = 'flex';
-                  const globalPriceCont = document.getElementById('globalPriceContainer');
-                  if (globalPriceCont) globalPriceCont.style.display = 'block';
-                  document.getElementById('roomsContainer').style.display = 'none';
+                    window.currentDesglose = null;
+                    document.getElementById('manualDimensions').style.display = 'flex';
+                    const globalPriceCont = document.getElementById('globalPriceContainer');
+                    if (globalPriceCont) globalPriceCont.style.display = 'block';
+                    document.getElementById('roomsContainer').style.display = 'none';
                 }
 
                 // Show Render if available
@@ -1078,11 +1126,11 @@
                         renderContainer.style.display = 'block';
                     }
                 }
-                
+
                 // Trigger change to update total
                 lenInput.dispatchEvent(new Event('input'));
                 widInput.dispatchEvent(new Event('input'));
-                
+
                 if (typeof speak === "function") {
                     speak("Excellent! I analyzed the blueprint and mapped the layout. The estimate has been updated.", 6000);
                 }
@@ -1100,7 +1148,7 @@
                 `;
                 zone.style.borderColor = "#ef4444";
                 zone.style.background = "rgba(239, 68, 68, 0.05)";
-                
+
                 if (typeof speak === "function") {
                     speak("Hmm... The image isn't clear enough for me to extract measurements automatically. Let's try another one.", 7000);
                 }
@@ -1112,7 +1160,7 @@
                 const file = input.files[0];
                 const zone = document.getElementById('pdfUploadZone');
                 const content = document.getElementById('pdfUploadContent');
-                
+
                 content.innerHTML = `
                     <div class="ai-loading-spinner" style="border-top-color: #f59e0b;"></div>
                     <p id="pdfLoadingText" style="color: #f59e0b; font-weight: 600;" data-i18n="pdf_load_1">Step 1: Converting PDF to image...</p>
@@ -1129,16 +1177,16 @@
                         const arrayBuffer = await file.arrayBuffer();
                         const pdfjsLib = window['pdfjs-dist/build/pdf'];
                         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-                        
+
                         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
                         const page = await pdf.getPage(1);
-                        
+
                         const viewport = page.getViewport({ scale: 3.0 });
                         const canvas = document.createElement('canvas');
                         const context = canvas.getContext('2d');
                         canvas.height = viewport.height;
                         canvas.width = viewport.width;
-                        
+
                         await page.render({ canvasContext: context, viewport: viewport }).promise;
                         imageBase64 = canvas.toDataURL('image/jpeg', 0.8);
                     } else if (file.type.includes('image')) {
@@ -1151,10 +1199,10 @@
                     }
 
                     if (!imageBase64) throw new Error("Could not process file. Base64 is null.");
-                    
+
                     const loadingText = document.getElementById('pdfLoadingText');
                     if (loadingText) loadingText.textContent = "Step 2: AI mapping the spatial layout...";
-                    
+
                     await simularAnalisisPDF(imageBase64);
 
                 } catch (e) {
@@ -1171,7 +1219,7 @@
         async function simularAnalisisPDF(imageSrc) {
             const content = document.getElementById('pdfUploadContent');
             const zone = document.getElementById('pdfUploadZone');
-            
+
             try {
                 const response = await fetch('/api/analizar-materiales', {
                     method: 'POST',
@@ -1187,7 +1235,7 @@
                         else if (response.status === 429) errorMessage = "Código 429: Límite de cuota en OpenAI excedido.";
                         else if (response.status === 500) errorMessage = "Código 500: Fallo interno en OpenAI o nuestro backend.";
                         if (errData.error) errorMessage += " (" + errData.error + ")";
-                    } catch(e) {}
+                    } catch (e) { }
                     throw new Error(errorMessage);
                 }
 
@@ -1195,11 +1243,11 @@
                 if (loadingText) loadingText.textContent = "Step 3: Building materials list...";
 
                 const data = await response.json();
-                
+
                 if (!data.materiales || data.materiales.length === 0) {
                     throw new Error("Respuesta procesada exitosamente, pero OpenAI no devolvió materiales legibles.");
                 }
-                
+
                 // Success
                 content.innerHTML = `
                     <svg class="ai-success-icon" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 5px rgba(245,158,11,0.3)); color: #f59e0b;">
@@ -1210,7 +1258,7 @@
                 `;
                 zone.style.borderColor = "#f59e0b";
                 zone.style.background = "rgba(245, 158, 11, 0.08)";
-                
+
                 // Set materials
                 window.currentMateriales = data.materiales;
                 window.currentSpatialDescription = data.spatial_description;
@@ -1218,7 +1266,7 @@
                 const materialsContainer = document.getElementById('materialsContainer');
                 const materialsList = document.getElementById('materialsList');
                 materialsList.innerHTML = '';
-                
+
                 data.materiales.forEach((mat, index) => {
                     materialsList.innerHTML += `
                         <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
@@ -1237,12 +1285,12 @@
                     `;
                 });
                 materialsContainer.style.display = 'block';
-                
+
                 const btnRender = document.getElementById('generateRenderBtn');
                 if (btnRender) btnRender.style.display = 'block';
-                
+
                 if (window.fireUpdate) window.fireUpdate();
-                
+
                 if (typeof speak === "function") {
                     speak("I've extracted the materials list from the blueprint. Add your pricing and you're set!", 6000);
                 }
@@ -1367,7 +1415,7 @@
                 data.forEach(item => {
                     const dateObj = new Date(item.created_at);
                     const formattedDate = dateObj.toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' });
-                    
+
                     const card = document.createElement('div');
                     card.style.background = 'rgba(0, 0, 0, 0.2)';
                     card.style.border = '1px solid rgba(255, 255, 255, 0.08)';
@@ -1377,12 +1425,12 @@
                     card.style.justifyContent = 'space-between';
                     card.style.alignItems = 'center';
                     card.style.transition = '0.3s';
-                    
+
                     let thumbnailHtml = '';
                     if (item.datos_completos && item.datos_completos.renderUrl) {
                         thumbnailHtml = `<img src="${item.datos_completos.renderUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(124, 58, 237, 0.4); margin-right: 15px;">`;
                     }
-                    
+
                     card.innerHTML = `
                         <div style="display:flex; align-items:center;">
                             ${thumbnailHtml}
@@ -1398,7 +1446,7 @@
                             <button class="btn-abrir-historial" style="background: linear-gradient(135deg, #7c3aed, #5b21b6); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);" data-i18n="hist_btn_open">Open Quote</button>
                         </div>
                     `;
-                    
+
                     // Asignar el evento dinámicamente
                     const btnAbrir = card.querySelector('.btn-abrir-historial');
                     btnAbrir.onclick = () => {
@@ -1408,7 +1456,7 @@
                             if (typeof speak === 'function') speak("This quote does not have extended memory.", 4000);
                         }
                     };
-                    
+
                     lista.appendChild(card);
                 });
 
@@ -1422,7 +1470,7 @@
         function cargarPresupuestoEnCalculadora(datos) {
             if (!datos) return;
             cerrarHistorial();
-            
+
             // Rellenar inputs simples
             if (datos.company !== undefined && document.getElementById('company')) document.getElementById('company').value = datos.company;
             if (datos.client !== undefined && document.getElementById('client')) document.getElementById('client').value = datos.client;
@@ -1437,12 +1485,12 @@
                 window.currentDesglose = datos.desglose;
                 if (document.getElementById('manualDimensions')) document.getElementById('manualDimensions').style.display = 'none';
                 if (document.getElementById('globalPriceContainer')) document.getElementById('globalPriceContainer').style.display = 'none';
-                
+
                 const roomsContainer = document.getElementById('roomsContainer');
                 const roomsList = document.getElementById('roomsList');
                 if (roomsContainer && roomsList) {
                     roomsList.innerHTML = '';
-                    
+
                     datos.desglose.forEach((room, index) => {
                         const roomArea = room.largo * room.ancho;
                         const rp = room.precio || datos.price || 0;
@@ -1535,137 +1583,203 @@
         }
 
         function shareWhatsApp() {
-            if(!window.currentPdfPublicUrl) return alert("The cloud is still uploading the file or an error occurred.");
+            if (!window.currentPdfPublicUrl) return alert("The cloud is still uploading the file or an error occurred.");
             const msg = `Hello, attached is the detailed quote and premium inspiration sketch for your project. You can view it here: ${window.currentPdfPublicUrl}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         function shareEmail() {
-            if(!window.currentPdfPublicUrl) return alert("The cloud is still uploading the file or an error occurred.");
+            if (!window.currentPdfPublicUrl) return alert("The cloud is still uploading the file or an error occurred.");
             const subject = "Premium Inspiration Sketch & Professional Quote";
             const body = `Hello,\n\nAttached is the detailed quote and premium inspiration sketch for your project.\n\nYou can view it directly here: ${window.currentPdfPublicUrl}\n\nI look forward to discussing it with you.`;
             window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
     </script>
 
-    <!-- START PRICING SECTION -->
+    <!-- START TAILWIND FOR MODAL IN WORKSPACE -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      tailwind.config = {
-        corePlugins: { preflight: false }
-      }
+        tailwind.config = {
+            corePlugins: { preflight: false }
+        }
     </script>
-    <section id="pricing" class="w-full max-w-6xl mx-auto mt-24 mb-16 px-4" style="font-family: 'Inter', sans-serif; box-sizing: border-box;">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-extrabold text-white m-0 mb-4 tracking-tight" style="text-shadow: 0 4px 20px rgba(0,0,0,0.5);">Planes de Negocio</h2>
-            <p class="text-lg md:text-xl text-gray-400 font-medium m-0">Elige el plan ideal para transformar tus demostraciones en contratos reales.</p>
-        </div>
 
-        <div class="flex flex-col md:flex-row justify-center items-stretch gap-6 lg:gap-8 mx-auto w-full">
-            <!-- Starter -->
-            <div class="flex-1 flex flex-col p-8 rounded-3xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] shadow-2xl transition-all duration-300 hover:transform hover:-translate-y-2 box-border" style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
-                <h3 class="text-2xl font-bold text-white m-0 mb-2">Plan Starter</h3>
-                <p class="text-sm text-gray-400 mb-4 italic m-0 bg-[rgba(255,255,255,0.05)] p-3 rounded-lg">"Ideal para probar la magia"</p>
-                <div class="text-4xl font-extrabold text-white m-0 mb-6">$0<span class="text-lg text-gray-400 font-medium tracking-normal">/mes</span></div>
-                <ul class="list-none p-0 m-0 text-gray-300 space-y-4 mb-8 flex-1 text-left">
-                    <li class="flex items-center gap-3 m-0">
-                        <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        3 renders básicos
-                    </li>
-                    <li class="flex items-center gap-3 m-0">
-                        <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Resolución estándar
-                    </li>
-                    <li class="flex items-center gap-3 m-0">
-                        <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Uso personal
-                    </li>
-                </ul>
-                <button class="w-full py-4 rounded-xl font-bold text-white bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.12)] border border-[rgba(255,255,255,0.2)] transition-colors m-0 cursor-pointer">
-                    Get Started
-                </button>
-            </div>
+    <!-- PAYWALL MODAL CON TABLA DE PRECIOS -->
+    <div id="paywall"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100svh; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); padding: 20px; box-sizing: border-box; overflow-y:auto;">
+        <div style="position: relative; max-width: 1200px; width: 100%; margin: auto;">
+            <!-- Botón Cerrar (opcional pero bueno para UX) -->
+            <button onclick="closePaywall()"
+                style="position:absolute; top:-40px; right:0; background:transparent; border:none; color:#a1a1aa; cursor:pointer; font-size:1rem; font-weight:600; font-family:inherit; text-decoration:underline;">Maybe
+                later</button>
 
-            <!-- Pro Contractor -->
-            <div class="flex-1 flex flex-col p-8 md:p-10 rounded-3xl bg-[rgba(59,130,246,0.08)] border-2 border-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.3)] transition-all duration-300 hover:transform hover:-translate-y-2 relative transform md:-translate-y-4 box-border" style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10;">
-                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-5 py-1.5 rounded-full text-xs font-extrabold tracking-widest shadow-[0_4px_15px_rgba(59,130,246,0.5)] whitespace-nowrap">MÁS POPULAR</div>
-                <h3 class="text-3xl font-bold text-white m-0 mb-2">Plan Pro Contractor</h3>
-                <p class="text-sm text-blue-200 mb-4 font-medium italic m-0 bg-[rgba(59,130,246,0.15)] p-3 rounded-lg">"La herramienta para cerrar contratos de $20k+."</p>
-                <div class="text-5xl font-extrabold text-white m-0 mb-6">$49<span class="text-xl text-gray-300 font-medium tracking-normal">/mes</span></div>
-                <ul class="list-none p-0 m-0 text-white space-y-4 mb-8 flex-1 text-left font-medium">
-                    <li class="flex items-center gap-3 m-0">
-                        <svg class="w-6 h-6 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                        Renders ILIMITADOS
-                    </li>
-                    <li class="flex items-center gap-3 m-0">
-                        <svg class="w-6 h-6 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                        Calidad HD Premium
-                    </li>
-                    <li class="flex items-center gap-3 m-0">
-                        <svg class="w-6 h-6 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                        Licencia Comercial Completa
-                    </li>
-                    <li class="flex items-center gap-3 m-0">
-                        <svg class="w-6 h-6 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                        Soporte Prioritario
-                    </li>
-                </ul>
-                <a href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" class="w-full py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-[0_10px_25px_rgba(59,130,246,0.5)] transition-colors flex items-center justify-center cursor-pointer text-lg text-decoration-none m-0 border-none" style="text-decoration: none;">
-                    Upgrade Now
-                </a>
-            </div>
+            <section id="pricing" class="w-full mx-auto px-4"
+                style="font-family: 'Inter', sans-serif; box-sizing: border-box;">
+                <div class="text-center mb-12">
+                    <div
+                        class="inline-block bg-red-500/20 text-red-400 px-4 py-1.5 rounded-full text-sm font-bold tracking-widest mb-4 border border-red-500/30">
+                        LÍMITE ALCANZADO</div>
+                    <h2 class="text-3xl md:text-5xl font-extrabold text-white m-0 mb-4 tracking-tight"
+                        style="text-shadow: 0 4px 20px rgba(0,0,0,0.5);">Hazte Pro para Continuar</h2>
+                    <p class="text-lg md:text-xl text-gray-400 font-medium m-0">Has usado tus 3 renders gratuitos. Sube
+                        de nivel para desbloquear la potencia total.</p>
+                </div>
 
-            <!-- Business -->
-            <div class="flex-1 flex flex-col p-8 rounded-3xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] shadow-2xl transition-all duration-300 hover:transform hover:-translate-y-2 box-border" style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
-                <h3 class="text-2xl font-bold text-white m-0 mb-2">Plan Business</h3>
-                <p class="text-sm text-gray-400 mb-4 italic m-0 bg-[rgba(255,255,255,0.05)] p-3 rounded-lg">"Para equipos que dominan el mercado"</p>
-                <div class="text-4xl font-extrabold text-white m-0 mb-6">$99<span class="text-lg text-gray-400 font-medium tracking-normal">/mes</span></div>
-                <ul class="list-none p-0 m-0 text-gray-300 space-y-4 mb-8 flex-1 text-left">
-                    <li class="flex items-center gap-3 m-0">
-                        <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        3 cuentas de usuario
-                    </li>
-                    <li class="flex items-center gap-3 m-0">
-                        <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Estilos de IA personalizados
-                    </li>
-                    <li class="flex items-center gap-3 m-0">
-                        <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Acceso a API
-                    </li>
-                    <li class="flex items-center gap-3 m-0">
-                        <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Gerente de cuenta dedicado
-                    </li>
-                </ul>
-                <button class="w-full py-4 rounded-xl font-bold text-white bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.12)] border border-[rgba(255,255,255,0.2)] transition-colors m-0 cursor-pointer">
-                    Get Started
-                </button>
-            </div>
-        </div>
+                <div class="flex flex-col md:flex-row justify-center items-stretch gap-6 lg:gap-8 mx-auto w-full">
+                    <!-- Starter -->
+                    <div class="flex-1 flex flex-col p-8 rounded-3xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] shadow-2xl transition-all duration-300 box-border"
+                        style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+                        <h3 class="text-2xl font-bold text-white m-0 mb-2">Plan Starter</h3>
+                        <p class="text-sm text-gray-400 mb-4 italic m-0 bg-[rgba(255,255,255,0.05)] p-3 rounded-lg">
+                            "Ideal para probar la magia"</p>
+                        <div class="text-4xl font-extrabold text-gray-500 m-0 mb-6">$0<span
+                                class="text-lg font-medium tracking-normal">/mes</span></div>
+                        <ul class="list-none p-0 m-0 text-gray-500 space-y-4 mb-8 flex-1 text-left opacity-50">
+                            <li class="flex items-center gap-3 m-0">
+                                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                3 renders básicos (Agotados)
+                            </li>
+                            <li class="flex items-center gap-3 m-0">
+                                <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Resolución estándar
+                            </li>
+                        </ul>
+                        <button
+                            class="w-full py-4 rounded-xl font-bold text-gray-500 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] cursor-not-allowed m-0"
+                            disabled>
+                            Plan Actual
+                        </button>
+                    </div>
 
-        <div class="mt-8 text-center" style="margin-bottom: 20px;">
-            <a href="[PEGA_AQUÍ_TU_LINK]" class="text-xs text-gray-400 opacity-50 hover:opacity-100 transition-opacity" style="text-decoration: none;">Run System Check ($0.50)</a>
-        </div>
-    </section>
-    <!-- END PRICING SECTION -->
+                    <!-- Pro Contractor -->
+                    <div class="flex-1 flex flex-col p-8 md:p-10 rounded-3xl bg-[rgba(59,130,246,0.08)] border-2 border-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.3)] transition-all duration-300 relative box-border transform md:scale-105"
+                        style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10;">
+                        <div
+                            class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-5 py-1.5 rounded-full text-xs font-extrabold tracking-widest shadow-[0_4px_15px_rgba(59,130,246,0.5)] whitespace-nowrap">
+                            MÁS POPULAR</div>
+                        <h3 class="text-3xl font-bold text-white m-0 mb-2">Plan Pro Contractor</h3>
+                        <p
+                            class="text-sm text-blue-200 mb-4 font-medium italic m-0 bg-[rgba(59,130,246,0.15)] p-3 rounded-lg">
+                            "La herramienta para cerrar contratos de $20k+."</p>
+                        <div class="text-5xl font-extrabold text-white m-0 mb-6">$49<span
+                                class="text-xl text-gray-300 font-medium tracking-normal">/mes</span></div>
+                        <ul class="list-none p-0 m-0 text-white space-y-4 mb-8 flex-1 text-left font-medium">
+                            <li class="flex items-center gap-3 m-0">
+                                <svg class="w-6 h-6 text-green-400 shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Renders ILIMITADOS
+                            </li>
+                            <li class="flex items-center gap-3 m-0">
+                                <svg class="w-6 h-6 text-green-400 shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Calidad HD Premium
+                            </li>
+                            <li class="flex items-center gap-3 m-0">
+                                <svg class="w-6 h-6 text-green-400 shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Licencia Comercial Completa
+                            </li>
+                            <li class="flex items-center gap-3 m-0">
+                                <svg class="w-6 h-6 text-green-400 shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Soporte Prioritario
+                            </li>
+                        </ul>
+                        <a id="stripeLink" href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank"
+                            class="w-full py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-[0_10px_25px_rgba(59,130,246,0.5)] transition-colors flex items-center justify-center cursor-pointer text-lg text-decoration-none m-0 border-none pulse-upgrade"
+                            style="text-decoration: none;">
+                            Upgrade Now
+                        </a>
+                    </div>
 
-    <!-- PAYWALL ROJO -->
-    <div id="paywall" style="display:none; position:fixed; top:0; left:0; width:100%; height:100svh; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); padding: 20px; box-sizing: border-box; overflow-y:auto;">
-        <div style="background:rgba(185, 28, 28, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding:40px 25px; border-radius:32px; border:1px solid rgba(252, 165, 165, 0.3); text-align:center; max-width:400px; width:100%; margin:auto; box-shadow:0 30px 60px rgba(239,68,68,0.3), inset 0 1px 0 rgba(255,255,255,0.1); box-sizing: border-box; display:flex; flex-direction:column;">
-            <h2 style="margin-top:0; margin-bottom: 15px; font-weight:800; font-size:2rem; color:white; letter-spacing: -0.5px;" data-i18n="pay_h2">LIMIT REACHED</h2>
-            <p style="color:#fecaca; margin-bottom:35px; font-size:1.1rem; line-height:1.6; font-weight: 400;" data-i18n="pay_p">You have reached your limit of 3 free quotes this month. To continue exporting and unlock everything, please upgrade to Pro.</p>
-            <a id="stripeLink" href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" style="display:block; width:100%; padding:22px 15px; margin-bottom:20px; background:linear-gradient(135deg, #ef4444, #b91c1c); color:white; border:none; border-radius:18px; font-size:1.2rem; font-weight:bold; cursor:pointer; text-decoration:none; box-sizing: border-box; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.5), inset 0 1px 0 rgba(255,255,255,0.2);" data-i18n="pay_btn">Upgrade to PRO plan now!</a>
-            <button onclick="closePaywall()" style="background:transparent; border:none; color:#fca5a5; cursor:pointer; font-size:1rem; font-weight:600; font-family:inherit; text-decoration:underline;" data-i18n="pay_close">Maybe later</button>
+                    <!-- Business -->
+                    <div class="flex-1 flex flex-col p-8 rounded-3xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] shadow-2xl transition-all duration-300 box-border"
+                        style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+                        <h3 class="text-2xl font-bold text-white m-0 mb-2">Plan Business</h3>
+                        <p class="text-sm text-gray-400 mb-4 italic m-0 bg-[rgba(255,255,255,0.05)] p-3 rounded-lg">
+                            "Para equipos que dominan el mercado"</p>
+                        <div class="text-4xl font-extrabold text-white m-0 mb-6">$99<span
+                                class="text-lg text-gray-400 font-medium tracking-normal">/mes</span></div>
+                        <ul class="list-none p-0 m-0 text-gray-300 space-y-4 mb-8 flex-1 text-left">
+                            <li class="flex items-center gap-3 m-0">
+                                <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                3 cuentas de usuario
+                            </li>
+                            <li class="flex items-center gap-3 m-0">
+                                <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Estilos de IA personalizados
+                            </li>
+                            <li class="flex items-center gap-3 m-0">
+                                <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Acceso a API
+                            </li>
+                            <li class="flex items-center gap-3 m-0">
+                                <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Gerente de cuenta dedicado
+                            </li>
+                        </ul>
+                        <button
+                            class="w-full py-4 rounded-xl font-bold text-white bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.12)] border border-[rgba(255,255,255,0.2)] transition-colors m-0 cursor-pointer">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Enlace de prueba interna intacto -->
+                <div class="mt-8 text-center" style="margin-bottom: 20px;">
+                    <a href="[PEGA_AQUÍ_TU_LINK]"
+                        class="text-xs text-gray-400 opacity-50 hover:opacity-100 transition-opacity"
+                        style="text-decoration: none;">Run System Check ($0.50)</a>
+                </div>
+            </section>
         </div>
     </div>
 
     <!-- MODAL HISTORIAL -->
-    <div id="historialModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100svh; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); padding: 20px; box-sizing: border-box;">
-        <div style="background:rgba(26, 26, 46, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding:30px 25px; border-radius:24px; border:1px solid rgba(255, 255, 255, 0.1); max-width:500px; width:100%; max-height: 80vh; display:flex; flex-direction:column; box-shadow:0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); box-sizing: border-box; position: relative;">
-            <button onclick="cerrarHistorial()" style="position:absolute; top:20px; right:20px; background:transparent; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer; line-height:1; transition:0.3s; z-index:2;">&times;</button>
-            <h2 style="margin-top:0; margin-bottom: 20px; font-weight:800; font-size:1.5rem; color:white; text-align: left;" data-i18n="hist_modal_h2">Your Saved Quotes</h2>
-            <div id="lista-historial" style="overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px; padding-right:5px;">
+    <div id="historialModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100svh; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); padding: 20px; box-sizing: border-box;">
+        <div
+            style="background:rgba(26, 26, 46, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding:30px 25px; border-radius:24px; border:1px solid rgba(255, 255, 255, 0.1); max-width:500px; width:100%; max-height: 80vh; display:flex; flex-direction:column; box-shadow:0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05); box-sizing: border-box; position: relative;">
+            <button onclick="cerrarHistorial()"
+                style="position:absolute; top:20px; right:20px; background:transparent; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer; line-height:1; transition:0.3s; z-index:2;">&times;</button>
+            <h2 style="margin-top:0; margin-bottom: 20px; font-weight:800; font-size:1.5rem; color:white; text-align: left;"
+                data-i18n="hist_modal_h2">Your Saved Quotes</h2>
+            <div id="lista-historial"
+                style="overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px; padding-right:5px;">
                 <!-- Lista inyectada por JS -->
             </div>
         </div>
