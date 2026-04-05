@@ -1548,6 +1548,97 @@
         }
     </script>
 
+    <!-- START PRICING SECTION -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        corePlugins: { preflight: false }
+      }
+    </script>
+    <section id="pricing" class="w-full max-w-6xl mx-auto mt-24 mb-16 px-4" style="font-family: 'Inter', sans-serif; box-sizing: border-box;">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white m-0 mb-4 tracking-tight" style="text-shadow: 0 4px 20px rgba(0,0,0,0.5);">Choose Your Plan</h2>
+            <p class="text-lg md:text-xl text-gray-400 font-medium m-0">Stop losing deals. Start showing your vision in 3D.</p>
+        </div>
+
+        <div class="flex flex-col md:flex-row justify-center items-stretch gap-6 lg:gap-8 mx-auto w-full">
+            <!-- Starter -->
+            <div class="flex-1 flex flex-col p-8 rounded-3xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] shadow-2xl transition-all duration-300 hover:transform hover:-translate-y-2 box-border" style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+                <h3 class="text-2xl font-bold text-white m-0 mb-2">Starter</h3>
+                <div class="text-4xl font-extrabold text-white m-0 mb-6">$0<span class="text-lg text-gray-400 font-medium tracking-normal">/mo</span></div>
+                <ul class="list-none p-0 m-0 text-gray-300 space-y-4 mb-8 flex-1 text-left">
+                    <li class="flex items-center gap-3 m-0">
+                        <svg class="w-6 h-6 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        3 AI Sketches
+                    </li>
+                    <li class="flex items-center gap-3 m-0">
+                        <svg class="w-6 h-6 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Standard Resolution
+                    </li>
+                </ul>
+                <button class="w-full py-4 rounded-xl font-bold text-white bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.2)] cursor-not-allowed m-0" disabled>
+                    Current Plan
+                </button>
+            </div>
+
+            <!-- Pro Contractor -->
+            <div class="flex-1 flex flex-col p-8 md:p-10 rounded-3xl bg-[rgba(124,58,237,0.1)] border-2 border-[#7c3aed] shadow-[0_0_40px_rgba(124,58,237,0.3)] transition-all duration-300 hover:transform hover:-translate-y-2 relative transform md:-translate-y-4 box-border" style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10;">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] text-white px-5 py-1.5 rounded-full text-xs font-extrabold tracking-widest shadow-lg whitespace-nowrap">BEST FOR CONTRACTORS</div>
+                <h3 class="text-3xl font-bold text-white m-0 mb-2">Pro Contractor</h3>
+                <div class="text-5xl font-extrabold text-white m-0 mb-6">$49<span class="text-xl text-gray-400 font-medium tracking-normal">/mo</span></div>
+                <ul class="list-none p-0 m-0 text-white space-y-4 mb-8 flex-1 text-left font-medium">
+                    <li class="flex items-center gap-3 m-0">
+                        <svg class="w-6 h-6 text-[#a78bfa] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        Unlimited AI Sketches
+                    </li>
+                    <li class="flex items-center gap-3 m-0">
+                        <svg class="w-6 h-6 text-[#a78bfa] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        HD Resolution
+                    </li>
+                    <li class="flex items-center gap-3 m-0">
+                        <svg class="w-6 h-6 text-[#a78bfa] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        Full Commercial License
+                    </li>
+                    <li class="flex items-center gap-3 m-0">
+                        <svg class="w-6 h-6 text-[#a78bfa] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        Priority Support
+                    </li>
+                </ul>
+                <a href="https://buy.stripe.com/test_28E3cv6gE71KfRgfVJ1kA00" target="_blank" class="w-full py-4 rounded-xl font-bold text-white bg-gradient-to-r from-[#7c3aed] to-[#6d28d9] hover:from-[#6d28d9] hover:to-[#5b21b6] shadow-[0_10px_25px_rgba(124,58,237,0.5)] transition-all flex items-center justify-center cursor-pointer text-lg text-decoration-none m-0 border-none" style="text-decoration: none;">
+                    Upgrade to Pro
+                </a>
+            </div>
+
+            <!-- Enterprise -->
+            <div class="flex-1 flex flex-col p-8 rounded-3xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] shadow-2xl transition-all duration-300 hover:transform hover:-translate-y-2 box-border" style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+                <h3 class="text-2xl font-bold text-white m-0 mb-2">Enterprise</h3>
+                <div class="text-4xl font-extrabold text-white m-0 mb-6">$99<span class="text-lg text-gray-400 font-medium tracking-normal">/mo</span></div>
+                <ul class="list-none p-0 m-0 text-gray-300 space-y-4 mb-8 flex-1 text-left">
+                    <li class="flex items-center gap-3 m-0">
+                        <svg class="w-6 h-6 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        3 Team Seats
+                    </li>
+                    <li class="flex items-center gap-3 m-0">
+                        <svg class="w-6 h-6 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Custom AI Styles
+                    </li>
+                    <li class="flex items-center gap-3 m-0">
+                        <svg class="w-6 h-6 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        API Access
+                    </li>
+                </ul>
+                <button class="w-full py-4 rounded-xl font-bold text-gray-400 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] cursor-not-allowed m-0" disabled>
+                    Coming Soon
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center" style="margin-bottom: 20px;">
+            <a href="[PEGA_AQUÍ_TU_LINK]" class="text-xs text-gray-400 opacity-50 hover:opacity-100 transition-opacity" style="text-decoration: none;">Run System Check ($0.50)</a>
+        </div>
+    </section>
+    <!-- END PRICING SECTION -->
+
     <!-- PAYWALL ROJO -->
     <div id="paywall" style="display:none; position:fixed; top:0; left:0; width:100%; height:100svh; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); padding: 20px; box-sizing: border-box; overflow-y:auto;">
         <div style="background:rgba(185, 28, 28, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding:40px 25px; border-radius:32px; border:1px solid rgba(252, 165, 165, 0.3); text-align:center; max-width:400px; width:100%; margin:auto; box-shadow:0 30px 60px rgba(239,68,68,0.3), inset 0 1px 0 rgba(255,255,255,0.1); box-sizing: border-box; display:flex; flex-direction:column;">
