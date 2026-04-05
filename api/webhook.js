@@ -37,8 +37,8 @@ const handler = async (req, res) => {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     
-    // Extract customer email
-    const email = session.customer_details?.email || session.customer_email;
+    // Extract customer email comprehensively
+    const email = session.customer_details?.email || session.customer_email || session.receipt_email;
 
     if (email) {
       console.log(`Payment received from: ${email}. Updating status to PRO...`);
@@ -49,21 +49,31 @@ const handler = async (req, res) => {
       
       const supabase = createClient(supabaseUrl, supabaseKey);
 
-      // Update the user table (using 'usage' as it seems to be the active table for user state)
-      // Changing status to PRO and resetting render counter
-      const { error: updateError } = await supabase
+      // Perform an explicit UPDATE searching EXACTLY by the email column
+      let { data: updatedData, error: updateError } = await supabase
         .from('usage')
-        .upsert({ 
-          email: email, 
+        .update({ 
           is_pro: true, 
           count: 0 
-        }, { onConflict: 'email' });
+        })
+        .eq('email', email)
+        .select();
+
+      // If the update succeeded but no rows were found, the user didn't exist in the usage table yet.
+      // We insert them directly to avoid any onConflict schema issues.
+      if (!updateError && (!updatedData || updatedData.length === 0)) {
+        console.log(`No existing record found for ${email} in 'usage'. Inserting new PRO record...`);
+        const { error: insertError } = await supabase
+          .from('usage')
+          .insert({ email: email, is_pro: true, count: 0 });
+        
+        if (insertError) {
+           updateError = insertError;
+        }
+      }
 
       if (updateError) {
-        console.error("Error updating Supabase:", updateError);
-        // We still return 200 to Stripe so it doesn't retry the webhook constantly,
-        // or we could return 500 depending on the desired retry logic.
-        // Returning 200 as requested by the user: "Devuelve un status 200"
+        console.error("Error updating/inserting Supabase record:", updateError);
       } else {
         console.log(`User ${email} successfully updated to PRO.`);
       }
