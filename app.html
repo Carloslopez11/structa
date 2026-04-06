@@ -1767,7 +1767,7 @@
 
                 <div class="mt-8 text-center" style="margin-bottom: 20px;">
                     <span class="text-xs text-gray-500 opacity-50">© 2026 Structa 3D<a href="https://buy.stripe.com/00w28r8qtdYa01q6Xk1ck03" target="_blank" class="text-inherit no-underline cursor-default">.</a></span><br>
-                    <a href="politicas.html" class="text-xs text-gray-500 opacity-80" style="text-decoration: underline; margin-top: 10px; display: inline-block;">Privacidad y Términos</a>
+                    <a href="politicas.html" class="text-xs text-gray-500 opacity-80" style="text-decoration: underline; margin-top: 10px; display: inline-block;">Privacy & Terms</a>
                 </div>
             </section>
         </div>
@@ -1790,22 +1790,48 @@
     </div>
   <!-- COOKIE BANNER -->
   <div id="cookie-banner" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px; background: rgba(18, 26, 56, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px 25px; z-index: 9999; box-shadow: 0 25px 50px rgba(0,0,0,0.5); flex-direction: column; gap: 15px; align-items: center; text-align: center;">
-    <p style="margin: 0; font-size: 0.9rem; color: #94A3B8; line-height: 1.5;">
+    <p id="cookie-p-en" style="margin: 0; font-size: 0.9rem; color: #94A3B8; line-height: 1.5;">
+      We use essential cookies to ensure the proper functioning of the platform and process payments securely. By continuing to browse, you agree to our <a href="politicas.html" style="color: #8B5CF6; text-decoration: underline; font-weight: 600;">Privacy Policy</a>.
+    </p>
+    <p id="cookie-p-es" style="margin: 0; font-size: 0.9rem; color: #94A3B8; line-height: 1.5; display: none;">
       Utilizamos cookies esenciales para garantizar el correcto funcionamiento de la plataforma y procesar pagos de forma segura. Al continuar navegando, aceptas nuestra <a href="politicas.html" style="color: #8B5CF6; text-decoration: underline; font-weight: 600;">Política de Privacidad</a>.
     </p>
-    <button id="accept-cookies" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: white; border: none; padding: 10px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);">
-      Entendido
-    </button>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <button id="accept-cookies" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: white; border: none; padding: 10px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);">
+        Got it
+      </button>
+      <button id="toggle-cookie-lang" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #94A3B8; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: background 0.3s;">
+        🇪🇸 Español
+      </button>
+    </div>
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       const banner = document.getElementById("cookie-banner");
+      let cookieLang = 'en';
       if (!localStorage.getItem("cookies_accepted")) {
         banner.style.display = "flex";
+        
         document.getElementById("accept-cookies").addEventListener("click", function() {
           localStorage.setItem("cookies_accepted", "true");
           banner.style.display = "none";
+        });
+
+        document.getElementById("toggle-cookie-lang").addEventListener("click", function() {
+          if (cookieLang === 'en') {
+            document.getElementById("cookie-p-en").style.display = "none";
+            document.getElementById("cookie-p-es").style.display = "block";
+            document.getElementById("accept-cookies").textContent = "Entendido";
+            this.textContent = "🇺🇸 English";
+            cookieLang = 'es';
+          } else {
+            document.getElementById("cookie-p-es").style.display = "none";
+            document.getElementById("cookie-p-en").style.display = "block";
+            document.getElementById("accept-cookies").textContent = "Got it";
+            this.textContent = "🇪🇸 Español";
+            cookieLang = 'en';
+          }
         });
       }
     });
