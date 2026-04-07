@@ -393,48 +393,181 @@
       background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05), transparent);
     }
 
-    /* Secuencia Animada */
-    .demo-seq {
+    /* --- HERO DEMO (Recording Studio Mockup) --- */
+    .mockup-recording-studio {
+      position: relative;
+      height: 350px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05), transparent);
+      overflow: hidden;
+    }
+
+    /* Cursor */
+    .demo-cursor {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      z-index: 100;
+      color: white;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+      pointer-events: none;
+      transform: translate(150px, 150px);
+      transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    
+    .demo-cursor svg {
+      transform: rotate(-15deg);
+    }
+
+    /* Steps */
+    .demo-step {
       position: absolute;
       opacity: 0;
+      visibility: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      animation: sequencePlay 12s infinite;
+      transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+      transform: translateY(20px);
+      width: 100%;
+      padding: 0 20px;
+    }
+    
+    .demo-step.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
     }
 
-    .demo-seq svg {
-      width: 80px;
-      height: 80px;
+    /* Button and Input */
+    .btn-demo-new {
+      background: linear-gradient(135deg, var(--violet) 0%, #6D28D9 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.1rem;
       margin-bottom: 20px;
-      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      cursor: default;
     }
-    .demo-seq.seq-1 svg { color: #A78BFA; }
-    .demo-seq.seq-2 svg { color: var(--cyan-glow); animation: spin 2s linear infinite; }
-    .demo-seq.seq-3 svg { color: #10B981; }
+    .btn-demo-new.active-click {
+      transform: scale(0.95);
+      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
+    }
 
-    .demo-seq h4 {
-      margin: 0 0 10px;
-      font-size: 1.5rem;
-      color: var(--text-main);
+    .demo-input-container {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border-glass);
+      border-radius: 8px;
+      padding: 15px 20px;
+      text-align: left;
+      min-height: 100px;
+      display: flex;
+      align-items: flex-start;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
     }
-    .demo-seq p {
-      margin: 0;
+    
+    .demo-input-container.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .demo-input {
+      color: var(--text-main);
+      font-size: 1rem;
+      font-family: inherit;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+    
+    .demo-input::after {
+      content: '|';
+      animation: blink 1s infinite;
+      color: var(--cyan-glow);
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Loading */
+    .demo-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(139, 92, 246, 0.2);
+      border-top-color: var(--cyan-glow);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    
+    .step-loading p {
       font-size: 1.1rem;
       color: var(--text-muted);
+      margin: 0;
+      font-weight: 500;
     }
 
-    .seq-1 { animation-delay: 0s; }
-    .seq-2 { animation-delay: 4s; }
-    .seq-3 { animation-delay: 8s; }
-
-    @keyframes sequencePlay {
-      0%, 25% { opacity: 0; transform: translateY(20px) scale(0.95); }
-      5%, 20% { opacity: 1; transform: translateY(0) scale(1); }
-      30%, 100% { opacity: 0; transform: translateY(-20px) scale(1.05); }
+    /* Result */
+    .result-panel {
+      background: rgba(18, 26, 56, 0.95);
+      border: 1px solid rgba(45, 212, 191, 0.5);
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 25px rgba(45, 212, 191, 0.15);
+      width: 100%;
+      max-width: 480px;
+      animation: resultPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      opacity: 0;
+      transform: scale(0.9);
     }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
+    
+    @keyframes resultPop {
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+      color: var(--cyan-glow);
+      padding: 0 10px;
+    }
+    .result-header svg {
+      width: 24px;
+      height: 24px;
+    }
+    .result-header h4 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: var(--text-main);
+      font-weight: 700;
+    }
+    .demo-result-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border-glass);
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    }
 
     /* --- FEATURE GRAPHICS --- */
     .feature-graphic {
@@ -770,21 +903,35 @@
            <div class="mac-dots"><span></span><span></span><span></span></div>
            <div class="mac-title">structa.app</div>
         </div>
-        <div class="mac-body">
-           <div class="demo-seq seq-1">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-              <h4 data-i18n="demo_1_h">1. Upload your blueprint</h4>
-              <p data-i18n="demo_1_p">You or your client drop the floor plan into the system.</p>
+        <div class="mac-body mockup-recording-studio" id="mockupStudio">
+           <!-- Cursor Animado -->
+           <div class="demo-cursor" id="demoCursor">
+             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l16 5.333L12 12l-8.667 16L4 4z"></path></svg>
            </div>
-           <div class="demo-seq seq-2">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-              <h4 data-i18n="demo_2_h">2. AI Analysis</h4>
-              <p data-i18n="demo_2_p">Extracting measurements and simulating aesthetics...</p>
+           
+           <!-- Step 1: Input -->
+           <div class="demo-step step-input" id="demoStepInput">
+              <button class="btn-demo-new" id="btnDemoNew">Nuevo Proyecto</button>
+              <div class="demo-input-container" id="demoInputContainer">
+                 <div class="demo-input" id="demoInput"></div>
+              </div>
            </div>
-           <div class="demo-seq seq-3">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-              <h4 data-i18n="demo_3_h">3. Quote Ready</h4>
-              <p data-i18n="demo_3_p">Professional PDF, dynamically itemized with 3D Renders.</p>
+           
+           <!-- Step 2: Loading -->
+           <div class="demo-step step-loading" id="demoStepLoading">
+              <div class="demo-spinner"></div>
+              <p>Generando render y presupuesto...</p>
+           </div>
+           
+           <!-- Step 3: Result -->
+           <div class="demo-step step-result" id="demoStepResult">
+              <div class="result-panel">
+                  <div class="result-header">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      <h4>Presupuesto PDF Generado</h4>
+                  </div>
+                  <img src="https://images.unsplash.com/photo-1556910103-1c02745a872f?auto=format&fit=crop&q=80&w=600" alt="Cocina Moderna Premium" class="demo-result-img" />
+              </div>
            </div>
         </div>
       </div>
@@ -1067,6 +1214,112 @@
           }
         });
       }
+    });
+  </script>
+  <script>
+    // --- Mockup Recording Studio Animation Loop ---
+    document.addEventListener("DOMContentLoaded", () => {
+      const cursor = document.getElementById("demoCursor");
+      const stepInput = document.getElementById("demoStepInput");
+      const btnNew = document.getElementById("btnDemoNew");
+      const inputContainer = document.getElementById("demoInputContainer");
+      const textInput = document.getElementById("demoInput");
+      const stepLoading = document.getElementById("demoStepLoading");
+      const stepResult = document.getElementById("demoStepResult");
+      const studio = document.getElementById("mockupStudio");
+
+      const textToType = "Remodelación de Cocina Moderna, isla central de mármol, iluminación LED...";
+      
+      async function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      async function typeText(text, element) {
+        element.textContent = "";
+        for (let i = 0; i < text.length; i++) {
+          element.textContent += text.charAt(i);
+          // Wait between 40-70ms for realistic typing speeds
+          await sleep(40 + Math.random() * 30); 
+        }
+      }
+
+      async function runSequence() {
+        if (!studio) return; // Guard clause
+        
+        // Reset states
+        cursor.style.transition = "none";
+        cursor.style.transform = "translate(150px, 150px)";
+        
+        stepInput.classList.add("active");
+        stepLoading.classList.remove("active");
+        stepResult.classList.remove("active");
+        inputContainer.classList.remove("show");
+        textInput.textContent = "";
+        btnNew.classList.remove("active-click");
+        
+        // Let DOM update before enabling transitions
+        await sleep(50);
+        cursor.style.transition = "transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)";
+        await sleep(1000); // Initial pause
+
+        // 1. Move cursor to button
+        const btnRect = btnNew.getBoundingClientRect();
+        const studioRect = studio.getBoundingClientRect();
+        
+        const targetX = (btnRect.left - studioRect.left) + (btnRect.width / 2);
+        const targetY = (btnRect.top - studioRect.top) + (btnRect.height / 2);
+
+        cursor.style.transform = `translate(${targetX}px, ${targetY}px)`;
+        await sleep(800); // Wait for cursor move
+
+        // 2. Click button
+        btnNew.classList.add("active-click");
+        await sleep(150);
+        btnNew.classList.remove("active-click");
+        await sleep(300);
+
+        // Move cursor slightly away
+        cursor.style.transform = `translate(${targetX + 40}px, ${targetY + 50}px)`;
+
+        // Show input container
+        inputContainer.classList.add("show");
+        await sleep(600);
+
+        // 3. Type text
+        await typeText(textToType, textInput);
+        await sleep(800);
+
+        // Move cursor outside to simulate progressing
+        cursor.style.transform = `translate(400px, 300px)`;
+
+        // Transition to Loading
+        stepInput.classList.remove("active");
+        await sleep(400);
+        stepLoading.classList.add("active");
+
+        // 4. Loading for 2 seconds
+        await sleep(2000);
+
+        // Transition to Result
+        stepLoading.classList.remove("active");
+        await sleep(400);
+        stepResult.classList.add("active");
+
+        // Show result for 4 seconds before looping
+        await sleep(4000);
+        
+        // Hide result to restart loop smoothly
+        stepResult.classList.remove("active");
+        await sleep(600);
+        
+        // Restart Loop
+        runSequence();
+      }
+
+      // Start sequence slightly after load
+      setTimeout(() => {
+        runSequence();
+      }, 500);
     });
   </script>
 </body>
