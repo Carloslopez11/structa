@@ -15,15 +15,15 @@
   <style>
     /* --- CONFIGURACIÓN BASE (Premium SaaS Redesign) --- */
     :root {
-      --bg-midnight: #0A0F24;
-      --card-bg: #121A38;
-      --violet: #8B5CF6;
-      --violet-hover: #7C3AED;
-      --cyan-glow: #2DD4BF;
-      --text-main: #F8FAFC;
-      --text-muted: #94A3B8;
-      --border-glass: rgba(255, 255, 255, 0.08);
-      --glass-bg: rgba(18, 26, 56, 0.6);
+      --bg-midnight: #050a15;
+      --card-bg: rgba(15, 23, 42, 0.5);
+      --violet: #00f0ff;
+      --violet-hover: #0891b2;
+      --cyan-glow: #00f0ff;
+      --text-main: #ffffff;
+      --text-muted: #cbd5e1;
+      --border-glass: rgba(0, 240, 255, 0.2);
+      --glass-bg: rgba(15, 23, 42, 0.5);
     }
 
     body {
@@ -35,8 +35,8 @@
       line-height: 1.6;
       overflow-x: hidden;
       background-image:
-        radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.05), transparent 25%),
-        radial-gradient(circle at 85% 30%, rgba(45, 212, 191, 0.03), transparent 25%);
+        radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.05), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.03), transparent 25%);
       background-attachment: fixed;
       background-size: cover;
     }
@@ -61,18 +61,18 @@
     }
 
     @keyframes problemPulseGlow {
-      0%, 100% { box-shadow: 0 0 15px rgba(139, 92, 246, 0); border-color: rgba(139, 92, 246, 0.2); }
-      50% { box-shadow: 0 0 35px rgba(45, 212, 191, 0.25); border-color: rgba(45, 212, 191, 0.6); }
+      0%, 100% { box-shadow: 0 0 15px rgba(0, 240, 255, 0); border-color: rgba(0, 240, 255, 0.2); }
+      50% { box-shadow: 0 0 35px rgba(0, 240, 255, 0.25); border-color: rgba(0, 240, 255, 0.6); }
     }
 
     @keyframes pulseBtn {
-      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
-      70% { transform: scale(1.03); box-shadow: 0 0 0 15px rgba(139, 92, 246, 0); }
-      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.7); }
+      70% { transform: scale(1.03); box-shadow: 0 0 0 15px rgba(0, 240, 255, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
     }
 
     .text-gradient-animated {
-      background: linear-gradient(270deg, #F59E0B, #8B5CF6, #2DD4BF, #F59E0B);
+      background: linear-gradient(270deg, #3b82f6, #00f0ff, #2DD4BF, #3b82f6);
       background-size: 300% 300%;
       -webkit-background-clip: text;
       background-clip: text;
@@ -130,9 +130,9 @@
     }
 
     #nav-actions a:hover {
-      background: rgba(139, 92, 246, 0.1);
-      border-color: rgba(139, 92, 246, 0.3);
-      color: #A78BFA;
+      background: rgba(0, 240, 255, 0.1);
+      border-color: rgba(0, 240, 255, 0.3);
+      color: #00f0ff;
     }
 
     .btn-nav {
@@ -154,7 +154,7 @@
       transform: translate(-50%, -50%);
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 70%);
+      background: radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, rgba(0, 240, 255, 0) 70%);
       pointer-events: none;
       z-index: -1;
       animation: pulseGlow 8s infinite alternate ease-in-out;
@@ -168,8 +168,8 @@
     .badge {
       display: inline-block;
       padding: 8px 18px;
-      background: rgba(45, 212, 191, 0.1);
-      border: 1px solid rgba(45, 212, 191, 0.3);
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.3);
       border-radius: 30px;
       color: var(--cyan-glow);
       font-weight: 600;
@@ -195,7 +195,7 @@
     }
 
     h1 span {
-      background: linear-gradient(135deg, #A78BFA 0%, var(--cyan-glow) 100%);
+      background: linear-gradient(135deg, #00f0ff 0%, var(--cyan-glow) 100%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -214,17 +214,17 @@
     /* --- BOTONES PRINCIPALES --- */
     .btn {
       display: inline-block;
-      background: linear-gradient(135deg, var(--violet) 0%, #6D28D9 100%);
-      color: #fff;
+      background: var(--cyan-glow);
+      color: #050a15;
       padding: 18px 40px;
       border-radius: 12px;
-      font-weight: 600;
+      font-weight: 700;
       text-decoration: none;
       font-size: 1.15rem;
       position: relative;
       transition: all 0.3s ease;
-      border: 1px solid rgba(167, 139, 250, 0.3);
-      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+      border: 1px solid rgba(0, 240, 255, 0.5);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
       overflow: hidden;
     }
 
@@ -235,7 +235,7 @@
     .btn:hover {
       animation-play-state: paused;
       transform: translateY(-4px) !important;
-      box-shadow: 0 15px 35px rgba(139, 92, 246, 0.5), 0 0 20px rgba(45, 212, 191, 0.4) !important;
+      box-shadow: 0 15px 35px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.4) !important;
       border-color: var(--cyan-glow);
     }
     
@@ -253,7 +253,7 @@
       background: var(--glass-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(139, 92, 246, 0.2); 
+      border: 1px solid rgba(0, 240, 255, 0.2); 
       border-radius: 20px;
       text-align: center;
       opacity: 0;
@@ -303,8 +303,8 @@
     .feature:hover {
       transform: translateY(-8px) !important; /* Override reveal-up.active transform */
       background: rgba(22, 32, 68, 0.8);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.15);
-      border-color: rgba(139, 92, 246, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 240, 255, 0.15);
+      border-color: rgba(0, 240, 255, 0.3);
     }
 
     .feature h3 {
@@ -341,7 +341,7 @@
       border: 1px solid var(--border-glass);
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 30px rgba(139, 92, 246, 0.15);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 30px rgba(0, 240, 255, 0.15);
       transform: rotateX(5deg);
       transition: transform 0.5s ease;
     }
@@ -370,8 +370,8 @@
       background: #4B5563;
     }
     .mac-dots span:nth-child(1) { background: #EF4444; }
-    .mac-dots span:nth-child(2) { background: #F59E0B; }
-    .mac-dots span:nth-child(3) { background: #10B981; }
+    .mac-dots span:nth-child(2) { background: #3b82f6; }
+    .mac-dots span:nth-child(3) { background: #00f0ff; }
 
     .mac-title {
       flex: 1;
@@ -390,7 +390,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05), transparent);
+      background: radial-gradient(circle at center, rgba(0, 240, 255, 0.05), transparent);
     }
 
     /* --- HERO DEMO (Recording Studio Mockup) --- */
@@ -402,7 +402,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05), transparent);
+      background: radial-gradient(circle at center, rgba(0, 240, 255, 0.05), transparent);
       overflow: hidden;
     }
 
@@ -446,7 +446,7 @@
 
     /* Button and Input */
     .btn-demo-new {
-      background: linear-gradient(135deg, var(--violet) 0%, #6D28D9 100%);
+      background: linear-gradient(135deg, var(--violet) 0%, #0891b2 100%);
       color: white;
       border: none;
       padding: 12px 24px;
@@ -454,7 +454,7 @@
       font-weight: 600;
       font-size: 1.1rem;
       margin-bottom: 20px;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+      box-shadow: 0 4px 15px rgba(0, 240, 255, 0.4);
       transition: transform 0.1s ease, box-shadow 0.1s ease;
       cursor: default;
     }
@@ -522,7 +522,7 @@
     }
     .calc-spinner {
       width: 16px; height: 16px;
-      border: 2px solid rgba(45, 212, 191, 0.3);
+      border: 2px solid rgba(0, 240, 255, 0.3);
       border-top-color: var(--cyan-glow);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
@@ -543,10 +543,10 @@
     /* Result Panel */
     .result-panel {
       background: rgba(18, 26, 56, 0.95);
-      border: 1px solid rgba(45, 212, 191, 0.5);
+      border: 1px solid rgba(0, 240, 255, 0.5);
       border-radius: 12px;
       padding: 15px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 25px rgba(45, 212, 191, 0.15);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 25px rgba(0, 240, 255, 0.15);
       width: 100%;
       max-width: 480px;
       animation: resultPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -593,7 +593,7 @@
       border: 1px solid rgba(255,255,255,0.2);
     }
     .btn-wsp {
-      background: #10B981;
+      background: #00f0ff;
       color: white;
       box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
     }
@@ -604,12 +604,12 @@
       left: 50%;
       transform: translate(-50%, -50%) scale(0.8);
       background: rgba(18, 26, 56, 0.95);
-      border: 1px solid #10B981;
+      border: 1px solid #00f0ff;
       padding: 15px 25px;
       border-radius: 8px;
       font-size: 1.1rem;
       font-weight: 600;
-      color: #10B981;
+      color: #00f0ff;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -645,7 +645,7 @@
       height: 80px;
       border: 2px solid var(--violet);
       position: relative;
-      background: rgba(139, 92, 246, 0.1);
+      background: rgba(0, 240, 255, 0.1);
     }
     .graphic-blueprint::before {
       content: '5.2m';
@@ -732,7 +732,7 @@
       top: 5px;
       right: 5px;
       font-size: 0.65rem;
-      color: #10B981;
+      color: #00f0ff;
     }
 
     /* --- TESTIMONIALS --- */
@@ -754,7 +754,7 @@
     }
 
     .testimonials-header span {
-      background: linear-gradient(135deg, #A78BFA 0%, var(--cyan-glow) 100%);
+      background: linear-gradient(135deg, #00f0ff 0%, var(--cyan-glow) 100%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -782,8 +782,8 @@
     
     .testimonial-card:hover {
       transform: translateY(-5px) !important; /* Override active reveal transform */
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.15);
-      border-color: rgba(139, 92, 246, 0.4);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 240, 255, 0.15);
+      border-color: rgba(0, 240, 255, 0.4);
     }
     
     .stars {
@@ -839,7 +839,7 @@
     
     details[open] {
       border-color: var(--violet);
-      box-shadow: 0 10px 25px rgba(139, 92, 246, 0.1);
+      box-shadow: 0 10px 25px rgba(0, 240, 255, 0.1);
     }
     
     summary {
@@ -882,7 +882,7 @@
 
     /* --- FINAL CTA SECTION --- */
     .cta-section {
-      background: linear-gradient(180deg, var(--bg-midnight) 0%, rgba(139, 92, 246, 0.1) 50%, var(--bg-midnight) 100%);
+      background: linear-gradient(180deg, var(--bg-midnight) 0%, rgba(0, 240, 255, 0.1) 50%, var(--bg-midnight) 100%);
       border-top: 1px solid var(--border-glass);
       margin: 120px 0 0;
       padding: 100px 20px;
@@ -898,7 +898,7 @@
       transform: translate(-50%, -50%);
       width: 500px;
       height: 500px;
-      background: radial-gradient(circle, rgba(45, 212, 191, 0.15) 0%, transparent 60%);
+      background: radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, transparent 60%);
       pointer-events: none;
     }
 
@@ -1109,21 +1109,21 @@
 
       <div class="flex flex-col md:flex-row justify-center items-stretch gap-6 lg:gap-8 mx-auto w-full">
           <!-- Starter -->
-          <div class="flex-1 flex flex-col p-8 rounded-3xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] shadow-2xl transition-all duration-300 hover:transform hover:-translate-y-2 box-border" style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+          <div class="flex-1 flex flex-col p-8 rounded-3xl bg-slate-900/50 backdrop-blur-md border border-cyan-400/20 shadow-2xl transition-all duration-300 hover:transform hover:-translate-y-2 box-border" style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
               <h3 class="text-2xl font-bold text-white m-0 mb-2">Plan Starter</h3>
               <p class="text-sm text-gray-400 mb-4 italic m-0 bg-[rgba(255,255,255,0.05)] p-3 rounded-lg">"Ideal para probar la magia"</p>
               <div class="text-4xl font-extrabold text-white m-0 mb-6">$0<span class="text-lg text-gray-400 font-medium tracking-normal">/mes</span></div>
               <ul class="list-none p-0 m-0 text-gray-300 space-y-4 mb-8 flex-1 text-left">
                   <li class="flex items-center gap-3 m-0">
-                      <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                      <svg class="w-6 h-6 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                       3 renders básicos
                   </li>
                   <li class="flex items-center gap-3 m-0">
-                      <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                      <svg class="w-6 h-6 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                       Resolución estándar
                   </li>
                   <li class="flex items-center gap-3 m-0">
-                      <svg class="w-6 h-6 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                      <svg class="w-6 h-6 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                       Uso personal
                   </li>
               </ul>
@@ -1133,36 +1133,36 @@
           </div>
 
           <!-- Pro Contractor -->
-          <div class="flex-1 flex flex-col p-8 md:p-10 rounded-3xl bg-[rgba(59,130,246,0.08)] border-2 border-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.3)] transition-all duration-300 hover:transform hover:-translate-y-2 relative transform md:-translate-y-4 box-border" style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10;">
-              <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-5 py-1.5 rounded-full text-xs font-extrabold tracking-widest shadow-[0_4px_15px_rgba(59,130,246,0.5)] whitespace-nowrap">MÁS POPULAR</div>
+          <div class="flex-1 flex flex-col p-8 md:p-10 rounded-3xl bg-slate-900/50 border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,240,255,0.4)] transition-all duration-300 hover:transform hover:-translate-y-2 relative transform md:-translate-y-4 box-border" style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10;">
+              <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-cyan-400 text-slate-950 text-white px-5 py-1.5 rounded-full text-xs font-extrabold tracking-widest shadow-[0_4px_15px_rgba(59,130,246,0.5)] whitespace-nowrap">MÁS POPULAR</div>
               <h3 class="text-3xl font-bold text-white m-0 mb-2">Plan Pro Contractor</h3>
-              <p class="text-sm text-blue-200 mb-4 font-medium italic m-0 bg-[rgba(59,130,246,0.15)] p-3 rounded-lg">"La herramienta para cerrar contratos de $20k+."</p>
+              <p class="text-sm text-cyan-200 mb-4 font-medium italic m-0 bg-cyan-900/30 p-3 rounded-lg">"La herramienta para cerrar contratos de $20k+."</p>
               <div class="text-5xl font-extrabold text-white m-0 mb-6">$49<span class="text-xl text-gray-300 font-medium tracking-normal">/mes</span></div>
               <ul class="list-none p-0 m-0 text-white space-y-4 mb-8 flex-1 text-left font-medium">
                   <li class="flex items-center gap-3 m-0">
-                      <svg class="w-6 h-6 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                      <svg class="w-6 h-6 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                       Renders ILIMITADOS
                   </li>
                   <li class="flex items-center gap-3 m-0">
-                      <svg class="w-6 h-6 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                      <svg class="w-6 h-6 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                       Calidad HD Premium
                   </li>
                   <li class="flex items-center gap-3 m-0">
-                      <svg class="w-6 h-6 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                      <svg class="w-6 h-6 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                       Licencia Comercial Completa
                   </li>
                   <li class="flex items-center gap-3 m-0">
-                      <svg class="w-6 h-6 text-green-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                      <svg class="w-6 h-6 text-cyan-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                       Soporte Prioritario
                   </li>
               </ul>
-              <a href="https://buy.stripe.com/5kQ6oH4ad6vI01q6Xk1ck05" target="_blank" class="w-full py-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-[0_10px_25px_rgba(59,130,246,0.5)] transition-colors flex items-center justify-center cursor-pointer text-lg text-decoration-none m-0 border-none" style="text-decoration: none;">
+              <a href="https://buy.stripe.com/5kQ6oH4ad6vI01q6Xk1ck05" target="_blank" class="w-full py-4 rounded-xl font-bold text-white bg-cyan-400 text-slate-950 hover:bg-cyan-300 shadow-[0_0_15px_rgba(0,240,255,0.4)] transition-colors flex items-center justify-center cursor-pointer text-lg text-decoration-none m-0 border-none" style="text-decoration: none;">
                   Upgrade Now
               </a>
           </div>
 
           <!-- Business -->
-          <div class="flex-1 flex flex-col p-8 rounded-3xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] shadow-2xl transition-all duration-300 relative box-border opacity-75" style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+          <div class="flex-1 flex flex-col p-8 rounded-3xl bg-slate-900/50 backdrop-blur-md border border-cyan-400/20 shadow-2xl transition-all duration-300 relative box-border opacity-75" style="backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
               <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-500 text-black px-5 py-1.5 rounded-full text-xs font-extrabold tracking-widest shadow-[0_4px_15px_rgba(245,158,11,0.5)] whitespace-nowrap">IN DEVELOPMENT</div>
               <h3 class="text-2xl font-bold text-white m-0 mb-2">Plan Business</h3>
               <p class="text-sm text-gray-400 mb-4 italic m-0 bg-[rgba(255,255,255,0.05)] p-3 rounded-lg">"Para equipos que dominan el mercado"</p>
@@ -1235,13 +1235,13 @@
   <!-- COOKIE BANNER -->
   <div id="cookie-banner" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 600px; background: rgba(18, 26, 56, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px 25px; z-index: 9999; box-shadow: 0 25px 50px rgba(0,0,0,0.5); flex-direction: column; gap: 15px; align-items: center; text-align: center;">
     <p id="cookie-p-en" style="margin: 0; font-size: 0.9rem; color: #94A3B8; line-height: 1.5;">
-      We use essential cookies to ensure the proper functioning of the platform and process payments securely. By continuing to browse, you agree to our <a href="politicas.html" style="color: #8B5CF6; text-decoration: underline; font-weight: 600;">Privacy Policy</a>.
+      We use essential cookies to ensure the proper functioning of the platform and process payments securely. By continuing to browse, you agree to our <a href="politicas.html" style="color: #00f0ff; text-decoration: underline; font-weight: 600;">Privacy Policy</a>.
     </p>
     <p id="cookie-p-es" style="margin: 0; font-size: 0.9rem; color: #94A3B8; line-height: 1.5; display: none;">
-      Utilizamos cookies esenciales para garantizar el correcto funcionamiento de la plataforma y procesar pagos de forma segura. Al continuar navegando, aceptas nuestra <a href="politicas.html" style="color: #8B5CF6; text-decoration: underline; font-weight: 600;">Política de Privacidad</a>.
+      Utilizamos cookies esenciales para garantizar el correcto funcionamiento de la plataforma y procesar pagos de forma segura. Al continuar navegando, aceptas nuestra <a href="politicas.html" style="color: #00f0ff; text-decoration: underline; font-weight: 600;">Política de Privacidad</a>.
     </p>
     <div style="display: flex; gap: 10px; align-items: center;">
-      <button id="accept-cookies" style="background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: white; border: none; padding: 10px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);">
+      <button id="accept-cookies" style="background: linear-gradient(135deg, #00f0ff, #0891b2); color: white; border: none; padding: 10px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 240, 255, 0.3);">
         Got it
       </button>
       <button id="toggle-cookie-lang" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #94A3B8; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: background 0.3s;">
