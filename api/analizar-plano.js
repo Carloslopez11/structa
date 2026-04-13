@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       messages: [
         {
           role: "system",
-          content: "Actúa como un 'Inspector Arquitectónico Estricto'. Analyze the provided image of a blueprint or sketch. Generate a JSON with a finite and closed inventory of EXACTLY what is on the blueprint. Do not invent spaces. Identify the main dimensions (length and width) of the space, the type of room it is (e.g., 'baño', 'cocina', 'habitación', 'sala', 'jardín', 'oficina', etc.), and determine the EXACT count of bedrooms and bathrooms present. Además, debes devolver un array JSON llamado desglose que contenga este inventario cerrado de cada espacio detectado con sus medidas aproximadas. Respond ONLY with a valid JSON object strictly in this format: {\"largo\": number, \"ancho\": number, \"tipo\": \"string\", \"habitaciones\": number, \"banos\": number, \"desglose\": [{\"nombre\": \"Sala\", \"largo\": 5, \"ancho\": 4}]}. Si no hay medidas evidentes y no puedes intuirlo, responde {\"largo\": 0, \"ancho\": 0, \"tipo\": \"desconocido\", \"habitaciones\": 0, \"banos\": 0, \"desglose\": []}.",
+          content: "Actúa como un 'Inspector Arquitectónico Estricto'. Analyze the provided image of a blueprint or sketch. Generate a JSON with a closed inventory of EXACTLY what is on the blueprint. Do not invent spaces. Identify main dimensions (length and width), the type of room (e.g., 'baño', 'cocina', etc.), and the EXACT count of bedrooms and bathrooms. Add an array 'desglose' with each detected space and its approx dimensions. CRITICALLY: Include a field called 'prompt_visual'. This must be a highly descriptive text (in English, max 600 characters) designed for an AI image generator. Describe the exact spatial geometry, flow, door/window placements, and structural walls mathematically as seen on this specific blueprint, acting as a direct mapping instruction. Respond ONLY with a valid JSON strictly in this format: {\"largo\": number, \"ancho\": number, \"tipo\": \"string\", \"habitaciones\": number, \"banos\": number, \"prompt_visual\": \"string\", \"desglose\": [{\"nombre\": \"Sala\", \"largo\": 5, \"ancho\": 4}]}. Si no entiendes el plano, responde valores en cero y arrays vacíos.",
         },
         {
           role: "user",
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
           ],
         },
       ],
-      max_tokens: 300,
+      max_tokens: 700,
       temperature: 0.1, // Baja temperatura para mayor rigor
     };
 
@@ -72,6 +72,7 @@ export default async function handler(req, res) {
     const tipo = parsedResult.tipo || "espacio arquitectónico";
     const habitaciones = parsedResult.habitaciones || 1;
     const banos = parsedResult.banos || 1;
+    const prompt_visual = parsedResult.prompt_visual || "Standard architectural layout based on general room type geometry.";
     const desglose = parsedResult.desglose || [];
 
     let renderUrl = null;
@@ -84,13 +85,16 @@ export default async function handler(req, res) {
           qualityPromptStr = "buenos materiales, diseño moderno, acabados de calidad";
         }
 
-        const baseImagePrompt = `Actúa como un diseñador de interiores premium y arquitecto. Transforma este plano 2D en un render 3D isométrico de lujo en alta definición. Tienes libertad creativa para proponer una distribución de mobiliario elegante, iluminación de estudio y texturas de alta gama para enamorar al cliente (este es un Boceto de Inspiración). SIN EMBARGO, debes mantener la lógica arquitectónica básica: NO elimines paredes estructurales, los baños DEBEN estar siempre en recintos cerrados con paredes completas, y respeta la distribución general de las habitaciones.`;
+        const baseImagePrompt = `A MASTERPIECE highly detailed photorealistic 3D isometric architectural cutaway render of a luxury interior. Shot for Architectural Digest photography, rendered in Unreal Engine 5 with V-Ray, Corona Render, global illumination, raytracing, and cinematic studio lighting. 8k resolution, ultra-detailed textures, premium high-end aesthetics. ACT AS A STRICT ARCHITECT: you MUST faithfully follow the exact architectural layout provided. Do not delete structural walls. Bathrooms must remain enclosed.`;
 
-        const contextStr = `Mapeo estructural obligatorio detectado en la imagen: Espacio de tipo ${tipo}. Habitaciones totales exactas: ${habitaciones}. Baños totales exactos: ${banos}. Dimensiones del proyecto: ${largo}m x ${ancho}m. Acabados solicitados por nivel de calidad: ${qualityPromptStr}.`;
+        const contextStr = `PROJECT SPECS: ${tipo}. EXACT Rooms: ${habitaciones} bedrooms, ${banos} bathrooms. Size: ${largo}m x ${ancho}m. FINISHES: ${qualityPromptStr}.`;
         
+        const blueprintMappingStr = `STRICT VISUAL BLUEPRINT MAPPING TO FOLLOW: ${prompt_visual}`;
+        const promptFinal = `${baseImagePrompt}\n\n${contextStr}\n\n${blueprintMappingStr}`;
+
         const dallePayload = {
           model: "dall-e-3",
-          prompt: `${baseImagePrompt}\n\n${contextStr}`,
+          prompt: promptFinal.substring(0, 3900),
           n: 1,
           size: "1024x1024",
           quality: "hd"
