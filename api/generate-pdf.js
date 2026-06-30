@@ -2,7 +2,7 @@ const db = require('./_db');
 const PDFDocument = require('pdfkit');
 const multer = require('multer');
 
-export const config = {
+module.exports.config = {
   api: {
     bodyParser: false, // Disallow body parsing, consume as stream
   },
@@ -22,7 +22,7 @@ function runMiddleware(req, res, fn) {
   });
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
