@@ -23,6 +23,13 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'El correo electrónico ya está registrado' });
     }
 
+    // Auto-migrate (safe to run multiple times, only runs on register)
+    try {
+      await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255)`);
+    } catch (e) {
+      console.log('Migration skipped/failed:', e);
+    }
+
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
