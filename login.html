@@ -10,8 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
+  <!-- Custom Auth -->
   <style>
     :root {
       --bg-midnight: #0A0F24;
@@ -203,12 +202,6 @@
   </div>
 
   <script>
-    // Inicializa Supabase
-    const SUPABASE_URL = 'https://tadjlpeifkidsghbirlj.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRhZGpscGVpZmtpZHNnaGJpcmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNjg1MDEsImV4cCI6MjA4Nzk0NDUwMX0.laJbEwsKJTYsWy1GbV3LHma5rsixWQH-Th8K9NX_WAc';
-    
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
     // Referencias del DOM
     const submitBtn = document.getElementById('submit-btn');
     const authForm = document.getElementById('auth-form');
@@ -242,26 +235,7 @@
     // Manejar envío de recuperación
     recoveryForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = recoveryEmailInput.value.trim();
-      
-      recoveryBtn.disabled = true;
-      recoveryBtn.textContent = 'Enviando...';
-
-      const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://structa-theta.vercel.app/update-password.html'
-      });
-
-      if (error) {
-        alert('Error: ' + error.message);
-      } else {
-        alert('Si el correo existe, te hemos enviado un enlace para recuperar tu contraseña.');
-        recoveryForm.style.display = 'none';
-        authForm.style.display = 'block';
-        registerContainer.style.display = 'block';
-        recoveryEmailInput.value = '';
-      }
-      recoveryBtn.disabled = false;
-      recoveryBtn.textContent = 'Enviar enlace de recuperación';
+      alert('La recuperación de contraseñas está deshabilitada temporalmente en esta nueva versión. Por favor contacta a soporte.');
     });
 
     // Manejar envío del formulario
@@ -275,18 +249,28 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Iniciando sesión...';
 
-      // Logica Iniciar Sesión
-      const { data, error } = await supabaseClient.auth.signInWithPassword({
-        email: email,
-        password: password
-      });
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
 
-      if (error) {
-        alert('Error: ' + error.message);
+        const data = await response.json();
+
+        if (!response.ok) {
+          alert('Error: ' + (data.error || 'Credenciales inválidas'));
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Iniciar Sesión';
+        } else {
+          // Store basic info if needed, but token is in HTTPOnly cookie
+          localStorage.setItem('userEmail', data.email);
+          window.location.href = 'app.html';
+        }
+      } catch (err) {
+        alert('Error de red. Intenta de nuevo.');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Iniciar Sesión';
-      } else {
-        window.location.href = 'app.html';
       }
     });
   </script>

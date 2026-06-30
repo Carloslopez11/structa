@@ -1,275 +1,159 @@
+const db = require('./_db');
 const PDFDocument = require('pdfkit');
-const { createClient } = require('@supabase/supabase-js');
+const multer = require('multer');
 
-module.exports = async (req, res) => {
-    // Enable CORS
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
-
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
-
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method Not Allowed' });
-    }
-
-    try {
-        const { email, company, client, work, quality, length, width, price, logoBase64, renderUrl, desglose, materiales } = req.body;
-
-        if (!email) {
-            return res.status(400).json({ error: "Missing email for quota tracking." });
-        }
-
-        const supabaseUrl = process.env.SUPABASE_URL;
-        const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
-        
-        let userStatus = { count: 0, isPro: false };
-        let supabase = null;
-
-        if (supabaseUrl && supabaseKey) {
-            supabase = createClient(supabaseUrl, supabaseKey);
-            const { data, error } = await supabase
-                .from('usage')
-                .select('*')
-                .eq('email', email)
-                .maybeSingle();
-
-            if (data) {
-                userStatus = { count: data.count, isPro: data.is_pro };
-            }
-        }
-
-        if (logoBase64 && !userStatus.isPro) {
-            return res.status(403).json({ error: "ProFeatureLogo", message: "Uploading a logo requires the Pro Plan." });
-        }
-
-        if (!userStatus.isPro && userStatus.count >= 3) {
-            return res.status(403).json({ error: "LimitReached", message: "You have reached the free limit of 3 quotes per month." });
-        }
-
-        userStatus.count += 1;
-
-        if (supabase) {
-            await supabase.from('usage').upsert({ email: email, count: userStatus.count, is_pro: userStatus.isPro });
-        }
-
-        const l = parseFloat(length) || 0;
-        const w = parseFloat(width) || 0;
-        const p = parseFloat(price) || 0;
-
-        const calculatedArea = l * w;
-        const calculatedTotal = calculatedArea * p;
-
-        const doc = new PDFDocument({ size: 'A4', margin: 50 });
-
-        const buffers = [];
-        doc.on('data', buffers.push.bind(buffers));
-        doc.on('end', () => {
-            const pdfData = Buffer.concat(buffers);
-            res.setHeader('Content-disposition', 'attachment; filename="structa_quote.pdf"');
-            res.setHeader('Content-type', 'application/pdf');
-            res.send(pdfData);
-        });
-
-        const primaryColor = '#7c3aed', textColor = '#1f2937', textMuted = '#6b7280';
-        const headerTop = 50;
-
-        if (logoBase64 && userStatus.isPro) {
-            // Remove the data:image prefix to get raw base64
-            const base64Data = logoBase64.replace(/^data:image\/\w+;base64,/, "");
-            const imgBuffer = Buffer.from(base64Data, 'base64');
-            doc.image(imgBuffer, 50, headerTop, { width: 120 });
-        } else {
-            doc.fontSize(24).font('Helvetica-Bold').fillColor(primaryColor).text(company || "My Company", 50, headerTop);
-        }
-
-        doc.fontSize(28).font('Helvetica-Bold').fillColor(textColor).text('QUOTE / INVOICE', 50, headerTop, { align: 'right' });
-        doc.fontSize(10).font('Helvetica').fillColor(textMuted).text(`Date: ${new Date().toLocaleDateString()}`, 50, headerTop + 35, { align: 'right' });
-        doc.text(`No: INV-${Math.floor(Math.random() * 10000)}`, 50, headerTop + 50, { align: 'right' });
-        doc.moveDown(4);
-
-        doc.moveTo(50, doc.y).lineTo(545, doc.y).lineWidth(1).strokeColor('#e5e7eb').stroke();
-        doc.moveDown(2);
-
-        const clientTop = doc.y;
-        doc.fontSize(10).font('Helvetica-Bold').fillColor(textMuted).text('BILL TO:', 50, clientTop);
-        doc.fontSize(14).font('Helvetica-Bold').fillColor(textColor).text(client || 'Client Name', 50, clientTop + 15);
-
-        doc.fontSize(10).font('Helvetica-Bold').fillColor(textMuted).text('DESCRIPTION:', 250, clientTop);
-        doc.fontSize(12).font('Helvetica').fillColor(textColor).text(work || "Service provided", 250, clientTop + 15, { width: 295 });
-
-        // Calidad de materiales
-        doc.fontSize(10).font('Helvetica-Bold').fillColor(textMuted).text('QUALITY:', 250, clientTop + 35);
-        doc.fontSize(11).font('Helvetica').fillColor(primaryColor).text((quality || "Estándar").toUpperCase(), 250, clientTop + 47);
-
-        doc.y = Math.max(doc.y, clientTop + 65);
-        doc.moveDown(3);
-
-        const tableTop = doc.y;
-        doc.rect(50, tableTop, 495, 25).fill('#f3f4f6');
-
-        const formatCurrency = (val) => '$' + Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-        doc.fontSize(10).font('Helvetica-Bold').fillColor('#374151');
-        if (desglose && desglose.length > 0) {
-            doc.text('ROOM / MEASUREMENT', 60, tableTop + 8, { width: 140 });
-        } else {
-            doc.text('MEASUREMENT', 60, tableTop + 8, { width: 140 });
-        }
-        doc.text('AREA', 210, tableTop + 8, { width: 80, align: 'right' });
-        doc.text('PRICE PER M²', 300, tableTop + 8, { width: 110, align: 'right' });
-        doc.text('TOTAL', 420, tableTop + 8, { width: 115, align: 'right' });
-
-        let currentY = tableTop + 35;
-        let actualTotalArea = 0;
-        let actualTotalPrice = 0;
-
-        doc.fontSize(10).font('Helvetica').fillColor(textColor);
-
-        if (desglose && desglose.length > 0) {
-            for (const room of desglose) {
-                const cleanNombre = (room.nombre || '').replace(/[\r\n]+/g, ' ').trim() || 'Espacio';
-                const lRoom = parseFloat(room.largo) || 0;
-                const wRoom = parseFloat(room.ancho) || 0;
-                const roomArea = lRoom * wRoom;
-                const roomPrice = room.precio !== undefined ? (parseFloat(room.precio) || 0) : p;
-                const roomTotal = roomArea * roomPrice;
-                actualTotalArea += roomArea;
-                actualTotalPrice += roomTotal;
-                
-                doc.font('Helvetica-Bold').text(cleanNombre, 60, currentY, { width: 140 });
-                doc.font('Helvetica').fillColor(textMuted).text(`${lRoom}m x ${wRoom}m`, 60, currentY + 12, { width: 140 });
-                
-                doc.fillColor(textColor);
-                doc.text(`${roomArea.toFixed(2)} m²`, 210, currentY + 6, { width: 80, align: 'right' });
-                doc.text(formatCurrency(roomPrice), 300, currentY + 6, { width: 110, align: 'right' });
-                doc.text(formatCurrency(roomTotal), 420, currentY + 6, { width: 115, align: 'right' });
-                
-                currentY += 35;
-            }
-        } else {
-            actualTotalArea = calculatedArea;
-            actualTotalPrice = calculatedTotal;
-            doc.text(`${l}m x ${w}m`, 60, currentY, { width: 140 });
-            doc.text(`${actualTotalArea.toFixed(2)} m²`, 210, currentY, { width: 80, align: 'right' });
-            doc.text(formatCurrency(p), 300, currentY, { width: 110, align: 'right' });
-            doc.text(formatCurrency(actualTotalPrice), 420, currentY, { width: 115, align: 'right' });
-            currentY += 20;
-        }
-
-        let afterItemY = currentY + 15;
-        
-        // --- INICIO TABLA MATERIALES EXTRAIDOS ---
-        if (materiales && materiales.length > 0) {
-            if (afterItemY > 650) {
-                doc.addPage();
-                afterItemY = 50;
-            }
-
-            doc.moveTo(50, afterItemY).lineTo(545, afterItemY).lineWidth(0.5).strokeColor('#e5e7eb').stroke();
-            afterItemY += 20;
-
-            doc.fontSize(12).font('Helvetica-Bold').fillColor(primaryColor).text('DETAILED MATERIALS BREAKDOWN', 50, afterItemY);
-            afterItemY += 20;
-
-            doc.rect(50, afterItemY, 495, 20).fill('#f3f4f6');
-            
-            doc.fontSize(10).font('Helvetica-Bold').fillColor('#374151');
-            doc.text('ITEM', 60, afterItemY + 6, { width: 180 });
-            doc.text('QUANTITY', 250, afterItemY + 6, { width: 80, align: 'right' });
-            doc.text('UNIT PRICE', 340, afterItemY + 6, { width: 90, align: 'right' });
-            doc.text('SUBTOTAL', 440, afterItemY + 6, { width: 95, align: 'right' });
-            
-            afterItemY += 30;
-            doc.fontSize(10).font('Helvetica').fillColor(textColor);
-
-            for (const mat of materiales) {
-                if (afterItemY > 750) {
-                    doc.addPage();
-                    afterItemY = 50;
-                }
-                const itemName = (mat.item || '').replace(/[\r\n]+/g, ' ').trim() || 'Item';
-                const qtyStr = `${mat.cantidad || 0} ${mat.unidad || ''}`;
-                
-                const pUnit = parseFloat(mat.precio_unitario) || 0;
-                const matSubtotal = (parseFloat(mat.cantidad) || 0) * pUnit;
-
-                actualTotalPrice += matSubtotal;
-
-                doc.font('Helvetica-Bold').text(itemName, 60, afterItemY, { width: 180 });
-                doc.font('Helvetica').fillColor(textColor);
-                doc.text(qtyStr, 250, afterItemY, { width: 80, align: 'right' });
-                doc.text(formatCurrency(pUnit), 340, afterItemY, { width: 90, align: 'right' });
-                doc.text(formatCurrency(matSubtotal), 440, afterItemY, { width: 95, align: 'right' });
-
-                afterItemY += 25;
-            }
-        }
-        // --- FIN TABLA MATERIALES EXTRAIDOS ---
-
-        doc.moveTo(50, afterItemY).lineTo(545, afterItemY).lineWidth(0.5).strokeColor('#e5e7eb').stroke();
-
-        doc.y = afterItemY + 30;
-        if (doc.y > 650) {
-            doc.addPage();
-            doc.y = 50;
-        }
-
-        doc.fontSize(10).font('Helvetica').fillColor(textMuted).text('Subtotal:', 290, doc.y, { width: 120, align: 'right' });
-        doc.fillColor(textColor).text(formatCurrency(actualTotalPrice), 420, doc.y, { width: 115, align: 'right' });
-        doc.moveDown(1);
-        doc.moveTo(350, doc.y).lineTo(545, doc.y).lineWidth(1).strokeColor('#e5e7eb').stroke();
-        doc.moveDown(1);
-
-        const totalY = doc.y;
-        doc.rect(340, totalY - 5, 205, 30).fill('#f3f4f6');
-        doc.fontSize(14).font('Helvetica-Bold').fillColor(primaryColor).text(`ESTIMATED TOTAL: ${formatCurrency(actualTotalPrice)}`, 340, totalY + 2, { width: 195, align: 'right' });
-
-        if (renderUrl) {
-            try {
-                const imgRes = await fetch(renderUrl);
-                if (imgRes.ok) {
-                    const arrayBuffer = await imgRes.arrayBuffer();
-                    const imgBuffer = Buffer.from(arrayBuffer);
-                    
-                    doc.moveDown(4);
-                    if (doc.y > 500) {
-                        doc.addPage();
-                    }
-                    
-                    doc.fontSize(12).font('Helvetica-Bold').fillColor(primaryColor).text('PROJECT VISUALIZATION', { align: 'center' });
-                    doc.moveDown(1);
-                    
-                    const imgWidth = 250;
-                    const imgX = (doc.page.width - imgWidth) / 2;
-                    doc.image(imgBuffer, imgX, doc.y, { width: imgWidth });
-                    doc.y += imgWidth + 20;
-                }
-            } catch (err) {
-                console.error("Error fetching render image:", err);
-            }
-        }
-
-        if (!userStatus.isPro) {
-            const bottomPosition = doc.page.height - 50;
-            doc.fontSize(9).font('Helvetica').fillColor('#9ca3af')
-                .text('Generated by Structa Quotes (Free Version) - Subscribe for unlimited usage.',
-                    50, bottomPosition, { align: 'center', width: 495 });
-        }
-        
-        // Fase 1 Legal Waiver Note
-        const legalPosition = doc.page.height - 35;
-        doc.fontSize(8).font('Helvetica-Oblique').fillColor('#9ca3af')
-            .text('Nota: Este es un boceto conceptual premium para visualización de acabados. La ejecución final puede variar. Validar medidas en obra.',
-                50, legalPosition, { align: 'center', width: 495 });
-
-        doc.end();
-
-    } catch (error) {
-        console.error("PDF Generation Error:", error);
-        res.status(500).json({ error: "Internal Error" });
-    }
+export const config = {
+  api: {
+    bodyParser: false, // Disallow body parsing, consume as stream
+  },
 };
+
+const upload = multer({ storage: multer.memoryStorage() });
+
+// Helper to run middleware
+function runMiddleware(req, res, fn) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
+  });
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    await runMiddleware(req, res, upload.single('logo'));
+
+    const { email, company, client, work, length, width, price } = req.body;
+
+    if (!email || !client || !length || !width || !price) {
+        return res.status(400).json({ error: "Missing required fields." });
+    }
+
+    // --- SUBSCRIPTION LOGIC (PostgreSQL) ---
+    let userResult = await db.query('SELECT count, is_pro FROM users WHERE email = $1', [email]);
+    
+    let userStatus;
+    if (userResult.rows.length === 0) {
+        // New user, insert into DB (assuming registered via register.js)
+        await db.query('INSERT INTO users (email, count, is_pro) VALUES ($1, 0, false)', [email]);
+        userStatus = { count: 0, is_pro: false };
+    } else {
+        userStatus = userResult.rows[0];
+    }
+
+    if (!userStatus.is_pro && userStatus.count >= 3) {
+        return res.status(403).json({
+            error: "LimitReached",
+            message: "You have reached the free limit of 3 quotes per month. Please upgrade to Pro."
+        });
+    }
+
+    // Increment usage count
+    await db.query('UPDATE users SET count = count + 1 WHERE email = $1', [email]);
+
+    // --- AUTOMATIC CALCULATIONS ---
+    const l = parseFloat(length);
+    const w = parseFloat(width);
+    const p = parseFloat(price);
+
+    if (isNaN(l) || isNaN(w) || isNaN(p)) {
+        return res.status(400).json({ error: "Invalid numbers for length, width, or price." });
+    }
+
+    const calculatedArea = l * w;
+    const calculatedTotal = calculatedArea * p;
+
+    // --- PDF GENERATION ---
+    const doc = new PDFDocument({ size: 'A4', margin: 50 });
+
+    res.setHeader('Content-disposition', 'attachment; filename="structa_quote.pdf"');
+    res.setHeader('Content-type', 'application/pdf');
+
+    doc.pipe(res);
+
+    const primaryColor = '#7c3aed';
+    const textColor = '#1f2937';
+    const textMuted = '#6b7280';
+
+    const headerTop = 50;
+
+    if (req.file) {
+        doc.image(req.file.buffer, 50, headerTop, { width: 120 });
+    } else {
+        doc.fontSize(24).font('Helvetica-Bold').fillColor(primaryColor).text(company || "My Company", 50, headerTop);
+    }
+
+    doc.fontSize(28).font('Helvetica-Bold').fillColor(textColor).text('QUOTE / INVOICE', 50, headerTop, { align: 'right' });
+    doc.fontSize(10).font('Helvetica').fillColor(textMuted).text(`Date: ${new Date().toLocaleDateString()}`, 50, headerTop + 35, { align: 'right' });
+    doc.text(`No: INV-${Math.floor(Math.random() * 10000)}`, 50, headerTop + 50, { align: 'right' });
+
+    doc.moveDown(4);
+
+    doc.moveTo(50, doc.y).lineTo(545, doc.y).lineWidth(1).strokeColor('#e5e7eb').stroke();
+    doc.moveDown(2);
+
+    const clientTop = doc.y;
+    doc.fontSize(10).font('Helvetica-Bold').fillColor(textMuted).text('BILL TO:', 50, clientTop);
+    doc.fontSize(14).font('Helvetica-Bold').fillColor(textColor).text(client, 50, clientTop + 15);
+
+    doc.fontSize(10).font('Helvetica-Bold').fillColor(textMuted).text('DESCRIPTION:', 250, clientTop);
+    doc.fontSize(12).font('Helvetica').fillColor(textColor).text(work || "Service provided", 250, clientTop + 15, { width: 295 });
+
+    doc.y = Math.max(doc.y, clientTop + 50);
+    doc.moveDown(3);
+
+    const tableTop = doc.y;
+    doc.rect(50, tableTop, 495, 25).fill('#f3f4f6');
+
+    doc.fontSize(10).font('Helvetica-Bold').fillColor('#374151');
+    doc.text('MEASUREMENT', 60, tableTop + 8);
+    doc.text('AREA', 200, tableTop + 8, { width: 100, align: 'right' });
+    doc.text('PRICE PER M²', 320, tableTop + 8, { width: 100, align: 'right' });
+    doc.text('TOTAL', 440, tableTop + 8, { width: 95, align: 'right' });
+
+    const itemTop = tableTop + 35;
+    doc.fontSize(10).font('Helvetica').fillColor(textColor);
+
+    doc.text(`${l}m x ${w}m`, 60, itemTop);
+    doc.text(`${calculatedArea.toFixed(2)} m²`, 200, itemTop, { width: 100, align: 'right' });
+    doc.text(`$${p.toFixed(2)}`, 320, itemTop, { width: 100, align: 'right' });
+    doc.text(`$${calculatedTotal.toFixed(2)}`, 440, itemTop, { width: 95, align: 'right' });
+
+    const afterItemY = itemTop + 20;
+    doc.moveTo(50, afterItemY).lineTo(545, afterItemY).lineWidth(0.5).strokeColor('#e5e7eb').stroke();
+
+    doc.y = afterItemY + 30;
+
+    doc.fontSize(10).font('Helvetica').fillColor(textMuted).text('Subtotal:', 350, doc.y, { width: 80, align: 'right' });
+    doc.fillColor(textColor).text(`$${calculatedTotal.toFixed(2)}`, 440, doc.y, { width: 95, align: 'right' });
+    doc.moveDown(1);
+
+    doc.moveTo(350, doc.y).lineTo(545, doc.y).lineWidth(1).strokeColor('#e5e7eb').stroke();
+    doc.moveDown(1);
+
+    const totalY = doc.y;
+    doc.rect(340, totalY - 5, 205, 30).fill('#f3f4f6');
+    doc.fontSize(14).font('Helvetica-Bold').fillColor(primaryColor).text('ESTIMATED TOTAL:', 350, totalY + 2, { width: 150, align: 'left' });
+    doc.text(`$${calculatedTotal.toFixed(2)}`, 440, totalY + 2, { width: 95, align: 'right' });
+
+    if (!userStatus.is_pro) {
+        const bottomPosition = doc.page.height - 50;
+        doc.fontSize(9).font('Helvetica').fillColor('#9ca3af')
+            .text('Generated by Structa Quotes (Free Version) - Upgrade to Pro to remove this watermark.',
+                50, bottomPosition, { align: 'center', width: 495 });
+    }
+
+    doc.end();
+
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}

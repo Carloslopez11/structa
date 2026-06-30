@@ -643,36 +643,30 @@
             speak(phrases[Math.floor(Math.random() * phrases.length)]);
         }
 
-        // --- AUTENTICACIÓN Y EXTRACCIÓN DEL EMAIL (Supabase) ---
-        const supabaseUrl = 'https://tadjlpeifkidsghbirlj.supabase.co'; // Replace with your Supabase Project URL
-        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRhZGpscGVpZmtpZHNnaGJpcmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNjg1MDEsImV4cCI6MjA4Nzk0NDUwMX0.laJbEwsKJTYsWy1GbV3LHma5rsixWQH-Th8K9NX_WAc'; // Replace with your Supabase Anon Key
-        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-
-        // --- GUARDIÁN DE RUTA ESTRICTO (Auditoría Nivel 1) ---
+        // --- GUARDIÁN DE RUTA ESTRICTO (Custom Auth) ---
         document.addEventListener('DOMContentLoaded', async () => {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) {
-                window.location.href = 'login.html';
-                return;
-            }
+            try {
+                const response = await fetch('/api/auth/me');
+                if (!response.ok) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                const data = await response.json();
 
-            // Si el usuario está validado de forma segura, inicializamos la UI:
-            document.getElementById('email').value = session.user.email;
-            document.getElementById('userEmailLabel').textContent = session.user.email;
-            setTimeout(() => speak(`Welcome to Structa! 🚀 Upload your 2D floor plan below and let's create a Premium Inspiration Sketch to wow your client.`, 8000), 1000);
+                // Si el usuario está validado de forma segura, inicializamos la UI:
+                document.getElementById('email').value = data.email;
+                document.getElementById('userEmailLabel').textContent = data.email;
+                setTimeout(() => speak(`Welcome to Structa! 🚀 Upload your 2D floor plan below and let's create a Premium Inspiration Sketch to wow your client.`, 8000), 1000);
+            } catch (err) {
+                window.location.href = 'login.html';
+            }
         });
 
         async function handleLogout() {
-            await supabaseClient.auth.signOut();
+            // Delete cookie client-side (best effort)
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             window.location.href = "login.html";
         }
-
-        // Listener para cambios de sesión protectores
-        supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_OUT') {
-                window.location.href = "login.html";
-            }
-        });
 
         // TIPS DINÁMICOS DEL ROBOT
         document.getElementById('logoUpload').addEventListener('change', () => {

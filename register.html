@@ -10,8 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
+  <!-- Custom Auth -->
   <style>
     :root {
       --bg-midnight: #0A0F24;
@@ -189,12 +188,6 @@
   </div>
 
   <script>
-    // Inicializa Supabase
-    const SUPABASE_URL = 'https://tadjlpeifkidsghbirlj.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRhZGpscGVpZmtpZHNnaGJpcmxqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNjg1MDEsImV4cCI6MjA4Nzk0NDUwMX0.laJbEwsKJTYsWy1GbV3LHma5rsixWQH-Th8K9NX_WAc';
-    
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
     // Referencias del DOM
     const submitBtn = document.getElementById('submit-btn');
     const authForm = document.getElementById('auth-form');
@@ -212,19 +205,27 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Registrando...';
 
-      // Logica Registrarse
-      const { data, error } = await supabaseClient.auth.signUp({
-        email: email,
-        password: password
-      });
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
 
-      if (error) {
-        alert(error.message);
+        const data = await response.json();
+
+        if (!response.ok) {
+          alert(data.error || 'Error al registrar');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Crear Cuenta';
+        } else {
+          alert('¡Cuenta creada exitosamente!');
+          window.location.href = 'login.html';
+        }
+      } catch (err) {
+        alert('Error de red. Intenta de nuevo.');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Crear Cuenta';
-      } else {
-        alert('¡Cuenta creada! Por favor, revisa tu correo electrónico para confirmar tu cuenta antes de iniciar sesión.');
-        window.location.href = 'login.html';
       }
     });
   </script>
