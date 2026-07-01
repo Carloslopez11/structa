@@ -223,7 +223,7 @@
           window.location.href = 'login.html';
         }
       } catch (err) {
-        alert('Error de red. Intenta de nuevo.');
+        alert('ERROR TÉCNICO VERCEL:\n' + err.message + '\nPor favor enviame captura de esto.');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Crear Cuenta';
       }
