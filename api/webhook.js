@@ -1,4 +1,5 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripeKey = process.env.STRIPE_SECRET_KEY || 'sk_test_fallback';
+const stripe = require('stripe')(stripeKey);
 const { createClient } = require('@supabase/supabase-js');
 
 // Vercel config to disable default body parser
@@ -43,39 +44,22 @@ const handler = async (req, res) => {
     if (email) {
       console.log(`Payment received from: ${email}. Updating status to PRO...`);
 
-      // Connect to Supabase using env variables
-      const supabaseUrl = process.env.SUPABASE_URL;
-      const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
-      
-      const supabase = createClient(supabaseUrl, supabaseKey);
+      // Connect to Contabo DB using our _db helper
+      const db = require('./_db');
 
-      // Perform an explicit UPDATE searching EXACTLY by the email column
-      let { data: updatedData, error: updateError } = await supabase
-        .from('usage')
-        .update({ 
-          is_pro: true, 
-          count: 0 
-        })
-        .eq('email', email)
-        .select();
-
-      // If the update succeeded but no rows were found, the user didn't exist in the usage table yet.
-      // We insert them directly to avoid any onConflict schema issues.
-      if (!updateError && (!updatedData || updatedData.length === 0)) {
-        console.log(`No existing record found for ${email} in 'usage'. Inserting new PRO record...`);
-        const { error: insertError } = await supabase
-          .from('usage')
-          .insert({ email: email, is_pro: true, count: 0 });
+      try {
+        const existing = await db.query('SELECT email FROM usage WHERE email = $1', [email]);
         
-        if (insertError) {
-           updateError = insertError;
+        if (existing.rows.length > 0) {
+          console.log(`Updating existing record for ${email} in usage...`);
+          await db.query('UPDATE usage SET is_pro = true, count = 0 WHERE email = $1', [email]);
+        } else {
+          console.log(`No existing record found for ${email}. Inserting new PRO record...`);
+          await db.query('INSERT INTO usage (email, is_pro, count) VALUES ($1, true, 0)', [email]);
         }
-      }
-
-      if (updateError) {
-        console.error("Error updating/inserting Supabase record:", updateError);
-      } else {
         console.log(`User ${email} successfully updated to PRO.`);
+      } catch (dbError) {
+        console.error("Error updating/inserting Contabo DB record:", dbError);
       }
     } else {
       console.warn('checkout.session.completed event received, but no email was found.');
