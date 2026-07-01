@@ -17,17 +17,27 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    // Auto-migrate: Create table if it doesn't exist
+    try {
+      await db.query(`
+        CREATE TABLE IF NOT EXISTS users (
+          id SERIAL PRIMARY KEY,
+          email VARCHAR(255) UNIQUE NOT NULL,
+          count INTEGER DEFAULT 0,
+          is_pro BOOLEAN DEFAULT false,
+          password_hash VARCHAR(255)
+        )
+      `);
+      // Also ensure password_hash exists in case the table was created previously without it
+      await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255)`);
+    } catch (e) {
+      console.log('Migration skipped/failed:', e);
+    }
+
     // Check if user exists
     const existing = await db.query('SELECT email FROM users WHERE email = $1', [email]);
     if (existing.rows.length > 0) {
       return res.status(400).json({ error: 'El correo electrónico ya está registrado' });
-    }
-
-    // Auto-migrate (safe to run multiple times, only runs on register)
-    try {
-      await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255)`);
-    } catch (e) {
-      console.log('Migration skipped/failed:', e);
     }
 
     // Hash password
@@ -51,6 +61,6 @@ module.exports = async function handler(req, res) {
 
   } catch (error) {
     console.error('Registration error:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    res.status(500).json({ error: 'DB_ERROR: ' + error.message });
   }
 }
