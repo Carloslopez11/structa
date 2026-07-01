@@ -1,7 +1,7 @@
 const db = require('../_db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { serialize } = require('cookie');
+// No cookie library needed
 
 const JWT_SECRET = process.env.JWT_SECRET || 'structa-fallback-secret-key-1234';
 
@@ -40,13 +40,8 @@ module.exports = async function handler(req, res) {
     const token = jwt.sign({ email: user.email, isPro: user.is_pro }, JWT_SECRET, { expiresIn: '7d' });
 
     // Set HTTPOnly cookie
-    res.setHeader('Set-Cookie', serialize('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-      path: '/'
-    }));
+    const secureFlag = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+    res.setHeader('Set-Cookie', `token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict${secureFlag}`);
 
     res.status(200).json({ message: 'Login exitoso', email: user.email, isPro: user.is_pro });
 
