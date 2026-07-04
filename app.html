@@ -727,24 +727,43 @@
                 const response = await fetch('/api/generar-render', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ spatialDescription, quality, projectContext: window.currentProjectContext })
+                    body: JSON.stringify({ spatialDescription, quality, projectContext: window.currentProjectContext, floorPlanBase64: window.currentFloorPlanBase64 })
                 });
 
                 if (!response.ok) {
-                    throw new Error("Error en la conexión con DALL-E 3");
+                    throw new Error("Error en la conexión con el motor 3D (Replicate)");
                 }
 
                 const data = await response.json();
 
-                if (data.renderUrl) {
+                if (data.predictionId) {
+                    let isReady = false;
+                    while (!isReady) {
+                        await new Promise(r => setTimeout(r, 3000));
+                        const res = await fetch(`/api/check-render?id=${data.predictionId}`);
+                        if (!res.ok) throw new Error("Error verificando estado del 3D");
+                        const statusData = await res.json();
+                        
+                        if (statusData.status === "succeeded") {
+                            // Replicate usually returns an array of outputs or a single URL depending on the model
+                            const renderUrl = Array.isArray(statusData.output) ? statusData.output[statusData.output.length - 1] : statusData.output;
+                            window.currentRenderUrl = renderUrl;
+                            if (renderImage) renderImage.src = renderUrl;
+                            if (window.renderInterval) clearInterval(window.renderInterval);
+                            if (typeof speak === "function") {
+                                speak(`Boom! 💥 Sketch ready. Send it via WhatsApp and close the deal! (<a href="https://buy.stripe.com/5kQ6oH4ad6vI01q6Xk1ck05" target="_blank" style="color:var(--purple);font-weight:bold;text-decoration:underline;pointer-events:auto;">Upgrade to Pro</a> for unlimited renders).`, 8000);
+                            }
+                            isReady = true;
+                        } else if (statusData.status === "failed") {
+                            throw new Error("El motor de IA falló al generar el modelo");
+                        }
+                    }
+                } else if (data.renderUrl) {
                     window.currentRenderUrl = data.renderUrl;
                     if (renderImage) renderImage.src = data.renderUrl;
                     if (window.renderInterval) clearInterval(window.renderInterval);
-                    if (typeof speak === "function") {
-                        speak(`Boom! 💥 Sketch ready. Send it via WhatsApp and close the deal! (<a href="https://buy.stripe.com/5kQ6oH4ad6vI01q6Xk1ck05" target="_blank" style="color:var(--purple);font-weight:bold;text-decoration:underline;pointer-events:auto;">Upgrade to Pro</a> for unlimited renders).`, 8000);
-                    }
                 } else {
-                    throw new Error("No image link was returned.");
+                    throw new Error("No se devolvió ningún enlace de imagen o predicción.");
                 }
             } catch (error) {
                 if (window.renderInterval) clearInterval(window.renderInterval);
@@ -1262,6 +1281,7 @@
                 window.currentMateriales = data.materiales;
                 window.currentSpatialDescription = data.spatial_description;
                 window.currentProjectContext = data.project_context;
+                window.currentFloorPlanBase64 = imageSrc;
                 const materialsContainer = document.getElementById('materialsContainer');
                 const materialsList = document.getElementById('materialsList');
                 materialsList.innerHTML = '';
