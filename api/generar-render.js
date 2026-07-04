@@ -43,7 +43,7 @@ module.exports = async function handler(req, res) {
       }
     };
 
-    const replicateResponse = await fetch("https://api.replicate.com/v1/models/jagilley/controlnet-mlsd/predictions", {
+    const replicateResponse = await fetch("https://api.replicate.com/v1/models/jagilley/controlnet-hough/predictions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
