@@ -30,7 +30,6 @@ module.exports = async function handler(req, res) {
     const prompt = `${qualityPromptStr} ${projectContext || 'interior space'}. High definition 3D architectural render.`;
 
     const replicatePayload = {
-      version: "854e8727697a057c525cd9f22ccdd00d08dbaf3726fb511b84f3cc778fb8f7a6", // jagilley/controlnet-mlsd
       input: {
         image: floorPlanBase64,
         prompt: prompt,
@@ -44,7 +43,7 @@ module.exports = async function handler(req, res) {
       }
     };
 
-    const replicateResponse = await fetch("https://api.replicate.com/v1/predictions", {
+    const replicateResponse = await fetch("https://api.replicate.com/v1/models/jagilley/controlnet-mlsd/predictions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
