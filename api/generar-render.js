@@ -48,7 +48,7 @@ module.exports = async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Token ${process.env.REPLICATE_API_TOKEN}`,
+        "Authorization": `Bearer ${process.env.REPLICATE_API_TOKEN}`,
       },
       body: JSON.stringify(replicatePayload),
     });
@@ -56,7 +56,7 @@ module.exports = async function handler(req, res) {
     if (!replicateResponse.ok) {
       const errTxt = await replicateResponse.text();
       console.error("Replicate API Error:", errTxt);
-      return res.status(replicateResponse.status).json({ error: "Fallo al inicializar el render 3D." });
+      return res.status(replicateResponse.status).json({ error: "Replicate Error: " + errTxt });
     }
 
     const replicateData = await replicateResponse.json();

@@ -16,7 +16,7 @@ module.exports = async function handler(req, res) {
 
     const response = await fetch(`https://api.replicate.com/v1/predictions/${id}`, {
       headers: {
-        Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
+        Authorization: `Bearer ${process.env.REPLICATE_API_TOKEN}`,
         "Content-Type": "application/json",
       },
     });
@@ -24,7 +24,7 @@ module.exports = async function handler(req, res) {
     if (!response.ok) {
       const errTxt = await response.text();
       console.error("Replicate API Error (Check):", errTxt);
-      return res.status(response.status).json({ error: "Fallo al verificar el estado del render." });
+      return res.status(response.status).json({ error: "Replicate Error: " + errTxt });
     }
 
     const data = await response.json();
