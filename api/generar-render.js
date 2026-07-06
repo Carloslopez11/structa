@@ -20,22 +20,22 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: 'Falta la API Key de Replicate en las variables de entorno' });
     }
 
-    let qualityPromptStr = 'Visual Style: Clean architectural clay maquette. Monochromatic matte white and light grey. Pure technical look.';
+    let qualityPromptStr = 'Visual Style: Clean minimalist 2D floor plan, top-down view, simple flat colors, neat furniture layout.';
     if (quality === 'Lujo') {
-      qualityPromptStr = 'Visual Style: Ultra-luxury interior design. High-end polished marble, premium dark hardwood, warm elegant LED ambient lighting, architectural photography.';
+      qualityPromptStr = 'Visual Style: Premium real estate 2D floor plan, top-down view, luxury furnished, highly detailed textures, marble floors, elegant shadows, brochure style.';
     } else if (quality === 'Medio') {
-      qualityPromptStr = 'Visual Style: Realistic standard interior. Basic ceramic, standard tile floor, bright daylight lighting.';
+      qualityPromptStr = 'Visual Style: Standard 2D floor plan, top-down view, furnished, clear room layout, wooden floors, realistic lighting, real estate brochure.';
     }
 
-    const prompt = `${qualityPromptStr} ${projectContext || 'interior space'}. High definition 3D architectural render.`;
+    const prompt = `${qualityPromptStr} ${projectContext || 'interior space'}. Top-down 2D architectural rendering, orthogonal projection, flat top view, real estate presentation.`;
 
     const replicatePayload = {
       version: "854e8727697a057c525cdb45ab037f64ecca770a1769cc52287c2e56472a247b",
       input: {
         image: floorPlanBase64,
         prompt: prompt,
-        a_prompt: "best quality, extremely detailed, photorealistic, 3d render, architectural photography, unreal engine 5, octane render",
-        n_prompt: "lowres, bad architecture, messy lines, text, watermark, worst quality, low quality",
+        a_prompt: "top-down view, 2D floor plan, architectural diagram, real estate brochure, highly detailed, furnished, flat projection, professional",
+        n_prompt: "3d render, perspective, side view, realistic photo, angle, isometric, messy lines, text, watermark",
         image_resolution: "512",
         ddim_steps: 20,
         scale: 9,
