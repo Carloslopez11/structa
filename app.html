@@ -835,9 +835,9 @@
                 document.getElementById('paywall').style.display = 'flex';
                 // Añadir prefilled_email al link para que Stripe asocie el pago al mismo correo del usuario logueado
                 const stripeLink = document.getElementById('stripeLink');
-                if (stripeLink) {
-                    stripeLink.href = `https://buy.stripe.com/5kQ6oH4ad6vI01q6Xk1ck05?prefilled_email=${encodeURIComponent(email)}`;
-                }
+                if (stripeLink && email) {
+                stripeLink.href = 'https://buy.stripe.com/6oUdR95eh5rEcOc0yW1ck06?prefilled_email=' + encodeURIComponent(email);
+            }    
                 startPaymentPolling(email);
                 return;
             }
