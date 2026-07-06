@@ -36,7 +36,7 @@ module.exports = async function handler(req, res) {
         prompt: prompt,
         a_prompt: "best quality, extremely detailed, photorealistic, 3d render, architectural photography, unreal engine 5, octane render",
         n_prompt: "lowres, bad architecture, messy lines, text, watermark, worst quality, low quality",
-        image_resolution: 768,
+        image_resolution: "512",
         ddim_steps: 20,
         scale: 9,
         value_threshold: 0.1,
