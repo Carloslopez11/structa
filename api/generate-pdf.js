@@ -139,6 +139,6 @@ module.exports = async function handler(req, res) {
 
   } catch (error) {
     console.error("Error generating PDF:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "PDF Generation Error: " + error.message, stack: error.stack });
   }
 }
