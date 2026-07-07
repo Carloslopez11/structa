@@ -1,26 +1,5 @@
 const db = require('./_db');
 const PDFDocument = require('pdfkit');
-const multer = require('multer');
-
-module.exports.config = {
-  api: {
-    bodyParser: false, // Disallow body parsing, consume as stream
-  },
-};
-
-const upload = multer({ storage: multer.memoryStorage() });
-
-// Helper to run middleware
-function runMiddleware(req, res, fn) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result) => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
-      return resolve(result);
-    });
-  });
-}
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -28,9 +7,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    await runMiddleware(req, res, upload.single('logo'));
-
-    const { email, company, client, work, length, width, price } = req.body;
+    const { email, company, client, work, length, width, price, logoBase64 } = req.body;
 
     if (!email || !client || !length || !width || !price) {
         return res.status(400).json({ error: "Missing required fields." });
@@ -84,8 +61,16 @@ module.exports = async function handler(req, res) {
 
     const headerTop = 50;
 
-    if (req.file) {
-        doc.image(req.file.buffer, 50, headerTop, { width: 120 });
+    if (logoBase64) {
+        // logoBase64 looks like "data:image/png;base64,iVBORw0KGgo..."
+        const base64Data = logoBase64.replace(/^data:image\/\w+;base64,/, "");
+        const imageBuffer = Buffer.from(base64Data, 'base64');
+        try {
+            doc.image(imageBuffer, 50, headerTop, { width: 120 });
+        } catch(e) {
+            console.error("Invalid logo format");
+            doc.fontSize(24).font('Helvetica-Bold').fillColor(primaryColor).text(company || "My Company", 50, headerTop);
+        }
     } else {
         doc.fontSize(24).font('Helvetica-Bold').fillColor(primaryColor).text(company || "My Company", 50, headerTop);
     }
