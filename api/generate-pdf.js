@@ -25,10 +25,10 @@ module.exports = async function handler(req, res) {
             userStatus = userResult.rows[0];
         }
 
-        if (!userStatus.is_pro && userStatus.count >= 3) {
+        if (!userStatus.is_pro && userStatus.count >= 5) {
             return res.status(403).json({
                 error: "LimitReached",
-                message: "You have reached the free limit of 3 quotes per month. Please upgrade to Pro."
+                message: "You have reached the free limit of 5 quotes. Please upgrade to Pro."
             });
         }
 

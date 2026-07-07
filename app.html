@@ -903,8 +903,8 @@
                         errorBox.style.display = 'block';
                     }
                     else if (response.status === 403 && errorData?.error === "LimitReached") {
-                        speak("Oh no! You've used your 3 free quotes limit.", 6000);
-                        errorBox.innerHTML = `You have reached the free limit of 3 quotes per month. <a href="index.html#pricing">View our plans</a> for unlimited access.`;
+                        speak("Oh no! You've used your 5 free quotes limit.", 6000);
+                        errorBox.innerHTML = `You have reached the free limit of 5 quotes. <a href="index.html#pricing">View our plans</a> for unlimited access.`;
                         errorBox.style.display = 'block';
                     } else {
                         alert("PDF Error: " + errorStr);
