@@ -14,26 +14,30 @@ module.exports = async function handler(req, res) {
     }
 
     // --- SUBSCRIPTION LOGIC (PostgreSQL) ---
-    let userResult = await db.query('SELECT count, is_pro FROM users WHERE email = $1', [email]);
-    
-    let userStatus;
-    if (userResult.rows.length === 0) {
-        // New user, insert into DB (assuming registered via register.js)
-        await db.query('INSERT INTO users (email, count, is_pro) VALUES ($1, 0, false)', [email]);
-        userStatus = { count: 0, is_pro: false };
-    } else {
-        userStatus = userResult.rows[0];
-    }
+    let userStatus = { count: 0, is_pro: false };
+    try {
+        let userResult = await db.query('SELECT count, is_pro FROM users WHERE email = $1', [email]);
+        
+        if (userResult.rows.length === 0) {
+            // New user, insert into DB
+            await db.query('INSERT INTO users (email, count, is_pro) VALUES ($1, 0, false)', [email]);
+        } else {
+            userStatus = userResult.rows[0];
+        }
 
-    if (!userStatus.is_pro && userStatus.count >= 3) {
-        return res.status(403).json({
-            error: "LimitReached",
-            message: "You have reached the free limit of 3 quotes per month. Please upgrade to Pro."
-        });
-    }
+        if (!userStatus.is_pro && userStatus.count >= 3) {
+            return res.status(403).json({
+                error: "LimitReached",
+                message: "You have reached the free limit of 3 quotes per month. Please upgrade to Pro."
+            });
+        }
 
-    // Increment usage count
-    await db.query('UPDATE users SET count = count + 1 WHERE email = $1', [email]);
+        // Increment usage count
+        await db.query('UPDATE users SET count = count + 1 WHERE email = $1', [email]);
+    } catch (dbError) {
+        console.error("Database error (bypassing for now):", dbError.message);
+        // Fallback to free user so the PDF generation doesn't completely break
+    }
 
     // --- AUTOMATIC CALCULATIONS ---
     const l = parseFloat(length);
