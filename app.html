@@ -808,39 +808,8 @@
                 return;
             }
 
-            // Primero validamos límites FrontEnd consultando Supabase directamente
-            let { data: usageData, error: usageError } = await supabaseClient
-                .from('usage')
-                .select('*')
-                .eq('email', email)
-                .maybeSingle();
-
-            let isPro = false;
-            let currentCount = 0;
-            if (usageData) {
-                isPro = usageData.is_pro || false;
-                currentCount = usageData.count || 0;
-            }
-
             const logoFile = document.getElementById('logoUpload').files[0];
-            if (logoFile && !isPro) {
-                speak("Oops! Custom logos are for Pro users. Let's upgrade!", 6000);
-                errorBox.innerHTML = `Uploading a custom logo is an exclusive feature of the <b>Pro Plan</b>. Please remove the logo or <a href="index.html#pricing">Upgrade to Pro</a>.`;
-                errorBox.style.display = 'block';
-                return;
-            }
-
-            if (!isPro && currentCount >= 3) {
-                speak("Oh no! You've reached the free limit. Time to level up!", 6000);
-                document.getElementById('paywall').style.display = 'flex';
-                // Añadir prefilled_email al link para que Stripe asocie el pago al mismo correo del usuario logueado
-                const stripeLink = document.getElementById('stripeLink');
-                if (stripeLink && email) {
-                stripeLink.href = 'https://buy.stripe.com/6oUdR95eh5rEcOc0yW1ck06?prefilled_email=' + encodeURIComponent(email);
-            }    
-                startPaymentPolling(email);
-                return;
-            }
+            // The limit check and PRO check are handled securely by the backend (/api/generate-pdf).
 
             const btn = document.getElementById('generateBtn');
             btn.textContent = "Generating...";
@@ -911,12 +880,8 @@
                         throw new Error(errorStr);
                     }
                 } else {
-                    // Ya no leemos Headers. Las cuentas se aumentaron en BE, pero frontend ya sabe.
-                    if (!isPro && currentCount === 2) {
-                        speak("Heads up! You just used your LAST free quote. Next one requires Pro!", 7000);
-                    } else {
-                        speak("Success! Your quote has been downloaded. Go close that job!", 5000);
-                    }
+                    // Ya no leemos Headers. Las cuentas se aumentaron en BE.
+                    speak("Success! Your quote has been downloaded. Go close that job!", 5000);
 
                     // --- FASE 3: MOSTRAR BOTONES DE COMPARTIR INMEDIATAMENTE ---
                     // Forzar mostrar botones INMEDIATAMENTE tras la generación local ANTES de .click()
@@ -942,73 +907,6 @@
                         window.URL.revokeObjectURL(localUrl);
                         if (a.parentNode) a.parentNode.removeChild(a);
                     }, 500);
-
-                    // --- SUBIDA DEL PDF A SUPABASE STORAGE ---
-
-                    try {
-                        const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                            .from('presupuestos')
-                            .upload(`public/${pdfFilename}`, blob, {
-                                contentType: 'application/pdf',
-                                upsert: false
-                            });
-
-                        if (!uploadError) {
-                            const { data: { publicUrl } } = supabaseClient.storage
-                                .from('presupuestos')
-                                .getPublicUrl(`public/${pdfFilename}`);
-
-                            window.currentPdfPublicUrl = publicUrl;
-                        } else {
-                            console.error("ERROR REAL DE SUPABASE: ", uploadError.message || uploadError);
-                            errorBox.innerHTML = `<strong>Error de Supabase (Upload):</strong> ${uploadError.message || JSON.stringify(uploadError)}`;
-                            errorBox.style.display = 'block';
-                            setTimeout(() => { errorBox.style.display = 'none'; }, 20000);
-                        }
-                    } catch (e) {
-                        console.error("ERROR REAL DE SUPABASE: ", e.message || e);
-                        errorBox.innerHTML = `<strong>Excepción de Supabase (Try/Catch):</strong> ${e.message || JSON.stringify(e)}`;
-                        errorBox.style.display = 'block';
-                        setTimeout(() => { errorBox.style.display = 'none'; }, 20000);
-                    }
-
-                    // Guardado Silencioso de Presupuesto en BD
-                    try {
-                        const { data: { user } } = await supabaseClient.auth.getUser();
-                        if (user) {
-                            const totalText = document.getElementById('previewTotal').textContent;
-                            const totalAmount = parseFloat(totalText.replace(/[^0-9.-]+/g, "")) || 0;
-
-                            // Recolectar estado completo de la calculadora (Fase 4 - Super Memoria)
-                            const estadoPresupuesto = {
-                                company: document.getElementById('company') ? document.getElementById('company').value : '',
-                                client: document.getElementById('client') ? document.getElementById('client').value : '',
-                                work: document.getElementById('work') ? document.getElementById('work').value : '',
-                                quality: document.getElementById('quality') ? document.getElementById('quality').value : 'Estándar',
-                                length: document.getElementById('length') ? document.getElementById('length').value : '',
-                                width: document.getElementById('width') ? document.getElementById('width').value : '',
-                                price: document.getElementById('price') ? document.getElementById('price').value : '',
-                                desglose: window.currentDesglose || null,
-                                renderUrl: window.currentRenderUrl || null,
-                                materiales: window.currentMateriales || null
-                            };
-
-                            const { error: dbError } = await supabaseClient.from('presupuestos').insert([{
-                                user_id: user.id,
-                                cliente: client || 'Cotización Structa',
-                                total: totalAmount,
-                                datos_completos: estadoPresupuesto
-                            }]);
-
-                            if (dbError) {
-                                console.error('Error al guardar en BD:', dbError);
-                            } else {
-                                console.log('Presupuesto guardado en la nube exitosamente');
-                            }
-                        }
-                    } catch (e) {
-                        console.error('Error al guardar en BD:', e);
-                    }
                 }
             } catch (err) {
                 console.error(err);

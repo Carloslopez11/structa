@@ -66,84 +66,101 @@ module.exports = async function handler(req, res) {
         });
         doc.on('error', reject);
 
-        const primaryColor = '#7c3aed';
-        const textColor = '#1f2937';
-        const textMuted = '#6b7280';
+        const primaryColor = '#1e293b';
+        const accentColor = '#7c3aed';
+        const textColor = '#334155';
+        const textMuted = '#64748b';
+        const lightBg = '#f8fafc';
 
-        const headerTop = 50;
+        // --- Premium Header Background ---
+        doc.rect(0, 0, doc.page.width, 120).fill(primaryColor);
+
+        const headerTop = 40;
 
         if (logoBase64) {
-            // logoBase64 looks like "data:image/png;base64,iVBORw0KGgo..."
             const base64Data = logoBase64.replace(/^data:image\/\w+;base64,/, "");
             const imageBuffer = Buffer.from(base64Data, 'base64');
             try {
-                doc.image(imageBuffer, 50, headerTop, { width: 120 });
+                // Try to place the logo on the dark header
+                doc.image(imageBuffer, 50, headerTop - 10, { width: 100 });
             } catch(e) {
-                console.error("Invalid logo format");
-                doc.fontSize(24).font('Helvetica-Bold').fillColor(primaryColor).text(company || "My Company", 50, headerTop);
+                doc.fontSize(28).font('Helvetica-Bold').fillColor('#ffffff').text(company || "STRUCTA PRO", 50, headerTop);
             }
         } else {
-            doc.fontSize(24).font('Helvetica-Bold').fillColor(primaryColor).text(company || "My Company", 50, headerTop);
+            doc.fontSize(28).font('Helvetica-Bold').fillColor('#ffffff').text(company || "STRUCTA PRO", 50, headerTop);
         }
 
-        doc.fontSize(28).font('Helvetica-Bold').fillColor(textColor).text('QUOTE / INVOICE', 50, headerTop, { align: 'right' });
-        doc.fontSize(10).font('Helvetica').fillColor(textMuted).text(`Date: ${new Date().toLocaleDateString()}`, 50, headerTop + 35, { align: 'right' });
+        doc.fontSize(28).font('Helvetica-Bold').fillColor('#ffffff').text('INVOICE', 50, headerTop, { align: 'right' });
+        doc.fontSize(10).font('Helvetica').fillColor('#cbd5e1').text(`Date: ${new Date().toLocaleDateString()}`, 50, headerTop + 35, { align: 'right' });
         doc.text(`No: INV-${Math.floor(Math.random() * 10000)}`, 50, headerTop + 50, { align: 'right' });
 
-        doc.moveDown(4);
+        doc.y = 150; // Reset Y below header
 
-        doc.moveTo(50, doc.y).lineTo(545, doc.y).lineWidth(1).strokeColor('#e5e7eb').stroke();
+        // --- Client Info Section ---
+        const clientTop = doc.y;
+        doc.fontSize(10).font('Helvetica-Bold').fillColor(textMuted).text('BILL TO', 50, clientTop);
+        doc.moveTo(50, clientTop + 12).lineTo(200, clientTop + 12).lineWidth(1).strokeColor(accentColor).stroke();
+        doc.fontSize(14).font('Helvetica-Bold').fillColor(primaryColor).text(client, 50, clientTop + 22);
+
+        doc.fontSize(10).font('Helvetica-Bold').fillColor(textMuted).text('PROJECT DESCRIPTION', 250, clientTop);
+        doc.moveTo(250, clientTop + 12).lineTo(545, clientTop + 12).lineWidth(1).strokeColor(accentColor).stroke();
+        doc.fontSize(12).font('Helvetica').fillColor(textColor).text(work || "Professional rendering & construction services.", 250, clientTop + 22, { width: 295 });
+
+        doc.y = Math.max(doc.y, clientTop + 70);
         doc.moveDown(2);
 
-        const clientTop = doc.y;
-        doc.fontSize(10).font('Helvetica-Bold').fillColor(textMuted).text('BILL TO:', 50, clientTop);
-        doc.fontSize(14).font('Helvetica-Bold').fillColor(textColor).text(client, 50, clientTop + 15);
-
-        doc.fontSize(10).font('Helvetica-Bold').fillColor(textMuted).text('DESCRIPTION:', 250, clientTop);
-        doc.fontSize(12).font('Helvetica').fillColor(textColor).text(work || "Service provided", 250, clientTop + 15, { width: 295 });
-
-        doc.y = Math.max(doc.y, clientTop + 50);
-        doc.moveDown(3);
-
+        // --- Table Header ---
         const tableTop = doc.y;
-        doc.rect(50, tableTop, 495, 25).fill('#f3f4f6');
+        doc.rect(50, tableTop, 495, 30).fill(lightBg);
 
-        doc.fontSize(10).font('Helvetica-Bold').fillColor('#374151');
-        doc.text('MEASUREMENT', 60, tableTop + 8);
-        doc.text('AREA', 200, tableTop + 8, { width: 100, align: 'right' });
-        doc.text('PRICE PER M²', 320, tableTop + 8, { width: 100, align: 'right' });
-        doc.text('TOTAL', 440, tableTop + 8, { width: 95, align: 'right' });
+        doc.fontSize(10).font('Helvetica-Bold').fillColor(primaryColor);
+        doc.text('MEASUREMENT', 60, tableTop + 10);
+        doc.text('AREA', 200, tableTop + 10, { width: 100, align: 'right' });
+        doc.text('PRICE PER M²', 320, tableTop + 10, { width: 100, align: 'right' });
+        doc.text('TOTAL', 440, tableTop + 10, { width: 95, align: 'right' });
 
-        const itemTop = tableTop + 35;
-        doc.fontSize(10).font('Helvetica').fillColor(textColor);
+        // --- Table Row ---
+        const itemTop = tableTop + 45;
+        doc.fontSize(11).font('Helvetica').fillColor(textColor);
 
         doc.text(`${l}m x ${w}m`, 60, itemTop);
         doc.text(`${calculatedArea.toFixed(2)} m²`, 200, itemTop, { width: 100, align: 'right' });
         doc.text(`$${p.toFixed(2)}`, 320, itemTop, { width: 100, align: 'right' });
         doc.text(`$${calculatedTotal.toFixed(2)}`, 440, itemTop, { width: 95, align: 'right' });
 
-        const afterItemY = itemTop + 20;
-        doc.moveTo(50, afterItemY).lineTo(545, afterItemY).lineWidth(0.5).strokeColor('#e5e7eb').stroke();
+        const afterItemY = itemTop + 30;
+        doc.moveTo(50, afterItemY).lineTo(545, afterItemY).lineWidth(0.5).strokeColor('#e2e8f0').stroke();
 
         doc.y = afterItemY + 30;
 
-        doc.fontSize(10).font('Helvetica').fillColor(textMuted).text('Subtotal:', 350, doc.y, { width: 80, align: 'right' });
+        // --- Totals Section ---
+        doc.fontSize(11).font('Helvetica').fillColor(textMuted).text('Subtotal:', 350, doc.y, { width: 80, align: 'right' });
         doc.fillColor(textColor).text(`$${calculatedTotal.toFixed(2)}`, 440, doc.y, { width: 95, align: 'right' });
         doc.moveDown(1);
 
-        doc.moveTo(350, doc.y).lineTo(545, doc.y).lineWidth(1).strokeColor('#e5e7eb').stroke();
+        doc.moveTo(350, doc.y).lineTo(545, doc.y).lineWidth(1).strokeColor('#e2e8f0').stroke();
         doc.moveDown(1);
 
         const totalY = doc.y;
-        doc.rect(340, totalY - 5, 205, 30).fill('#f3f4f6');
-        doc.fontSize(14).font('Helvetica-Bold').fillColor(primaryColor).text('ESTIMATED TOTAL:', 350, totalY + 2, { width: 150, align: 'left' });
-        doc.text(`$${calculatedTotal.toFixed(2)}`, 440, totalY + 2, { width: 95, align: 'right' });
+        doc.rect(300, totalY - 10, 245, 45).fill(lightBg);
+        
+        doc.moveTo(300, totalY - 10).lineTo(300, totalY + 35).lineWidth(4).strokeColor(accentColor).stroke();
+
+        doc.fontSize(16).font('Helvetica-Bold').fillColor(primaryColor).text('ESTIMATED TOTAL:', 310, totalY + 5, { width: 150, align: 'left' });
+        doc.text(`$${calculatedTotal.toFixed(2)}`, 440, totalY + 5, { width: 95, align: 'right' });
+
+        // --- Footer ---
+        const bottomPosition = doc.page.height - 70;
+        doc.moveTo(50, bottomPosition - 15).lineTo(545, bottomPosition - 15).lineWidth(0.5).strokeColor('#e2e8f0').stroke();
+        
+        doc.fontSize(9).font('Helvetica').fillColor(textMuted)
+            .text('Thank you for your business. This is an estimated quote and prices are subject to change.',
+                50, bottomPosition, { align: 'center', width: 495 });
 
         if (!userStatus.is_pro) {
-            const bottomPosition = doc.page.height - 50;
-            doc.fontSize(9).font('Helvetica').fillColor('#9ca3af')
-                .text('Generated by Structa Quotes (Free Version) - Upgrade to Pro to remove this watermark.',
-                    50, bottomPosition, { align: 'center', width: 495 });
+            doc.fontSize(8).fillColor('#94a3b8')
+                .text('Generated via Structa - the premier tool for architects.',
+                    50, bottomPosition + 15, { align: 'center', width: 495 });
         }
 
         doc.end();
