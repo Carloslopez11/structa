@@ -66,17 +66,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* --- CONFIGURACIÓN BASE (Premium SaaS Redesign) --- */
+    /* --- CONFIGURACIÓN BASE (Luxury Architecture Redesign) --- */
     :root {
-      --bg-midnight: #050a15;
-      --card-bg: rgba(15, 23, 42, 0.5);
-      --violet: #00f0ff;
-      --violet-hover: #0891b2;
-      --cyan-glow: #00f0ff;
+      --bg-midnight: #0a0a0a; /* Charcoal / Onyx */
+      --card-bg: rgba(18, 18, 18, 0.7);
+      --violet: #d4af37; /* Champagne / Metallic Gold */
+      --violet-hover: #c5a059;
+      --cyan-glow: #d4af37;
       --text-main: #ffffff;
-      --text-muted: #cbd5e1;
-      --border-glass: rgba(0, 240, 255, 0.2);
-      --glass-bg: rgba(15, 23, 42, 0.5);
+      --text-muted: #a3a3a3;
+      --border-glass: rgba(212, 175, 55, 0.25);
+      --glass-bg: rgba(18, 18, 18, 0.7);
     }
 
     body {
@@ -88,8 +88,8 @@
       line-height: 1.6;
       overflow-x: hidden;
       background-image:
-        radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.05), transparent 25%),
-        radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.03), transparent 25%);
+        radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.05), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.03), transparent 25%);
       background-attachment: fixed;
       background-size: cover;
     }
@@ -114,18 +114,18 @@
     }
 
     @keyframes problemPulseGlow {
-      0%, 100% { box-shadow: 0 0 15px rgba(0, 240, 255, 0); border-color: rgba(0, 240, 255, 0.2); }
-      50% { box-shadow: 0 0 35px rgba(0, 240, 255, 0.25); border-color: rgba(0, 240, 255, 0.6); }
+      0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0); border-color: rgba(212, 175, 55, 0.2); }
+      50% { box-shadow: 0 0 35px rgba(212, 175, 55, 0.25); border-color: rgba(212, 175, 55, 0.6); }
     }
 
     @keyframes pulseBtn {
-      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.7); }
-      70% { transform: scale(1.03); box-shadow: 0 0 0 15px rgba(0, 240, 255, 0); }
-      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
+      70% { transform: scale(1.03); box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
     }
 
     .text-gradient-animated {
-      background: linear-gradient(270deg, #3b82f6, #00f0ff, #2DD4BF, #3b82f6);
+      background: linear-gradient(270deg, #d4af37, #c5a059, #e8c678, #d4af37);
       background-size: 300% 300%;
       -webkit-background-clip: text;
       background-clip: text;

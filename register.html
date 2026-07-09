@@ -13,14 +13,14 @@
   <!-- Custom Auth -->
   <style>
     :root {
-      --bg-midnight: #0A0F24;
-      --card-bg: #121A38;
-      --violet: #8B5CF6;
-      --cyan-glow: #2DD4BF;
-      --text-main: #F8FAFC;
-      --text-muted: #94A3B8;
-      --border-glass: rgba(255, 255, 255, 0.08);
-      --glass-bg: rgba(18, 26, 56, 0.6);
+      --bg-midnight: #0a0a0a;
+      --card-bg: rgba(18, 18, 18, 0.7);
+      --violet: #d4af37;
+      --cyan-glow: #d4af37;
+      --text-main: #ffffff;
+      --text-muted: #a3a3a3;
+      --border-glass: rgba(212, 175, 55, 0.25);
+      --glass-bg: rgba(18, 18, 18, 0.7);
     }
     
     body {
@@ -34,8 +34,8 @@
       min-height: 100vh;
       overflow: hidden;
       background-image:
-        radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.05), transparent 25%),
-        radial-gradient(circle at 85% 30%, rgba(45, 212, 191, 0.03), transparent 25%);
+        radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.05), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.03), transparent 25%);
       background-attachment: fixed;
       background-size: cover;
     }
@@ -49,7 +49,7 @@
       border: 1px solid var(--border-glass);
       width: 100%;
       max-width: 420px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.15);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.15);
       text-align: center;
       position: relative;
       z-index: 10;
@@ -78,7 +78,7 @@
     }
 
     .input-group {
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       text-align: left;
     }
     
@@ -93,8 +93,8 @@
     .input-group input {
       width: 100%;
       padding: 14px;
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid var(--border-glass);
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       color: var(--text-main);
       font-family: inherit;
@@ -106,34 +106,33 @@
     .input-group input:focus {
       outline: none;
       border-color: var(--violet);
-      box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
-      background: rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+      background: rgba(0, 0, 0, 0.6);
     }
     
     .btn {
       width: 100%;
-      background: linear-gradient(135deg, var(--violet) 0%, #6D28D9 100%);
-      color: #fff;
+      background: linear-gradient(135deg, #d4af37 0%, #b5952f 100%);
+      color: #0a0a0a;
       padding: 15px;
       border: none;
       border-radius: 10px;
-      border: 1px solid rgba(167, 139, 250, 0.3);
-      font-weight: 600;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      font-weight: 700;
       font-size: 1.1rem;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
       margin-top: 10px;
     }
     
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4), 0 0 15px rgba(45, 212, 191, 0.2);
-      border-color: var(--cyan-glow);
+      box-shadow: 0 10px 25px rgba(212, 175, 55, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
     
     .btn:disabled {
-      background: rgba(139, 92, 246, 0.5);
+      background: rgba(212, 175, 55, 0.5);
       cursor: not-allowed;
       transform: none;
       box-shadow: none;

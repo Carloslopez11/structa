@@ -10,11 +10,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
         :root {
-            --purple: #7c3aed;
-            --purple-hover: #6d28d9;
-            --dark: #0f0f16;
-            --card: #1a1a2e;
-            --text-muted: #a1a1aa;
+            --purple: #d4af37; /* Champagne / Metallic Gold */
+            --purple-hover: #c5a059;
+            --dark: #0a0a0a; /* Charcoal / Onyx */
+            --card: rgba(18, 18, 18, 0.7);
+            --text-muted: #a3a3a3;
         }
 
         @keyframes fadeUp {
@@ -31,27 +31,30 @@
 
         body {
             margin: 0;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: radial-gradient(circle at top, #1a1a2e 0%, #0f0f16 100%);
+            font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+            background-color: var(--dark);
+            background-image:
+                radial-gradient(circle at top, rgba(212, 175, 55, 0.08) 0%, #0a0a0a 100%),
+                radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.03), transparent 25%);
+            background-attachment: fixed;
+            background-size: cover;
             color: white;
             padding: 20px;
             padding-bottom: 120px;
             min-height: 100svh;
-            color: #f8fafc;
-            background-attachment: fixed;
-            background-size: cover;
         }
 
         .container {
             max-width: 600px;
             margin: auto;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(18, 18, 18, 0.75);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             padding: 30px;
             border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(212, 175, 55, 0.15);
+            border: 1px solid rgba(212, 175, 55, 0.25);
             opacity: 0;
             animation: fadeUp 0.8s ease-out forwards;
             animation-delay: 0.2s;
@@ -66,8 +69,8 @@
             padding: 16px;
             margin-top: 8px;
             margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
             border-radius: 12px;
             font-size: 16px;
@@ -81,14 +84,14 @@
         }
 
         select option {
-            background: var(--card);
+            background: #121212;
             color: white;
         }
 
         input:focus,
         select:focus {
             border-color: var(--purple);
-            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
         }
 
         label {
@@ -96,14 +99,14 @@
             font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         .preview-box {
             margin-top: 20px;
             padding: 24px;
-            background: rgba(124, 58, 237, 0.05);
-            border: 1px solid rgba(124, 58, 237, 0.4);
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
             border-radius: 16px;
             text-align: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
@@ -113,7 +116,7 @@
 
         .preview-box:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.2);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.15);
         }
 
         .total-amount {
@@ -126,21 +129,21 @@
         .btn-pay {
             width: 100%;
             padding: 20px;
-            background: linear-gradient(135deg, #7c3aed, #5b21b6);
+            background: linear-gradient(135deg, #d4af37, #b5952f);
             border: none;
-            color: white;
-            font-weight: bold;
+            color: #0a0a0a;
+            font-weight: 700;
             border-radius: 16px;
             cursor: pointer;
             font-size: 1.15rem;
             margin-top: 20px;
-            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .btn-pay:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.6);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.5);
         }
 
         /* --- AI BLUEPRINT SCANNER --- */
@@ -148,8 +151,8 @@
             margin-top: 8px;
             margin-bottom: 20px;
             padding: 30px 20px;
-            background: rgba(124, 58, 237, 0.05);
-            border: 2px dashed rgba(124, 58, 237, 0.4);
+            background: rgba(212, 175, 55, 0.05);
+            border: 2px dashed rgba(212, 175, 55, 0.4);
             border-radius: 16px;
             text-align: center;
             cursor: pointer;
@@ -165,10 +168,10 @@
         }
 
         .ai-upload-zone:hover {
-            background: rgba(124, 58, 237, 0.1);
+            background: rgba(212, 175, 55, 0.1);
             border-color: var(--purple);
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.15);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.15);
         }
 
         .ai-upload-content p {
@@ -181,7 +184,7 @@
         .ai-loading-spinner {
             width: 30px;
             height: 30px;
-            border: 3px solid rgba(124, 58, 237, 0.2);
+            border: 3px solid rgba(212, 175, 55, 0.2);
             border-radius: 50%;
             border-top-color: var(--purple);
             animation: spin 1s ease-in-out infinite;
@@ -204,7 +207,7 @@
         }
 
         .ai-success-icon {
-            color: #10b981;
+            color: #d4af37;
             margin-bottom: 10px;
         }
 
@@ -248,13 +251,13 @@
         .robot-icon {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, #a78bfa, #7c3aed);
+            background: linear-gradient(135deg, #e8c678, #c5a059);
             border-radius: 50%;
             border: 3px solid white;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.6);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
             cursor: pointer;
             pointer-events: auto;
             animation: float 3s ease-in-out infinite;
