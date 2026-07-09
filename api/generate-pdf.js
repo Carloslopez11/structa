@@ -7,7 +7,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { email, company, client, work, length, width, price, logoBase64 } = req.body;
+    const { email, company, client, work, length, width, price, logoBase64, renderUrl } = req.body;
 
     if (!email || !client || !length || !width || !price) {
         return res.status(400).json({ error: "Missing required fields." });
@@ -50,6 +50,20 @@ module.exports = async function handler(req, res) {
 
     const calculatedArea = l * w;
     const calculatedTotal = calculatedArea * p;
+
+    // Fetch the AI generated image if it exists
+    let renderImageBuffer = null;
+    if (renderUrl) {
+        try {
+            const imgRes = await fetch(renderUrl);
+            if (imgRes.ok) {
+                const arrayBuffer = await imgRes.arrayBuffer();
+                renderImageBuffer = Buffer.from(arrayBuffer);
+            }
+        } catch (e) {
+            console.error("Failed to fetch render image:", e);
+        }
+    }
 
     // --- PDF GENERATION ---
     const doc = new PDFDocument({ size: 'A4', margin: 50 });
@@ -161,6 +175,27 @@ module.exports = async function handler(req, res) {
             doc.fontSize(8).fillColor('#94a3b8')
                 .text('Generated via Structa - the premier tool for architects.',
                     50, bottomPosition + 15, { align: 'center', width: 495 });
+        }
+
+        // --- Render Image Page ---
+        if (renderImageBuffer) {
+            doc.addPage();
+            doc.rect(0, 0, doc.page.width, 120).fill(primaryColor);
+            doc.fontSize(28).font('Helvetica-Bold').fillColor('#ffffff').text('PROJECT RENDERING', 50, 40, { align: 'center' });
+            
+            doc.y = 150;
+            try {
+                // Draw the image, scaling it to fit the page horizontally and vertically while maintaining aspect ratio
+                doc.image(renderImageBuffer, 50, doc.y, { fit: [495, 600], align: 'center', valign: 'center' });
+            } catch (e) {
+                console.error("Failed to draw render image:", e);
+            }
+            
+            // Footer on the image page too
+            doc.moveTo(50, bottomPosition - 15).lineTo(545, bottomPosition - 15).lineWidth(0.5).strokeColor('#e2e8f0').stroke();
+            doc.fontSize(9).font('Helvetica').fillColor(textMuted)
+                .text('AI Generated Architectural Sketch',
+                    50, bottomPosition, { align: 'center', width: 495 });
         }
 
         doc.end();
