@@ -141,6 +141,13 @@ module.exports = async function handler(req, res) {
 
     doc.end();
 
+    // Vercel Serverless Functions kill the process when the function returns.
+    // We MUST wait for the response stream to finish writing the PDF.
+    return new Promise((resolve, reject) => {
+        res.on('finish', () => resolve());
+        res.on('error', reject);
+    });
+
   } catch (error) {
     console.error("Error generating PDF:", error);
     res.status(500).json({ error: "PDF Generation Error: " + error.message, stack: error.stack });
