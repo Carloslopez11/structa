@@ -1825,6 +1825,19 @@
                 if(typeof speak === 'function') speak("Please wait for your session to load.", 3000);
                 return;
             }
+            
+            // ADMIN BYPASS
+            if (email.trim().toLowerCase() === 'javibillo29@gmail.com') {
+                document.getElementById('takeoffModal').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                if (!TakeoffTool.canvas) {
+                    TakeoffTool.init('takeoffCanvas');
+                } else {
+                    TakeoffTool.resize();
+                }
+                return;
+            }
+
             try {
                 let { data } = await supabaseClient.from('usage').select('is_pro').eq('email', email).maybeSingle();
                 if (data && data.is_pro) {

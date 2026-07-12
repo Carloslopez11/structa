@@ -25,6 +25,11 @@ module.exports = async function handler(req, res) {
             userStatus = userResult.rows[0];
         }
 
+        // ADMIN BYPASS
+        if (email.trim().toLowerCase() === 'javibillo29@gmail.com') {
+            userStatus.is_pro = true;
+        }
+
         if (!userStatus.is_pro && userStatus.count >= 5) {
             return res.status(403).json({
                 error: "LimitReached",
