@@ -30,6 +30,11 @@ const TakeoffTool = {
         this.canvas.addEventListener('mousemove', this.onMouseMove.bind(this));
         this.canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
         this.canvas.addEventListener('wheel', this.onWheel.bind(this), { passive: false });
+
+        // Touch Support
+        this.canvas.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: false });
+        this.canvas.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: false });
+        this.canvas.addEventListener('touchend', this.onTouchEnd.bind(this));
         
         // Disable context menu
         this.canvas.addEventListener('contextmenu', e => e.preventDefault());
@@ -117,6 +122,39 @@ const TakeoffTool = {
         if (e.button === 1 || e.button === 2 || this.mode === 'none') {
             this.isDragging = false;
         }
+    },
+
+    onTouchStart(e) {
+        if (e.touches.length === 1) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY,
+                button: this.mode === 'none' ? 1 : 0
+            });
+            this.onMouseDown(mouseEvent);
+        }
+    },
+
+    onTouchMove(e) {
+        if (e.touches.length === 1) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            this.onMouseMove(mouseEvent);
+        }
+    },
+
+    onTouchEnd(e) {
+        e.preventDefault();
+        const mouseEvent = new MouseEvent('mouseup', {
+            button: this.mode === 'none' ? 1 : 0
+        });
+        this.onMouseUp(mouseEvent);
     },
 
     onWheel(e) {
