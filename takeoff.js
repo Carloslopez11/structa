@@ -53,13 +53,24 @@ const TakeoffTool = {
     loadImage(url) {
         this.img = new Image();
         this.img.onload = () => {
+            // Force a resize just before applying the image to guarantee valid canvas dimensions
+            this.resize();
+            
+            // If dimensions are still 0 (edge case), use window dimensions as fallback
+            const cw = this.canvas.width > 0 ? this.canvas.width : window.innerWidth;
+            const ch = this.canvas.height > 0 ? this.canvas.height : window.innerHeight;
+
             // Reset view to fit image
             this.scale = Math.min(
-                this.canvas.width / this.img.width,
-                this.canvas.height / this.img.height
+                cw / this.img.width,
+                ch / this.img.height
             ) * 0.9;
-            this.offsetX = (this.canvas.width - this.img.width * this.scale) / 2;
-            this.offsetY = (this.canvas.height - this.img.height * this.scale) / 2;
+            
+            // Fallback scale if something went very wrong
+            if (this.scale <= 0 || isNaN(this.scale)) this.scale = 1;
+
+            this.offsetX = (cw - this.img.width * this.scale) / 2;
+            this.offsetY = (ch - this.img.height * this.scale) / 2;
             this.render();
         };
         this.img.src = url;

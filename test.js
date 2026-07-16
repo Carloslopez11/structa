@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const path = require('path');
 
 (async () => {
     try {
@@ -27,25 +28,33 @@ const puppeteer = require('puppeteer');
             if (input) input.value = 'javibillo29@gmail.com';
         });
 
-        console.log('Looking for Digital Takeoff button...');
-        const buttonText = await page.evaluate(() => {
-            const btns = Array.from(document.querySelectorAll('button'));
-            const takeoffBtn = btns.find(b => b.textContent.includes('Digital Takeoff'));
-            if (!takeoffBtn) return 'Button not found';
-            takeoffBtn.click();
-            return 'Button clicked!';
+        console.log('Clicking Digital Takeoff button...');
+        await page.evaluate(() => {
+            window.openTakeoff();
         });
+
+        await new Promise(r => setTimeout(r, 1000));
         
-        console.log(buttonText);
+        console.log('Uploading dummy.png...');
+        // Find the file input inside takeoffModal
+        const fileInput = await page.$('#takeoffModal input[type="file"]');
+        if (fileInput) {
+            await fileInput.uploadFile(path.resolve('dummy.png'));
+            console.log('File uploaded via Puppeteer.');
+        } else {
+            console.log('File input not found.');
+        }
 
         await new Promise(r => setTimeout(r, 2000));
-        
-        const modalDisplay = await page.evaluate(() => {
-            const modal = document.getElementById('takeoffModal');
-            return modal ? modal.style.display : 'Modal not found in DOM';
+
+        // Check if img object is loaded in TakeoffTool
+        const imageStatus = await page.evaluate(() => {
+            if (!window.TakeoffTool) return 'TakeoffTool undefined';
+            if (!window.TakeoffTool.img) return 'img object not set';
+            return 'img loaded, width: ' + window.TakeoffTool.img.width;
         });
 
-        console.log('Takeoff Modal display style:', modalDisplay);
+        console.log('TakeoffTool Image Status:', imageStatus);
 
         await browser.close();
     } catch(e) {
