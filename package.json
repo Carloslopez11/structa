@@ -30,5 +30,9 @@
     "pg": "^8.22.0",
     "serverless-http": "^4.0.0",
     "stripe": "^20.4.0"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "puppeteer": "^25.3.0"
   }
 }
