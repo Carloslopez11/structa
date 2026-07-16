@@ -1819,45 +1819,51 @@
     </div>
 
     <script>
-        async function openTakeoff() {
-            const email = document.getElementById('email')?.value;
-            if (!email) {
-                if(typeof speak === 'function') speak("Please wait for your session to load.", 3000);
-                return;
-            }
-            
-            // ADMIN BYPASS
-            if (email.trim().toLowerCase() === 'javibillo29@gmail.com') {
-                document.getElementById('takeoffModal').style.display = 'flex';
+        window.openTakeoff = async function() {
+            try {
+                const emailEl = document.getElementById('email');
+                const email = emailEl ? emailEl.value.trim().toLowerCase() : '';
+                
+                if (!email) {
+                    alert("Please wait for your session to load, or refresh the page.");
+                    return;
+                }
+                
+                // ADMIN BYPASS OR PRO CHECK
+                // Since the frontend is disconnected from Supabase DB, we only allow the admin or show an upgrade message
+                if (email === 'javibillo29@gmail.com' || email === 'javibillo29@gmail,com') {
+                    // Allow access
+                } else {
+                    alert("Digital Takeoff is an exclusive PRO feature. Upgrade your plan to unlock it.");
+                    const paywall = document.getElementById('paywall');
+                    if (paywall) paywall.style.display = 'flex';
+                    return;
+                }
+
+                const modal = document.getElementById('takeoffModal');
+                if (!modal) {
+                    alert("Error: Modal HTML not found.");
+                    return;
+                }
+
+                modal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
+                
+                if (typeof TakeoffTool === 'undefined') {
+                    alert("Error: TakeoffTool script failed to load. Please clear cache and refresh.");
+                    return;
+                }
+
                 if (!TakeoffTool.canvas) {
                     TakeoffTool.init('takeoffCanvas');
                 } else {
                     TakeoffTool.resize();
                 }
-                return;
-            }
-
-            try {
-                let { data } = await supabaseClient.from('usage').select('is_pro').eq('email', email).maybeSingle();
-                if (data && data.is_pro) {
-                    document.getElementById('takeoffModal').style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
-                    if (!TakeoffTool.canvas) {
-                        TakeoffTool.init('takeoffCanvas');
-                    } else {
-                        TakeoffTool.resize();
-                    }
-                } else {
-                    if(typeof speak === 'function') speak("Digital Takeoff is a PRO feature. Let's upgrade!", 4000);
-                    const paywall = document.getElementById('paywall');
-                    if (paywall) paywall.style.display = 'flex';
-                }
             } catch(e) {
                 console.error(e);
-                if(typeof speak === 'function') speak("Error checking PRO status.", 3000);
+                alert("Error opening tool: " + e.message);
             }
-        }
+        };
     </script>
 </body>
 </html>
