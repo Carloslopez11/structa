@@ -1773,10 +1773,10 @@
         <!-- Toolbar -->
         <div style="padding: 15px 25px; background: rgba(18, 18, 18, 0.9); border-bottom: 1px solid rgba(212, 175, 55, 0.2); display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap;">
             <div style="display: flex; gap: 10px; align-items: center;">
-                <label style="background: #1a1a1a; padding: 10px 15px; border-radius: 8px; border: 1px solid #333; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: 0.3s; color: white;">
+                <button onclick="const fi = document.getElementById('takeoffFileInput'); fi.value = ''; fi.click();" style="background: #1a1a1a; padding: 10px 15px; border-radius: 8px; border: 1px solid #333; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: 0.3s; color: white;">
                     📁 Upload Blueprint
-                    <input type="file" accept="image/*" style="display:none" onchange="if(this.files[0]){ const u = URL.createObjectURL(this.files[0]); TakeoffTool.loadImage(u); document.getElementById('takeoffStatus').textContent = 'Image loaded. Please Calibrate Scale.' }">
-                </label>
+                </button>
+                <input type="file" id="takeoffFileInput" accept="image/*" style="display:none" onchange="if(this.files[0]){ const u = URL.createObjectURL(this.files[0]); TakeoffTool.loadImage(u); document.getElementById('takeoffStatus').textContent = 'Image loaded. Please Calibrate Scale.'; }">
                 
                 <button onclick="TakeoffTool.mode = 'calibrate'; document.getElementById('takeoffStatus').textContent = 'Click 2 points to define scale...';" style="background: #1a1a1a; padding: 10px 15px; border-radius: 8px; border: 1px solid #333; cursor: pointer; color: white; font-weight: 600;">
                     📏 Calibrate Scale
