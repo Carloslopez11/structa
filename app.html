@@ -1782,7 +1782,7 @@
                     📏 Calibrate Scale
                 </button>
                 
-                <button onclick="TakeoffTool.mode = 'draw_area'; document.getElementById('takeoffStatus').textContent = 'Click to draw polygon points...';" style="background: rgba(212, 175, 55, 0.2); padding: 10px 15px; border-radius: 8px; border: 1px solid #d4af37; cursor: pointer; color: #d4af37; font-weight: 600;">
+                <button onclick="TakeoffTool.mode = 'draw_area'; document.getElementById('takeoffStatus').textContent = 'Hold SHIFT for straight lines...';" style="background: rgba(212, 175, 55, 0.2); padding: 10px 15px; border-radius: 8px; border: 1px solid #d4af37; cursor: pointer; color: #d4af37; font-weight: 600;">
                     ✏️ Draw Area
                 </button>
                 
@@ -1791,7 +1791,7 @@
                 </button>
                 
                 <button onclick="TakeoffTool.clearAll()" style="background: rgba(220, 38, 38, 0.2); padding: 10px 15px; border-radius: 8px; border: 1px solid #dc2626; cursor: pointer; color: #ff6b6b; font-weight: 600;">
-                    🗑️ Clear
+                    🗑️ Clear All
                 </button>
             </div>
             
@@ -1804,17 +1804,50 @@
             </div>
         </div>
         
-        <!-- Canvas Area -->
-        <div style="flex: 1; position: relative; overflow: hidden; background: #000; cursor: crosshair;">
-            <canvas id="takeoffCanvas" style="position: absolute; top:0; left:0; width: 100%; height: 100%;"></canvas>
+        <!-- Main Content Area -->
+        <div style="flex: 1; display: flex; overflow: hidden;">
             
-            <!-- Floating Results Panel -->
-            <div style="position: absolute; bottom: 20px; left: 20px; background: rgba(18,18,18,0.85); backdrop-filter: blur(10px); padding: 15px; border-radius: 12px; border: 1px solid rgba(212,175,55,0.3); pointer-events: none; min-width: 150px;">
-                <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Takeoff Results</div>
-                <div id="takeoffResults" style="font-size: 1.1rem; color: white; line-height: 1.5;">
-                    <div><strong>Area:</strong> <span style="color:#d4af37">0.00 m²</span></div>
-                    <div><strong>Perimeter:</strong> <span style="color:#d4af37">0.00 m</span></div>
+            <!-- Canvas Area -->
+            <div style="flex: 1; position: relative; overflow: hidden; background: #000; cursor: crosshair;">
+                <canvas id="takeoffCanvas" style="position: absolute; top:0; left:0; width: 100%; height: 100%;"></canvas>
+            </div>
+            
+            <!-- Sidebar -->
+            <div style="width: 320px; background: rgba(18, 18, 18, 0.95); border-left: 1px solid rgba(212, 175, 55, 0.2); display: flex; flex-direction: column; overflow-y: auto;">
+                
+                <!-- Room Settings -->
+                <div style="padding: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                    <h3 style="color: #d4af37; font-size: 1.1rem; margin-bottom: 15px; font-weight: 600;">Room Settings</h3>
+                    
+                    <label style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px; display: block;">Name Next Area</label>
+                    <input type="text" id="takeoffAreaName" value="Area" onchange="TakeoffTool.currentName = this.value" style="width: 100%; background: #1a1a1a; border: 1px solid #333; color: white; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-family: inherit;">
+                    
+                    <label style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px; display: block;">Color</label>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <button onclick="TakeoffTool.currentColor = 'rgba(212, 175, 55, 0.4)'; this.parentElement.querySelectorAll('button').forEach(b=>b.style.border='none'); this.style.border='2px solid white';" style="width: 30px; height: 30px; border-radius: 50%; background: rgba(212, 175, 55, 1); border: 2px solid white; cursor: pointer;"></button>
+                        <button onclick="TakeoffTool.currentColor = 'rgba(59, 130, 246, 0.4)'; this.parentElement.querySelectorAll('button').forEach(b=>b.style.border='none'); this.style.border='2px solid white';" style="width: 30px; height: 30px; border-radius: 50%; background: rgba(59, 130, 246, 1); border: none; cursor: pointer;"></button>
+                        <button onclick="TakeoffTool.currentColor = 'rgba(16, 185, 129, 0.4)'; this.parentElement.querySelectorAll('button').forEach(b=>b.style.border='none'); this.style.border='2px solid white';" style="width: 30px; height: 30px; border-radius: 50%; background: rgba(16, 185, 129, 1); border: none; cursor: pointer;"></button>
+                        <button onclick="TakeoffTool.currentColor = 'rgba(239, 68, 68, 0.4)'; this.parentElement.querySelectorAll('button').forEach(b=>b.style.border='none'); this.style.border='2px solid white';" style="width: 30px; height: 30px; border-radius: 50%; background: rgba(239, 68, 68, 1); border: none; cursor: pointer;"></button>
+                    </div>
                 </div>
+
+                <!-- Areas List -->
+                <div style="padding: 20px; flex: 1;">
+                    <h3 style="color: #d4af37; font-size: 1.1rem; margin-bottom: 15px; font-weight: 600;">Measurements</h3>
+                    <div id="takeoffShapesList" style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="color: var(--text-muted); font-size: 0.9rem; font-style: italic;">No areas drawn yet.</div>
+                    </div>
+                </div>
+
+                <!-- Grand Total -->
+                <div style="padding: 20px; background: rgba(0,0,0,0.5); border-top: 1px solid rgba(212, 175, 55, 0.2);">
+                    <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Grand Total</div>
+                    <div id="takeoffResults" style="font-size: 1.2rem; color: white; line-height: 1.5; font-weight: 600;">
+                        <div>Area: <span style="color:#d4af37">0.00 m²</span></div>
+                        <div>Perimeter: <span style="color:#d4af37">0.00 m</span></div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

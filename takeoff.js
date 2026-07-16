@@ -116,11 +116,27 @@ const TakeoffTool = {
         this.render();
     },
 
+    currentColor: 'rgba(212, 175, 55, 0.4)',
+    currentName: 'Area',
+    shapeCounter: 1,
+
     onMouseMove(e) {
         const rect = this.canvas.getBoundingClientRect();
         const screenX = e.clientX - rect.left;
         const screenY = e.clientY - rect.top;
-        this.mousePos = this.screenToWorld(screenX, screenY);
+        
+        let worldPos = this.screenToWorld(screenX, screenY);
+
+        if (e.shiftKey && this.currentPoints.length > 0) {
+            const lastPt = this.currentPoints[this.currentPoints.length - 1];
+            if (Math.abs(worldPos.x - lastPt.x) < Math.abs(worldPos.y - lastPt.y)) {
+                worldPos.x = lastPt.x;
+            } else {
+                worldPos.y = lastPt.y;
+            }
+        }
+        
+        this.mousePos = worldPos;
 
         if (this.isDragging) {
             this.offsetX = screenX - this.dragStartX;
@@ -226,12 +242,15 @@ const TakeoffTool = {
         const areaMeters = areaPixels / (this.pixelsPerMeter * this.pixelsPerMeter);
         const perimeterMeters = perimeterPixels / this.pixelsPerMeter;
 
+        const id = 'shape_' + Date.now();
         this.completedShapes.push({
+            id: id,
+            name: `${this.currentName} ${this.shapeCounter++}`,
             type: 'area',
             points: [...this.currentPoints],
             area: areaMeters,
             perimeter: perimeterMeters,
-            color: 'rgba(212, 175, 55, 0.4)'
+            color: this.currentColor
         });
 
         this.currentPoints = [];
@@ -241,12 +260,18 @@ const TakeoffTool = {
         this.updateTotals();
     },
 
+    deleteShape(id) {
+        this.completedShapes = this.completedShapes.filter(s => s.id !== id);
+        this.render();
+        this.updateTotals();
+    },
+
     clearAll() {
-        if(confirm("Are you sure you want to clear the canvas?")) {
+        if(confirm("Are you sure you want to clear ALL areas?")) {
             this.completedShapes = [];
             this.currentPoints = [];
-            this.pixelsPerMeter = null;
-            document.getElementById('takeoffStatus').textContent = "Cleared. Please upload image and Calibrate.";
+            this.shapeCounter = 1;
+            document.getElementById('takeoffStatus').textContent = "Cleared. Ready to draw.";
             this.render();
             this.updateTotals();
         }
@@ -255,16 +280,39 @@ const TakeoffTool = {
     updateTotals() {
         let totalArea = 0;
         let totalPerimeter = 0;
+        
+        const listContainer = document.getElementById('takeoffShapesList');
+        if (listContainer) {
+            listContainer.innerHTML = '';
+            if (this.completedShapes.length === 0) {
+                listContainer.innerHTML = '<div style="color: var(--text-muted); font-size: 0.9rem; font-style: italic;">No areas drawn yet.</div>';
+            }
+        }
+
         this.completedShapes.forEach(s => {
             totalArea += s.area;
             totalPerimeter += s.perimeter;
+
+            if (listContainer) {
+                const item = document.createElement('div');
+                item.style.cssText = 'background: #1a1a1a; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid ' + s.color.replace('0.4', '1');
+                
+                item.innerHTML = `
+                    <div>
+                        <div style="font-weight: 600; color: white; font-size: 0.9rem;">${s.name}</div>
+                        <div style="color: var(--text-muted); font-size: 0.8rem;">${s.area.toFixed(2)} m² | ${s.perimeter.toFixed(2)} m</div>
+                    </div>
+                    <button onclick="TakeoffTool.deleteShape('${s.id}')" style="background: transparent; border: none; color: #dc2626; cursor: pointer; padding: 5px;" title="Delete">🗑️</button>
+                `;
+                listContainer.appendChild(item);
+            }
         });
         
         const disp = document.getElementById('takeoffResults');
         if (disp) {
             disp.innerHTML = `
-                <div><strong>Area:</strong> <span style="color:#d4af37">${totalArea.toFixed(2)} m²</span></div>
-                <div><strong>Perimeter:</strong> <span style="color:#d4af37">${totalPerimeter.toFixed(2)} m</span></div>
+                <div>Area: <span style="color:#d4af37">${totalArea.toFixed(2)} m²</span></div>
+                <div>Perimeter: <span style="color:#d4af37">${totalPerimeter.toFixed(2)} m</span></div>
             `;
         }
         return { totalArea, totalPerimeter };
