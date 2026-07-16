@@ -1776,7 +1776,7 @@
                 <button onclick="const fi = document.getElementById('takeoffFileInput'); fi.value = ''; fi.click();" style="background: #1a1a1a; padding: 10px 15px; border-radius: 8px; border: 1px solid #333; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: 0.3s; color: white;">
                     📁 Upload Blueprint
                 </button>
-                <input type="file" id="takeoffFileInput" accept="image/*" style="display:none" onchange="if(this.files[0]){ const u = URL.createObjectURL(this.files[0]); TakeoffTool.loadImage(u); document.getElementById('takeoffStatus').textContent = 'Image loaded. Please Calibrate Scale.'; }">
+                <input type="file" id="takeoffFileInput" accept="image/*" style="display:none" onchange="if(this.files[0]){ const reader = new FileReader(); reader.onload = (e) => { TakeoffTool.loadImage(e.target.result); document.getElementById('takeoffStatus').textContent = 'Image loaded. Please Calibrate Scale.'; }; reader.readAsDataURL(this.files[0]); }">
                 
                 <button onclick="TakeoffTool.mode = 'calibrate'; document.getElementById('takeoffStatus').textContent = 'Click 2 points to define scale...';" style="background: #1a1a1a; padding: 10px 15px; border-radius: 8px; border: 1px solid #333; cursor: pointer; color: white; font-weight: 600;">
                     📏 Calibrate Scale
