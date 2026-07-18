@@ -9,6 +9,9 @@ from crewai_tools import FileWriterTool, ScrapeWebsiteTool
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain.tools import Tool
 
+from dotenv import load_dotenv
+load_dotenv() # Carga las variables de entorno desde el archivo .env
+
 # ==========================================
 # CONFIGURACIÓN DEL LLM (Gemini 100% Gratis)
 # ==========================================

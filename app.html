@@ -613,18 +613,6 @@
             <button onclick="guardarProyecto()" id="saveProjectBtn" style="flex: 1; background: linear-gradient(135deg, #7c3aed, #5b21b6); color: white; padding: 18px 25px; border-radius: 12px; font-weight: 700; font-size: 1.15rem; cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);"
                 >💾 Save Project</button>
         </div>
-        <div id="socialShareContainer" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
-            <button onclick="shareWhatsApp()"
-                style="background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"
-                data-i18n="btn_share_wa">
-                <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i> Share via WhatsApp
-            </button>
-            <button onclick="shareEmail()"
-                style="background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"
-                data-i18n="btn_share_email">
-                ✉️ Send via Email
-            </button>
-        </div>
     </div>
     </div>
 
@@ -1582,19 +1570,6 @@
             if (typeof speak === "function") {
                 speak("Memory activated! Quote loaded and ready to edit.", 5000);
             }
-        }
-
-        function shareWhatsApp() {
-            const urlText = window.currentPdfPublicUrl ? ` You can view it here: ${window.currentPdfPublicUrl}` : ` Te enviaré el archivo PDF adjunto a este mensaje.`;
-            const msg = `Hola, adjunto la cotización detallada y el boceto premium de inspiración para tu proyecto.${urlText}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        function shareEmail() {
-            const urlText = window.currentPdfPublicUrl ? `You can view it directly here: ${window.currentPdfPublicUrl}` : `Please find the PDF file attached to this email.`;
-            const subject = "Premium Inspiration Sketch & Professional Quote";
-            const body = `Hello,\n\nAttached is the detailed quote and premium inspiration sketch for your project.\n\n${urlText}\n\nI look forward to discussing it with you.`;
-            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
     </script>
 
