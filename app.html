@@ -606,8 +606,13 @@
         <button class="btn-action" id="generateRenderBtn" onclick="generarRenderMateriales()"
             style="width: 100%; padding: 18px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4); text-transform: uppercase; transition: transform 0.2s, box-shadow 0.2s; display: none;"
             data-i18n="btn_gen_render">🎨 Generate Premium Inspiration Sketch</button>
-        <button class="btn-pay" id="generateBtn" onclick="generateInvoice()" style="margin-bottom: 0;"
-            data-i18n="btn_gen_pdf">Generate PDF Invoice</button>
+        <div style="display: flex; gap: 15px; margin-top: 10px;">
+            <button onclick="generateInvoice()" id="generateBtn" style="flex: 2; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 18px 25px; border-radius: 12px; font-weight: 700; font-size: 1.15rem; cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);"
+                data-i18n="btn_gen_pdf">Generate PDF Invoice</button>
+            
+            <button onclick="guardarProyecto()" id="saveProjectBtn" style="flex: 1; background: linear-gradient(135deg, #7c3aed, #5b21b6); color: white; padding: 18px 25px; border-radius: 12px; font-weight: 700; font-size: 1.15rem; cursor: pointer; border: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);"
+                >💾 Save Project</button>
+        </div>
         <div id="socialShareContainer" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
             <button onclick="shareWhatsApp()"
                 style="background: #25D366; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"
@@ -1322,33 +1327,75 @@
             document.getElementById('historialModal').style.display = 'none';
         }
 
+        async function guardarProyecto() {
+            const userEmail = document.getElementById('userEmailLabel').innerText;
+            if (!userEmail || userEmail === '-') {
+                alert("Debes iniciar sesión para guardar proyectos.");
+                return;
+            }
+
+            const btn = document.getElementById('saveProjectBtn');
+            btn.textContent = "Saving...";
+
+            const data = {
+                company: document.getElementById('company') ? document.getElementById('company').value : '',
+                client: document.getElementById('client') ? document.getElementById('client').value : '',
+                work: document.getElementById('work') ? document.getElementById('work').value : '',
+                quality: document.getElementById('quality') ? document.getElementById('quality').value : '',
+                length: document.getElementById('length') ? document.getElementById('length').value : '',
+                width: document.getElementById('width') ? document.getElementById('width').value : '',
+                price: document.getElementById('price') ? document.getElementById('price').value : '',
+                desglose: window.currentDesglose || null
+            };
+
+            try {
+                const res = await fetch('/api/projects/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_email: userEmail,
+                        project_name: data.work || "Proyecto sin título",
+                        client_name: data.client || "",
+                        data: data
+                    })
+                });
+                const result = await res.json();
+                if(result.success) {
+                    btn.textContent = "✅ Saved!";
+                    setTimeout(() => btn.textContent = "💾 Save Project", 2000);
+                } else {
+                    alert("Error: " + result.error);
+                    btn.textContent = "💾 Save Project";
+                }
+            } catch(err) {
+                console.error(err);
+                alert("Ocurrió un error al guardar.");
+                btn.textContent = "💾 Save Project";
+            }
+        }
+
         async function cargarHistorial() {
             const lista = document.getElementById('lista-historial');
             lista.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;" data-i18n="hist_loading">Loading history...</div>';
 
             try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) {
+                const userEmail = document.getElementById('userEmailLabel').innerText;
+                if (!userEmail || userEmail === '-') {
                     lista.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;" data-i18n="hist_err_login">Error: You are not logged in.</div>';
                     return;
                 }
 
-                const { data, error } = await supabaseClient
-                    .from('presupuestos')
-                    .select('*')
-                    .eq('user_id', user.id)
-                    .order('created_at', { ascending: false });
+                const res = await fetch(`/api/projects/list?email=${encodeURIComponent(userEmail)}`);
+                const result = await res.json();
 
-                if (error) throw error;
-
-                if (!data || data.length === 0) {
+                if (!result.success || !result.projects || result.projects.length === 0) {
                     lista.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:30px; background:rgba(255,255,255,0.02); border-radius:12px; border:1px solid rgba(255,255,255,0.05);" data-i18n="hist_empty">You do not have any saved quotes yet.</div>';
                     return;
                 }
 
-                lista.innerHTML = ''; // Limpiar
+                lista.innerHTML = ''; 
 
-                data.forEach(item => {
+                result.projects.forEach(item => {
                     const dateObj = new Date(item.created_at);
                     const formattedDate = dateObj.toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' });
 
@@ -1360,36 +1407,51 @@
                     card.style.display = 'flex';
                     card.style.justifyContent = 'space-between';
                     card.style.alignItems = 'center';
+                    card.style.marginBottom = '10px';
                     card.style.transition = '0.3s';
-
-                    let thumbnailHtml = '';
-                    if (item.datos_completos && item.datos_completos.renderUrl) {
-                        thumbnailHtml = `<img src="${item.datos_completos.renderUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(124, 58, 237, 0.4); margin-right: 15px;">`;
-                    }
 
                     card.innerHTML = `
                         <div style="display:flex; align-items:center;">
-                            ${thumbnailHtml}
                             <div style="display:flex; flex-direction:column; gap:4px; text-align: left;">
-                                <div style="font-weight:600; color:white; font-size:1.05rem;">${item.cliente || 'Structa Quote'}</div>
-                                <div style="color:var(--text-muted); font-size:0.85rem;">${formattedDate}</div>
+                                <div style="font-weight:600; color:white; font-size:1.05rem;">${item.project_name || 'Structa Quote'}</div>
+                                <div style="color:var(--text-muted); font-size:0.85rem;">${item.client_name ? 'Client: ' + item.client_name + ' | ' : ''}${formattedDate}</div>
                             </div>
                         </div>
-                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-                            <div style="font-weight:bold; color:var(--purple); font-size:1.2rem;">
-                                $${item.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                            </div>
-                            <button class="btn-abrir-historial" style="background: linear-gradient(135deg, #7c3aed, #5b21b6); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);" data-i18n="hist_btn_open">Open Quote</button>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-abrir-historial" style="background: linear-gradient(135deg, #7c3aed, #5b21b6); border: none; color: white; padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);">Open</button>
+                            <button class="btn-borrar-historial" style="background: transparent; border: 1px solid rgba(239, 68, 68, 0.5); color: #ef4444; padding: 6px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer;">Del</button>
                         </div>
                     `;
 
-                    // Asignar el evento dinámicamente
-                    const btnAbrir = card.querySelector('.btn-abrir-historial');
-                    btnAbrir.onclick = () => {
-                        if (item.datos_completos) {
-                            cargarPresupuestoEnCalculadora(item.datos_completos);
-                        } else {
-                            if (typeof speak === 'function') speak("This quote does not have extended memory.", 4000);
+                    // Load
+                    card.querySelector('.btn-abrir-historial').onclick = async () => {
+                        try {
+                            const lRes = await fetch(`/api/projects/load?id=${item.id}&email=${encodeURIComponent(userEmail)}`);
+                            const lResult = await lRes.json();
+                            if(lResult.success && lResult.project) {
+                                cargarPresupuestoEnCalculadora(lResult.project.data);
+                            } else {
+                                alert("Error loading project data.");
+                            }
+                        } catch(e) {
+                            console.error(e);
+                            alert("Error connecting to database.");
+                        }
+                    };
+
+                    // Delete
+                    card.querySelector('.btn-borrar-historial').onclick = async () => {
+                        if(confirm("Are you sure you want to delete this project?")) {
+                            try {
+                                await fetch(`/api/projects/delete`, {
+                                    method: 'DELETE',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ id: item.id, email: userEmail })
+                                });
+                                cargarHistorial();
+                            } catch(e) {
+                                console.error(e);
+                            }
                         }
                     };
 
