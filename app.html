@@ -1585,15 +1585,15 @@
         }
 
         function shareWhatsApp() {
-            if (!window.currentPdfPublicUrl) return alert("The cloud is still uploading the file or an error occurred.");
-            const msg = `Hello, attached is the detailed quote and premium inspiration sketch for your project. You can view it here: ${window.currentPdfPublicUrl}`;
+            const urlText = window.currentPdfPublicUrl ? ` You can view it here: ${window.currentPdfPublicUrl}` : ` Te enviaré el archivo PDF adjunto a este mensaje.`;
+            const msg = `Hola, adjunto la cotización detallada y el boceto premium de inspiración para tu proyecto.${urlText}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         function shareEmail() {
-            if (!window.currentPdfPublicUrl) return alert("The cloud is still uploading the file or an error occurred.");
+            const urlText = window.currentPdfPublicUrl ? `You can view it directly here: ${window.currentPdfPublicUrl}` : `Please find the PDF file attached to this email.`;
             const subject = "Premium Inspiration Sketch & Professional Quote";
-            const body = `Hello,\n\nAttached is the detailed quote and premium inspiration sketch for your project.\n\nYou can view it directly here: ${window.currentPdfPublicUrl}\n\nI look forward to discussing it with you.`;
+            const body = `Hello,\n\nAttached is the detailed quote and premium inspiration sketch for your project.\n\n${urlText}\n\nI look forward to discussing it with you.`;
             window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
     </script>
