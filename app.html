@@ -815,11 +815,15 @@
                 if (typeof speak === 'function') speak("Please enter the project dimensions.", 6000);
                 errorBox.innerHTML = `The Total cannot be $0 and the Length and Width dimensions are required.`;
                 errorBox.style.display = 'block';
+                alert("Debes poner el Largo (Length) y el Ancho (Width) para poder generar el PDF.");
                 return;
             }
 
             if (!email) {
-                speak("Please log in again.", 4000);
+                if (typeof speak === 'function') speak("Please log in again.", 4000);
+                errorBox.innerHTML = `You must be logged in. Please refresh and enter your email.`;
+                errorBox.style.display = 'block';
+                alert("Tu sesión expiró o borraste el caché. Por favor, recarga la página e inicia sesión con tu correo para poder generar PDFs y guardarlos.");
                 return;
             }
 
