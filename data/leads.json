@@ -1,0 +1,24 @@
+[
+  {
+    "id": "call_test_texas_roofing_01",
+    "call_id": "call_test_texas_roofing_01",
+    "caller_name": "John Miller",
+    "caller_phone": "+18325550199",
+    "agent_id": "",
+    "call_status": "completed",
+    "start_timestamp": "2026-08-15T01:14:57.238Z",
+    "duration_ms": 125000,
+    "transcript": "Caller: Hi, I have a leak in my roof in Katy TX. Sofia: Thank you, Marcus is our technician on call. Can I get your address?",
+    "recording_url": "https://example.com/recording.mp3",
+    "disconnection_reason": "",
+    "reason_for_call": "General Inquiry",
+    "urgency": "normal",
+    "appointment_requested": true,
+    "appointment_time": null,
+    "service_type": "Roof Inspection / Repair",
+    "notes": "",
+    "source": "retell_voice_sofia",
+    "created_at": "2026-08-15T01:14:57.239Z",
+    "updated_at": "2026-08-15T01:14:57.239Z"
+  }
+]

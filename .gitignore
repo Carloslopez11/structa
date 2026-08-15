@@ -1,3 +1,8 @@
 node_modules/
-.netlify/
 .env
+.DS_Store
+*.log
+app/templates/
+temp_extracted_prospector/
+production_artifacts/
+dist/

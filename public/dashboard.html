@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vorion Voice OS — Sofía Control Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070d18;
+      --card-bg: #0f172a;
+      --border: rgba(255, 255, 255, 0.1);
+      --accent-cyan: #00f2fe;
+      --accent-blue: #3b82f6;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .brand span {
+      background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 24px 60px;
+      width: 100%;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .stat-card h4 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .stat-card .val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .stat-card .desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .section-head h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .btn-refresh {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-refresh:hover {
+      background: #334155;
+    }
+
+    .table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: #1e293b;
+      padding: 14px 18px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 16px 18px;
+      border-top: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .pill-emergency { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .pill-high { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .pill-normal { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+
+    .tag-appointment {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .audio-btn {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .audio-btn:hover { text-decoration: underline; }
+
+    .empty-state {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      color: #475569;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <h1>VORION <span>VOICE OS</span></h1>
+      <span style="color: var(--text-muted); font-size: 14px;">| Sofía 24/7 (Texas Roofing Co.)</span>
+    </div>
+    <div class="status-badge">
+      Retell AI Voice Receptionist Active
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Métricas en Vivo -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h4>Total Llamadas Atendidas</h4>
+        <div class="val" id="statTotalCalls">0</div>
+        <div class="desc" id="statCallsToday">0 hoy</div>
+      </div>
+      <div class="stat-card">
+        <h4>Citas / Inspecciones Solicitadas</h4>
+        <div class="val" id="statAppointments" style="color: #34d399;">0</div>
+        <div class="desc" id="statConversion">0% tasa de conversión</div>
+      </div>
+      <div class="stat-card">
+        <h4>Emergencias / Fugas Críticas</h4>
+        <div class="val" id="statUrgent" style="color: #f87171;">0</div>
+        <div class="desc">Notificadas al técnico de guardia</div>
+      </div>
+      <div class="stat-card">
+        <h4>Duración Promedio</h4>
+        <div class="val" id="statAvgDuration">0s</div>
+        <div class="desc">Tiempo de conversación</div>
+      </div>
+    </div>
+
+    <!-- Tabla de Leads y Llamadas -->
+    <div class="section-head">
+      <h2>Registro de Llamadas y Leads Capturados</h2>
+      <button class="btn-refresh" onclick="fetchDashboardData()">🔄 Actualizar Datos</button>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha / Hora</th>
+            <th>Cliente / Llamante</th>
+            <th>Teléfono</th>
+            <th>Motivo de la Llamada</th>
+            <th>Urgencia</th>
+            <th>Cita</th>
+            <th>Grabación / Audio</th>
+          </tr>
+        </thead>
+        <tbody id="leadsTableBody">
+          <tr>
+            <td colspan="7" class="empty-state">
+              <p>⏳ Cargando llamadas procesadas por Sofía...</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    async function fetchDashboardData() {
+      try {
+        const [metricsRes, leadsRes] = await Promise.all([
+          fetch('/api/metrics'),
+          fetch('/api/leads')
+        ]);
+
+        if (metricsRes.ok) {
+          const { metrics } = await metricsRes.json();
+          document.getElementById('statTotalCalls').textContent = metrics.totalCalls || 0;
+          document.getElementById('statCallsToday').textContent = `${metrics.callsToday || 0} hoy`;
+          document.getElementById('statAppointments').textContent = metrics.appointmentsRequested || 0;
+          document.getElementById('statConversion').textContent = `${metrics.appointmentConversionRate || '0%'} conversión`;
+          document.getElementById('statUrgent').textContent = metrics.highUrgencyCalls || 0;
+          document.getElementById('statAvgDuration').textContent = `${metrics.avgDurationSeconds || 0}s`;
+        }
+
+        if (leadsRes.ok) {
+          const { leads } = await leadsRes.json();
+          renderLeadsTable(leads);
+        }
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+      }
+    }
+
+    function renderLeadsTable(leads) {
+      const tbody = document.getElementById('leadsTableBody');
+      if (!leads || leads.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="empty-state">
+              <p style="font-size: 15px; font-weight: 600; color: #fff;">Aún no hay llamadas registradas</p>
+              <p style="font-size: 13px; margin-top: 4px;">Cuando un cliente llame al número de Sofía en Retell, los datos aparecerán aquí automáticamente.</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = leads.map(l => {
+        const dateStr = l.start_timestamp ? new Date(l.start_timestamp).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent';
+        const urgencyClass = l.urgency === 'emergency' ? 'pill-emergency' : l.urgency === 'high' ? 'pill-high' : 'pill-normal';
+        
+        return `
+          <tr>
+            <td style="color: var(--text-muted); font-size: 13px;">${dateStr}</td>
+            <td style="font-weight: 700; color: #fff;">${l.caller_name || 'Unknown Caller'}</td>
+            <td><code>${l.caller_phone || 'N/A'}</code></td>
+            <td>
+              <div style="font-weight: 500;">${l.reason_for_call || 'General Inquiry'}</div>
+              ${l.notes ? `<div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">${l.notes}</div>` : ''}
+            </td>
+            <td><span class="pill ${urgencyClass}">${(l.urgency || 'normal').toUpperCase()}</span></td>
+            <td>
+              ${l.appointment_requested 
+                ? `<span class="tag-appointment">📅 Sí</span>` 
+                : `<span style="color: var(--text-muted); font-size: 12px;">No</span>`}
+            </td>
+            <td>
+              ${l.recording_url 
+                ? `<a href="${l.recording_url}" target="_blank" class="audio-btn">▶️ Escuchar Audio</a>` 
+                : `<span style="color: #64748b; font-size: 12px;">Sin audio</span>`}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchDashboardData);
+    // Auto-refresh every 15 seconds
+    setInterval(fetchDashboardData, 15000);
+  </script>
+</body>
+</html>
