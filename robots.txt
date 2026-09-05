@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://structa3d.co/sitemap.xml

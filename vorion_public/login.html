@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vorion Universal OS — Iniciar Sesión o Registrar Empresa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070d18;
+      --card-bg: #0f172a;
+      --border: rgba(255, 255, 255, 0.08);
+      --accent-cyan: #00f2fe;
+      --accent-blue: #3b82f6;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-card::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #00f2fe, #3b82f6);
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .brand h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    .brand span {
+      background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand p {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .tab-container {
+      display: flex;
+      background: #1e293b;
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 22px;
+      border: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 9px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 100%);
+      color: #000;
+    }
+
+    .form-section { display: none; }
+    .form-section.active { display: block; }
+    .form-group { margin-bottom: 15px; }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      background: #1e293b;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.15);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #00f2fe 0%, #3b82f6 100%);
+      color: #000;
+      border: none;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(0, 242, 254, 0.2);
+    }
+
+    .error-msg {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .error-msg.show { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <div class="brand">
+      <h1>VORION <span>UNIVERSAL OS</span></h1>
+      <p>Recepción con Sofia 24/7, Agenda & Ventas</p>
+    </div>
+
+    <!-- Tabs: Login vs Register -->
+    <div class="tab-container">
+      <button id="tabLogin" class="tab-btn active" onclick="switchTab('login')">🔑 Iniciar Sesión</button>
+      <button id="tabRegister" class="tab-btn" onclick="switchTab('register')">✨ Registrar Empresa</button>
+    </div>
+
+    <div id="errorAlert" class="error-msg"></div>
+
+    <!-- Tab 1: Login -->
+    <form id="formLogin" class="form-section active" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Usuario o Email</label>
+        <input id="loginUsername" type="text" placeholder="Tu usuario" required autocomplete="username" />
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input id="loginPassword" type="password" placeholder="••••••••" required autocomplete="current-password" />
+      </div>
+
+      <button type="submit" id="btnLoginSubmit" class="btn-submit">Entrar al CRM</button>
+    </form>
+
+    <!-- Tab 2: Register Multi-Industry -->
+    <form id="formRegister" class="form-section" onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label>Nombre de tu Empresa / Negocio</label>
+        <input id="regCompany" type="text" placeholder="Ej: Barbería Vintage, Consultores Méndez, Clínica..." required />
+      </div>
+
+      <div class="form-group">
+        <label>Tipo de Industria / Negocio</label>
+        <select id="regIndustry">
+          <option value="barber">💈 Barbería, Estética, Spa & Salón de Belleza</option>
+          <option value="admin_consulting">🏢 Consultoría Administrativa, Legal & Finanzas</option>
+          <option value="dental_medical">🩺 Clínica Médica, Dental, Psicología & Salud</option>
+          <option value="trades_service">🔧 Servicios Técnicos, Reformas & Reparaciones</option>
+          <option value="real_estate">🏠 Bienes Raíces & Propiedades</option>
+          <option value="general">🌐 Otro Negocio / Empresa Universal</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Elige un Usuario de Acceso</label>
+        <input id="regUsername" type="text" placeholder="Ej: carlos, roberto, elena" required autocomplete="username" />
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input id="regPassword" type="password" placeholder="Mínimo 4 caracteres" required autocomplete="new-password" />
+      </div>
+
+      <button type="submit" id="btnRegSubmit" class="btn-submit">Registrar y Entrar al CRM</button>
+    </form>
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      const errEl = document.getElementById('errorAlert');
+      errEl.classList.remove('show');
+
+      if (tab === 'login') {
+        document.getElementById('formLogin').classList.add('active');
+        document.getElementById('formRegister').classList.remove('active');
+        document.getElementById('tabLogin').classList.add('active');
+        document.getElementById('tabRegister').classList.remove('active');
+      } else {
+        document.getElementById('formLogin').classList.remove('active');
+        document.getElementById('formRegister').classList.add('active');
+        document.getElementById('tabLogin').classList.remove('active');
+        document.getElementById('tabRegister').classList.add('active');
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const errEl = document.getElementById('errorAlert');
+      const btn = document.getElementById('btnLoginSubmit');
+
+      errEl.classList.remove('show');
+      btn.disabled = true;
+      btn.textContent = 'Verificando...';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          window.location.href = '/dashboard.html';
+        } else {
+          errEl.textContent = data.error || 'Credenciales incorrectas.';
+          errEl.classList.add('show');
+        }
+      } catch (err) {
+        errEl.textContent = 'Error de conexión con el servidor.';
+        errEl.classList.add('show');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Entrar al CRM';
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const company_name = document.getElementById('regCompany').value.trim();
+      const industry = document.getElementById('regIndustry').value;
+      const username = document.getElementById('regUsername').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+      const errEl = document.getElementById('errorAlert');
+      const btn = document.getElementById('btnRegSubmit');
+
+      errEl.classList.remove('show');
+      btn.disabled = true;
+      btn.textContent = 'Configurando CRM...';
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ company_name, industry, username, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          window.location.href = '/dashboard.html';
+        } else {
+          errEl.textContent = data.error || 'Error al registrar la empresa.';
+          errEl.classList.add('show');
+        }
+      } catch (err) {
+        errEl.textContent = 'Error de conexión al registrar.';
+        errEl.classList.add('show');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Registrar y Entrar al CRM';
+      }
+    }
+  </script>
+</body>
+</html>
